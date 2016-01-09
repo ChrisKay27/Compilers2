@@ -4,7 +4,7 @@ package stateMachine;
  * Created by Carston on 1/9/2016.
  */
 public class Ascii {
-
+    //
     //digits
     public static final int START_OF_DIGITS = 48;
     public static final int END_OF_DIGITS = 57;
