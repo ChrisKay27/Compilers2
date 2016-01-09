@@ -3,7 +3,7 @@ package stateMachine;
 /**
  * Created by Carston on 1/9/2016.
  */
-public class Ascii {
+public class Lexicon {
     //
     //digits
     public static final int START_OF_DIGITS = 48;
@@ -15,12 +15,21 @@ public class Ascii {
     public static final int END_OF_LOWERCASE = 122;
     //other
 
+    public static boolean isNewLine(char c) {
+        return c == '\n';
+
+    }
+
+    public static boolean isWhiteSpace(char c) {
+        return c == ' ' || c == '\t' || isNewLine(c);
+    }
+
     public static boolean isDigit(char c) {
         return (c >= START_OF_DIGITS && c <= END_OF_DIGITS);
     }
 
     public static boolean isLetter(char c) {
-        return isUppercase(c) || isLowercase(c);
+        return isUppercase(c) || isLowercase(c) || c == '_' || c == '$' || Lexicon.isDigit(c);
     }
 
     public static boolean isUppercase(char c) {
