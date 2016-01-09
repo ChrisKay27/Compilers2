@@ -22,7 +22,7 @@ public class Parser {
         List<Token> tokens = new ArrayList<>();
 
         Token nextToken = scanner.nextToken();
-        while(nextToken.token != Tokens.END_OF_FILE)
+        while(nextToken.token != Tokens.ENDFILE)
             tokens.add(nextToken);
 
         System.out.println(tokens);

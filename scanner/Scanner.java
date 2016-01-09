@@ -1,7 +1,6 @@
 package scanner;
 
 import stateMachine.State;
-import stateMachine.Transition;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -13,7 +12,7 @@ public class Scanner {
 
     private final Reader reader;
 
-    private final State state;
+    private State state;
 
 
 
@@ -28,15 +27,25 @@ public class Scanner {
 
     }
 
-
+    private char nextChar;
+    private boolean initNextChar = true;
 
     public Token nextToken() throws IOException {
-        char nextChar = nextChar();
+        if(initNextChar){
+            nextChar = nextChar();
+            initNextChar = false;
+        }
 
-        Token t = state.consume(nextChar);
+        Token t = null;
+        while( t == null ){
+            t = state.consume(nextChar);
+            state = state.nextState();
 
+            if(t == null)
+                nextChar = nextChar();
+        }
 
-        return null;
+        return t;
     }
 
 
