@@ -1,5 +1,6 @@
 package scanner;
 
+import stateMachine.Ascii;
 import stateMachine.State;
 
 /**
@@ -35,5 +36,21 @@ public class ScannerStateMachine {
             return this;
         }
     };
+
+
+    State letter = new State(){
+
+        public Token consume(char c){
+            if (Ascii.isLetter(c)){
+                    return null;
+            }
+            return null;
+        }
+        public State nextState(){
+            return nextState;
+        }
+    };
+
+
 
 }
