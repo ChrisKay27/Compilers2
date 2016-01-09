@@ -14,6 +14,9 @@ public class Lexicon {
     public static final int START_OF_LOWERCASE = 97;
     public static final int END_OF_LOWERCASE = 122;
     //other
+    public static final int LEFT_BRACE = 123;
+    public static final int RIGHT_BRACE = 125;
+
 
     public static boolean isNewLine(char c) {
         return c == '\n';

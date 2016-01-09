@@ -23,8 +23,6 @@ public class Scanner {
         ScannerStateMachine ssm = new ScannerStateMachine();
 
         state = ssm.init;
-
-
     }
 
     private char nextChar;

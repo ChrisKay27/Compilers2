@@ -1,7 +1,12 @@
 package scanner;
 
 import stateMachine.Lexicon;
+import parser.Tokens;
+import stateMachine.Ascii;
 import stateMachine.State;
+
+import static stateMachine.Ascii.isDigit;
+import static stateMachine.Ascii.isLetter;
 
 /**
  * Created by Chris on 1/9/2016.
@@ -13,15 +18,20 @@ public class ScannerStateMachine {
         public Token consume(char c) {
             if (c <= 32) {
                 nextState = init;
-            } else if (c >= 33 && c <= 47) {
+            }
+            else if( c == Ascii.LEFT_BRACE ){
 
-            } else if (c >= 48 && c <= 57) {
+            }
+            else if( isDigit(c) ){
                 nextState = num;
                 nextState.getSb().replace(0, nextState.getSb().length(), "");
                 nextState.getSb().append(c);
-
             }
-
+            else if( isLetter(c) ){
+                nextState = id;
+                nextState.getSb().replace(0,nextState.getSb().length(),"");
+                nextState.getSb().append(c);
+            }
             return null;
         }
 
@@ -51,6 +61,7 @@ public class ScannerStateMachine {
         }
     };
 
+    State id = new State(){
 
     State letter = new State() {
 
@@ -60,6 +71,7 @@ public class ScannerStateMachine {
                 nextState = this;
                 this.nextState();
             }
+            return null;
         }
 
         public State nextState() {
@@ -67,5 +79,14 @@ public class ScannerStateMachine {
         }
     };
 
+
+        public Token consume(char c){
+            return null;
+        }
+
+        public State nextState(){
+            return this;
+        }
+    };
 
 }
