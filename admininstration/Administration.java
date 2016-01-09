@@ -33,9 +33,6 @@ public class Administration implements Administrator {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-
-
     }
 
 
