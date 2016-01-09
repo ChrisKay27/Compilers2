@@ -10,9 +10,12 @@ public abstract class State {
     protected StringBuilder sb = new StringBuilder();
 
     public abstract Token consume(char c);
-    public abstract State nextState();
+    public State nextState(){
+        return nextState;
+    }
 
     public StringBuilder getSb() {
         return sb;
     }
+
 }
