@@ -29,6 +29,10 @@ public class ScannerStateMachine {
                 nextState = id;
                 nextState.getSb().replace(0,nextState.getSb().length(),"");
                 nextState.getSb().append(c);
+            } else if (c == Lexicon.MINUS) {
+                nextState = minus;
+                nextState.getSb().replace(0, nextState.getSb().length(), "");
+                nextState.getSb().append(c);
             }
             return null;
         }
@@ -59,15 +63,34 @@ public class ScannerStateMachine {
         }
     };
 
-    State id = new State(){
-
-    State letter = new State() {
+    State id = new State() {
 
         public Token consume(char c) {
             if (Lexicon.isLetter(c)) {
                 sb.append(c);
                 nextState = this;
                 this.nextState();
+            }
+            String value = sb.toString();
+            sb = new StringBuilder();
+            return new Token(Tokens.ID, value);
+        }
+
+        public State nextState() {
+            return nextState;
+        }
+    };
+
+    // remains in this state and ignores consumed characters until the end of line character is reached then returns 
+    // a null token that will be ignored by the parser
+    State lineComment = new State() {
+
+        public Token consume(char c) {
+            if (Lexicon.isNewLine(c)) {
+                return Token.COMMENT_TOKEN;
+            } else {
+                nextState = this;
+                nextState();
             }
             return null;
         }
@@ -76,15 +99,25 @@ public class ScannerStateMachine {
             return nextState;
         }
     };
-
-
+    // state could be a dash for negation or subtraction or could be a dash to start a line comment
+    State minus = new State() {
         public Token consume(char c){
+            if (c == Lexicon.MINUS) {
+                //line comment
+                nextState = lineComment;
+                this.nextState();
+            } else {
+                // negation or subtraction
+                String value = sb.toString();
+                sb = new StringBuilder();
+                return new Token(Tokens.MINUS, value);
+            }
             return null;
         }
-
         public State nextState(){
-            return this;
+            return nextState;
         }
+
     };
 
 }

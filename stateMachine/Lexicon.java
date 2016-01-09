@@ -16,6 +16,7 @@ public class Lexicon {
     //other
     public static final int LEFT_BRACE = 123;
     public static final int RIGHT_BRACE = 125;
+    public static final int MINUS = 45;
 
 
     public static boolean isNewLine(char c) {

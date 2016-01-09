@@ -6,6 +6,9 @@ import parser.Tokens;
  * Created by Chris on 1/9/2016.
  */
 public class Token {
+
+    public static final Token COMMENT_TOKEN = new Token(null, null);
+
     public Tokens token;
     public Object attrValue;
 
