@@ -14,6 +14,9 @@ public class Ascii {
     public static final int START_OF_LOWERCASE = 97;
     public static final int END_OF_LOWERCASE = 122;
     //other
+    public static final int LEFT_BRACE = 123;
+    public static final int RIGHT_BRACE = 125;
+
 
     public static boolean isDigit(char c) {
         return (c >= START_OF_DIGITS && c <= END_OF_DIGITS);
