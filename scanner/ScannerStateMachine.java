@@ -1,12 +1,11 @@
 package scanner;
 
-import stateMachine.Lexicon;
 import parser.Tokens;
-import stateMachine.Ascii;
+import stateMachine.Lexicon;
 import stateMachine.State;
 
-import static stateMachine.Ascii.isDigit;
-import static stateMachine.Ascii.isLetter;
+import static stateMachine.Lexicon.isDigit;
+import static stateMachine.Lexicon.isLetter;
 
 /**
  * Created by Chris on 1/9/2016.
@@ -18,8 +17,7 @@ public class ScannerStateMachine {
         public Token consume(char c) {
             if (c <= 32) {
                 nextState = init;
-            }
-            else if( c == Ascii.LEFT_BRACE ){
+            } else if (c == Lexicon.LEFT_BRACE) {
 
             }
             else if( isDigit(c) ){
