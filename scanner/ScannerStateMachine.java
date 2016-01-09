@@ -1,5 +1,6 @@
 package scanner;
 
+import parser.Tokens;
 import stateMachine.State;
 
 /**
@@ -10,12 +11,22 @@ public class ScannerStateMachine {
     State init = new State(){
 
         public Token consume(char c){
-            if( c >= 48 && c <= 58 ){
-                nextState = num;
-                return null;
+            if(c <= 32){
+                nextState = init;
             }
+            else if( c >= 33 && c <= 47 ){
+
+            }
+            else if( c >= 48 && c <= 57 ){
+                nextState = num;
+                nextState.getSb().replace(0,nextState.getSb().length(),"");
+                nextState.getSb().append(c);
+
+            }
+
             return null;
         }
+
         public State nextState(){
             return nextState;
         }
@@ -25,15 +36,24 @@ public class ScannerStateMachine {
     State num = new State(){
 
         public Token consume(char c){
-            if( c >= 48 && c <= 58 ){
+            if( c >= 48 && c <= 57 ){
                 nextState = this;
+                sb.append(c);
                 return null;
             }
-            return null;
+            else{
+                String value = sb.toString();
+                sb.replace(0,sb.length(),"");
+                return new Token(Tokens.NUM,value);
+            }
+
         }
+
         public State nextState(){
             return this;
         }
     };
+
+
 
 }
