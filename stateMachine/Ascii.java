@@ -28,7 +28,8 @@ public class Ascii {
     }
 
     public static boolean isLowercase(char c) {
-        return (c >= START_OF_UPPERCASE && c <= END_OF_UPPERCASE);
+        return (c >= START_OF_LOWERCASE && c <= END_OF_LOWERCASE);
     }
+
 
 }
