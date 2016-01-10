@@ -16,4 +16,9 @@ public class Token {
         this.token = token;
         this.attrValue = attrValue;
     }
+
+    @Override
+    public String toString() {
+        return token == null ? "Comment Token" : '(' + token.toString() + "," + attrValue + ')';
+    }
 }

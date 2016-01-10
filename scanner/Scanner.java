@@ -35,19 +35,36 @@ public class Scanner {
         if( nextChar == -1 )
             return new Token(Tokens.ENDFILE,null);
 
+        //System.out.println("Starting in init state");
         state = ssm.init;
         Token t = null;
         while( t == null ) {
+            if(nextChar == '\n') {
+                lineCount++;
+                colCount = 0;
+            }
+            //System.out.println("looking at char: " + nextChar);
             t = state.consume((char)nextChar);
             state = state.nextState();
 
+
             if(t == null) {
+                //System.out.println("Going to state:" + state);
                 nextChar = nextChar();
-                if( nextChar == -1 )
-                    throw new UnexpectedEndOfFileException("Unexpected End of file at line:" + lineCount + " col:" + colCount);
+                colCount++;
+                if( nextChar == -1 ) {
+                    if (state != ssm.init && state != ssm.lineComment)
+                        throw new UnexpectedEndOfFileException("Unexpected End of file state="+state+" at line:" + lineCount + " col:" + colCount);
+                    else
+                        return new Token(Tokens.ENDFILE,null);
+                }
+            }
+            else if( t == Token.COMMENT_TOKEN ){
+                t = null;
+                state = ssm.init;
             }
         }
-
+        System.out.println("Found Token:" + t);
         return t;
     }
 
