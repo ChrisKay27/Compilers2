@@ -12,14 +12,13 @@ import static stateMachine.Lexicon.isLetter;
  */
 public class ScannerStateMachine {
 
-    State init = new State(){
+    State init = new State() {
 
-        public Token consume(char c){
+        public Token consume(char c) {
             //System.out.println("Matching " + c);
-            if(c <= 32){
+            if (c <= 32) {
                 nextState = init;
-            }
-            else {
+            } else {
                 switch (c) {
                     case '{':
                         nextState = leftBrace;
@@ -115,6 +114,7 @@ public class ScannerStateMachine {
             }
             return null;
         }
+
         @Override
         public String toString() {
             return "init state";
@@ -122,9 +122,9 @@ public class ScannerStateMachine {
     };
 
 
-    State num = new State(){
-        public Token consume(char c){
-            if( c >= 48 && c <= 57 ){
+    State num = new State() {
+        public Token consume(char c) {
+            if (c >= 48 && c <= 57) {
                 nextState = this;
                 sb.append(c);
                 return null;
@@ -137,7 +137,7 @@ public class ScannerStateMachine {
 
         }
 
-        public State nextState(){
+        public State nextState() {
             return nextState;
         }
     };
@@ -149,13 +149,13 @@ public class ScannerStateMachine {
                 sb.append(c);
                 nextState = this;
                 return null;
-            }
-            else {
+            } else {
                 String value = sb.toString();
                 sb = new StringBuilder();
                 return new Token(Tokens.ID, value);
             }
         }
+
         @Override
         public String toString() {
             return "id state";
@@ -166,11 +166,12 @@ public class ScannerStateMachine {
     // a null token that will be ignored by the parser
     State lineComment = new State() {
         boolean newLineFound = false;
+
         public Token consume(char c) {
-            if( newLineFound ) {
+            if (newLineFound) {
                 newLineFound = false;
                 return Token.COMMENT_TOKEN;
-            }else if (Lexicon.isNewLine(c)) {
+            } else if (Lexicon.isNewLine(c)) {
                 newLineFound = true;
             } else {
                 nextState = this;
@@ -198,6 +199,7 @@ public class ScannerStateMachine {
             }
             return null;
         }
+
         @Override
         public String toString() {
             return "minus state";
@@ -220,6 +222,7 @@ public class ScannerStateMachine {
 
             return null;
         }
+
         @Override
         public String toString() {
             return "div or comment state";
@@ -237,6 +240,7 @@ public class ScannerStateMachine {
                 return new Token(Tokens.LT, null);
             }
         }
+
         @Override
         public String toString() {
             return "< or = state";
@@ -255,213 +259,198 @@ public class ScannerStateMachine {
                 return new Token(Tokens.GT, null);
             }
         }
+
         @Override
         public String toString() {
             return "> = state";
         }
     };
 
-    State orElse = new State(){
+    State orElse = new State() {
 
-        public Token consume(char c){
+        public Token consume(char c) {
 
-            if(c == '|'){
+            if (c == '|') {
 
                 sb.append('|');
-                if(sb.toString().equals("||")){
+                if (sb.toString().equals("||")) {
                     nextState = init;
 
                 }
 
-            }else if(sb.toString().equals("|")){
+            } else if (sb.toString().equals("|")) {
                 throw new BadTokenException("Bad Token: " + sb.toString() + c);
             }
 
             return null;
         }
 
-        public State nextState(){
+        public State nextState() {
             return nextState;
         }
     };
 
-
-    State andThen = new State(){
-        public Token consume(char c){
-            if( sb.toString().equals("&&") ){
-                sb.replace(0,sb.length(),"");
-                return new Token(Tokens.ANDTHEN,null);
+    State colonEq = new State() {
+        public Token consume(char c) {
+            if (sb.toString().equals(":=")) {
+                sb.replace(0, sb.length(), "");
+                return new Token(Tokens.ASSIGN, null);
             }
-            if(c == '&'){
+
+            if (c == '=') {
+                sb.append('=');
+            } else {
+                return new Token(Tokens.EQ, null);
+            }
+            return null;
+        }
+
+        @Override
+        public String toString() {
+            return ":= state";
+        }
+    };
+
+
+    State andThen = new State() {
+        public Token consume(char c) {
+            if (sb.toString().equals("&&")) {
+                sb.replace(0, sb.length(), "");
+                return new Token(Tokens.ANDTHEN, null);
+            }
+            if (c == '&') {
                 sb.append('&');
-            }else{
+            } else {
                 throw new BadTokenException("Bad Token: " + sb.toString() + c);
             }
             return null;
         }
+
         @Override
         public String toString() {
             return "&& state";
         }
     };
 
-    State leftBrace = new State(){
+    // reached upon receiving '/*'
+    // ignores all characters other than * and /
+    // * -> goes to end comment state
+    // / -> enters nestedComment state
+    // OTHER -> loopback
+    State blockComment = new State() {
 
-        public Token consume(char c){
+        private int count;
 
-            if(c == '='){
-                if( sb.toString().equals(":=") ){
-                    sb.replace(0,sb.length(),"");
-                    return new Token(Tokens.ASSIGN,null);
-                }
-
-                sb.append('=');
-                if(sb.toString().equals("||")){
-                    nextState = init;
-                    sb.replace(0,sb.length(),"");
-                    return new Token(Tokens.ORELSE,null);
-                }
-            }else{
-
+        public Token consume(char c) {
+            if (c == '*') {
+                // potentially end of comment
+                nextState = this.endComment;
+            } else if (c == '/') {
+                // potentially start of nested commend
+                nextState = this.nestedComment;
+            } else {
+                // any other character inside a comment is ignored
+                nextState = this;
             }
             return null;
         }
-        @Override
-        public String toString() {
-            return ":= state";
-        }
-    };
-    State rightBrace = new State(){
 
-        public Token consume(char c){
+        // reached upon receiving '/' from the block comment state
+        // * -> increment the counter and return to block comment state
+        // OTHER ignore and return to the block comment state
+        private State nestedComment = new State() {
 
-            if(c == '='){
-                if( sb.toString().equals(":=") ){
-                    sb.replace(0,sb.length(),"");
-                    return new Token(Tokens.ASSIGN,null);
+            public Token consume(char c) {
+                if (c == '*') {
+                    // go back to blockComment and return the comment token
+                    increment();
                 }
-
-                sb.append('=');
-                if(sb.toString().equals("||")){
-                    nextState = init;
-                    sb.replace(0,sb.length(),"");
-                    return new Token(Tokens.ORELSE,null);
-                }
-            }else{
-
+                nextState = blockComment;
+                return null;
             }
-            return null;
-        }
-    };
-    State leftParen = new State(){
 
-        public Token consume(char c){
+        };
 
-            if(c == '='){
-                if( sb.toString().equals(":=") ){
-                    sb.replace(0,sb.length(),"");
-                    return new Token(Tokens.ASSIGN,null);
+        // reached upon receiving '*' from the blockComment state
+        // / -> end the comment and return the comment token
+        // OTHER -> returns to blockComment state
+        private State endComment = new State() {
+            public Token consume(char c) {
+                if (c == '/') {
+                    if (countZero()) {
+                        nextState = init;
+                        return Token.COMMENT_TOKEN;
+                    } else {
+                        decrement();
+                        nextState = blockComment;
+                    }
+                } else {
+                    nextState = blockComment;
                 }
-
-                sb.append('=');
-                if(sb.toString().equals("||")){
-                    nextState = init;
-                    sb.replace(0,sb.length(),"");
-                    return new Token(Tokens.ORELSE,null);
-                }
-            }else{
-
+                return null;
             }
-            return null;
+        };
+
+        private void increment() {
+            count++;
         }
-    };
-    State plus = new State(){
 
-        public Token consume(char c){
-
-            if(c == '='){
-                if( sb.toString().equals(":=") ){
-                    sb.replace(0,sb.length(),"");
-                    return new Token(Tokens.ASSIGN,null);
-                }
-
-                sb.append('=');
-                if(sb.toString().equals("||")){
-                    nextState = init;
-                    sb.replace(0,sb.length(),"");
-                    return new Token(Tokens.ORELSE,null);
-                }
-            }else{
-
-            }
-            return null;
+        private void decrement() {
+            count--;
         }
-    };
-    State rightParen = new State(){
 
-        public Token consume(char c){
-
-            if(c == '='){
-                if( sb.toString().equals(":=") ){
-                    sb.replace(0,sb.length(),"");
-                    return new Token(Tokens.ASSIGN,null);
-                }
-
-                sb.append('=');
-                if(sb.toString().equals("||")){
-                    nextState = init;
-                    sb.replace(0,sb.length(),"");
-                    return new Token(Tokens.ORELSE,null);
-                }
-            }else{
-
-            }
-            return null;
+        private boolean countZero() {
+            return count == 0;
         }
     };
 
-    State minusOrLineComment = new State(){
-
-        public Token consume(char c){
-
-            if(c == '='){
-                if( sb.toString().equals(":=") ){
-                    sb.replace(0,sb.length(),"");
-                    return new Token(Tokens.ASSIGN,null);
-                }
-
-                sb.append('=');
-                if(sb.toString().equals("||")){
-                    nextState = init;
-                    sb.replace(0,sb.length(),"");
-                    return new Token(Tokens.ORELSE,null);
-                }
-            }else{
-
-            }
-            return null;
-        }
-    };
-    State semiColon = new State(){
-        public Token consume(char c){
-            return new Token(Tokens.SEMI,null);
-        }
-    };
-    State comma = new State(){
-        public Token consume(char c){
-            return new Token(Tokens.COMMA,null);
-        }
-    };
-    State leftSquare = new State(){
-        public Token consume(char c){
-            return new Token(Tokens.LSQR,null);
-        }
-    };
-    State rightSquare = new State(){
-        public Token consume(char c){
-            return new Token(Tokens.RSQR,null);
+    State leftBrace = new State() {
+        public Token consume(char c) {
+            return new Token(Tokens.LCRLY, null);
         }
     };
 
+    State rightBrace = new State() {
+        public Token consume(char c) {
+            return new Token(Tokens.LCRLY, null);
+        }
+    };
+
+    State leftParen = new State() {
+        public Token consume(char c) {
+            return new Token(Tokens.LPAREN, null);
+        }
+    };
+    State rightParen = new State() {
+        public Token consume(char c) {
+            return new Token(Tokens.RPAREN, null);
+        }
+    };
+
+    State plus = new State() {
+        public Token consume(char c) {
+            return new Token(Tokens.PLUS, null);
+        }
+    };
+    State semiColon = new State() {
+        public Token consume(char c) {
+            return new Token(Tokens.SEMI, null);
+        }
+    };
+    State comma = new State() {
+        public Token consume(char c) {
+            return new Token(Tokens.COMMA, null);
+        }
+    };
+    State leftSquare = new State() {
+        public Token consume(char c) {
+            return new Token(Tokens.LSQR, null);
+        }
+    };
+    State rightSquare = new State() {
+        public Token consume(char c) {
+            return new Token(Tokens.RSQR, null);
+        }
+    };
 
 }
