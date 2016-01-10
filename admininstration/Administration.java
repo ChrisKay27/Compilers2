@@ -21,7 +21,7 @@ public class Administration implements Administrator {
 
 
     public static void main(String[] args) throws FileNotFoundException {
-        File input = new File("input.cs16");
+        File input = new File("src/input.cs16");
         Charset encoding = Charset.forName("ascii");
 
         try (InputStream in = new FileInputStream(input);
