@@ -8,7 +8,7 @@ import java.nio.charset.Charset;
 
 public class Administration implements Administrator {
     // development
-    private static boolean debug = true;
+    private static final boolean debug = true;
     public static boolean debug(){return debug;}
     // end development
 
@@ -25,18 +25,24 @@ public class Administration implements Administrator {
 
 
     public static void main(String[] args) throws FileNotFoundException {
-        File input = new File("src/input.cs16");
-        Charset encoding = Charset.forName("ascii");
+        File testCases = new File("src/testCases/");
 
-        try (InputStream in = new FileInputStream(input);
-             Reader reader = new InputStreamReader(in, encoding);
-             Reader buffer = new BufferedReader(reader))
-        {
-            Administration admin = new Administration(buffer);
+        for(File testCase : testCases.listFiles()){
+            if( !testCase.getName().equals("commentHell.cs16")) continue;
+            System.out.println("Attempting test: " + testCase.getName());
+            Charset encoding = Charset.forName("ascii");
 
-        } catch (IOException e) {
-            e.printStackTrace();
+            try (InputStream in = new FileInputStream(testCase);
+                 Reader reader = new InputStreamReader(in, encoding);
+                 Reader buffer = new BufferedReader(reader))
+            {
+                Administration admin = new Administration(buffer);
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
+
     }
 
 

@@ -239,12 +239,13 @@ public class ScannerStateMachine {
     State divOrComment = new State() {
 
         public Token consume(char c) {
-            if (c == '*' && sb.toString().equals("/")) {
+            if (sb.toString().equals("/") && c == '*' ) {
                 sb = new StringBuilder();
                 nextState = blockComment;
+                blockComment.count = 1;
                 nextState.getSb().replace(0, nextState.getSb().length(), "");
                 nextState.getSb().append("/*");
-            } else if (c == '=' && sb.toString().equals("/")) {
+            } else if (sb.toString().equals("/") && c == '=') {
                 sb = new StringBuilder();
                 nextState = neq;
                 //nextState.getSb().replace(0,nextState.getSb().length(),"");
@@ -384,6 +385,7 @@ public class ScannerStateMachine {
         }
     };
 
+
     /**
      * Reached upon receiving '/*'
      * ignores all characters other than * and /
@@ -391,8 +393,8 @@ public class ScannerStateMachine {
      * / -> enters nestedComment state
      * OTHER -> loopback
      */
-    State blockComment = new State() {
-
+    BlockCommentState blockComment = new BlockCommentState();
+    public class BlockCommentState extends State{
         private int count;
 
         public Token consume(char c) {
@@ -415,9 +417,9 @@ public class ScannerStateMachine {
         }
 
         /** reached upon receiving '/' from the block comment state
-        * * -> increment the counter and return to block comment state
-        * OTHER ignore and return to the block comment state
-        */
+         * * -> increment the counter and return to block comment state
+         * OTHER ignore and return to the block comment state
+         */
         private State nestedComment = new State() {
 
             public Token consume(char c) {
@@ -444,7 +446,7 @@ public class ScannerStateMachine {
             public Token consume(char c) {
 
                 if (c == '/') {
-                    if (countZero()) {
+                    if (count == 1) {
                         nextState = end;
 
                     } else {
@@ -470,7 +472,6 @@ public class ScannerStateMachine {
          */
         private State end = new State() {
             public Token consume(char c) {
-
                 return Token.COMMENT_TOKEN;
             }
 
@@ -481,17 +482,22 @@ public class ScannerStateMachine {
         };
 
         private void increment() {
+            System.out.println("inc count");
             count++;
         }
 
         private void decrement() {
+            System.out.println("dec count");
             count--;
         }
 
-        private boolean countZero() {
+        boolean countZero() {
             return count == 0;
         }
-    };
+    }
+
+
+
 
     /**
      * Will only return a { token.
