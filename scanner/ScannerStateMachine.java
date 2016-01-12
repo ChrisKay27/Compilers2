@@ -210,9 +210,16 @@ public class ScannerStateMachine {
 
         public Token consume(char c){
             if(c == '*' && sb.toString().equals("/")){
+                sb = new StringBuilder();
                 nextState = blockComment;
                 nextState.getSb().replace(0,nextState.getSb().length(),"");
                 nextState.getSb().append("/*");
+            }
+            else if(c == '=' && sb.toString().equals("/")){
+                sb = new StringBuilder();
+                nextState = neq;
+                //nextState.getSb().replace(0,nextState.getSb().length(),"");
+                //nextState.getSb().append("/=");
             }
             else{
                 sb.replace(0,sb.length(),"");
@@ -225,6 +232,18 @@ public class ScannerStateMachine {
         @Override
         public String toString() {
             return "div or comment state";
+        }
+    };
+
+    State neq = new State() {
+
+        public Token consume(char c) {
+            return new Token(Tokens.NEQ,null);
+        }
+
+        @Override
+        public String toString() {
+            return "/= state";
         }
     };
 
@@ -348,6 +367,7 @@ public class ScannerStateMachine {
         public Token consume(char c) {
             if (c == '*') {
                 // potentially end of comment
+                //endComment.getSb().append('*');
                 nextState = this.endComment;
             } else if (c == '/') {
                 // potentially start of nested commend
@@ -375,30 +395,47 @@ public class ScannerStateMachine {
                 nextState = blockComment;
                 return null;
             }
-
+            @Override
             public String toString() {
                 return "nestedComment state";
             }
         };
 
-        // reached upon receiving '*' from the blockComment state
+        // reached upon receiving '*' from the blockComment state. The * will
         // / -> end the comment and return the comment token
         // OTHER -> returns to blockComment state
         private State endComment = new State() {
             public Token consume(char c) {
+
                 if (c == '/') {
                     if (countZero()) {
-                        nextState = init;
-                        return Token.COMMENT_TOKEN;
+                        nextState = end;
+
                     } else {
                         decrement();
+                        sb = new StringBuilder();
                         nextState = blockComment;
                     }
                 } else {
+                    sb = new StringBuilder();
                     nextState = blockComment;
                 }
                 return null;
             }
+
+            @Override
+            public String toString() {
+                return "endComment state";
+            }
+        };
+
+        private State end = new State() {
+            public Token consume(char c) {
+
+                return Token.COMMENT_TOKEN;
+            }
+
+            @Override
             public String toString() {
                 return "endComment state";
             }

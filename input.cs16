@@ -6,6 +6,8 @@ fgsgsergsergse/**/--*/*/ -- example
 
 int x; /* first x */
 bool b;
+
+/* Dont need this anymore
 void p(int x, int y) /* second x */
 {
     writeint(x); /* writes second x */
@@ -16,22 +18,23 @@ void p(int x, int y) /* second x */
     else
         writeint(x); /* writes second x */
 }
+*/
 
 void q(void) {
     writeint(x); /* writes first x */
 }
 
-int y = 1;
+int y := 1;
 
 void main(String[] args){
-    println("Hey!, How are you?"); --Hello
+
 
     --Input array, WARNING SUBJECT TO OVERFLOW!
-    char[] input = new char[255];
-    int index = 0;
+    char[] input := new char[255];
+    int index := 0;
     loop{
-        int c = readInt();
-        if( c != -1 ){
+        int c := readInt();
+        if( c /= -1 ){
             index++;
 
         }
