@@ -208,16 +208,15 @@ public class ScannerStateMachine {
 
     State divOrComment = new State() {
 
-        public Token consume(char c) {
-
-            if (c == '/') {
-                sb.replace(0, sb.length(), "");
-                return new Token(Tokens.DIV, null);
-
-            } else if (c == '*' && sb.toString().equals("/")) {
-
-            } else {
-                throw new BadTokenException("Bad Token: " + sb.toString() + c);
+        public Token consume(char c){
+            if(c == '*' && sb.toString().equals("/")){
+                nextState = blockComment;
+                nextState.getSb().replace(0,nextState.getSb().length(),"");
+                nextState.getSb().append("/*");
+            }
+            else{
+                sb.replace(0,sb.length(),"");
+                return new Token(Tokens.DIV,null);
             }
 
             return null;
@@ -285,8 +284,13 @@ public class ScannerStateMachine {
             return null;
         }
 
+        public State nextState() {
+            return nextState;
+        }
+
+        @Override
         public String toString() {
-            return "orElse state";
+            return "|| state";
         }
     };
 
@@ -413,19 +417,22 @@ public class ScannerStateMachine {
         }
     };
 
+
     State leftBrace = new State() {
         public Token consume(char c) {
             return new Token(Tokens.LCRLY, null);
         }
+        @Override
         public String toString() {
             return "{ state";
         }
     };
 
-    State rightBrace = new State() {
-        public Token consume(char c) {
-            return new Token(Tokens.LCRLY, null);
+    State rightBrace = new State(){
+        public Token consume(char c){
+            return new Token(Tokens.RCRLY,null);
         }
+        @Override
         public String toString() {
             return "} state";
         }
@@ -443,6 +450,7 @@ public class ScannerStateMachine {
         public Token consume(char c) {
             return new Token(Tokens.RPAREN, null);
         }
+        @Override
         public String toString() {
             return ") state";
         }
@@ -452,6 +460,7 @@ public class ScannerStateMachine {
         public Token consume(char c) {
             return new Token(Tokens.PLUS, null);
         }
+        @Override
         public String toString() {
             return "+ state";
         }
@@ -468,6 +477,7 @@ public class ScannerStateMachine {
         public Token consume(char c) {
             return new Token(Tokens.COMMA, null);
         }
+        @Override
         public String toString() {
             return ", state";
         }
@@ -484,6 +494,7 @@ public class ScannerStateMachine {
         public Token consume(char c) {
             return new Token(Tokens.RSQR, null);
         }
+        @Override
         public String toString() {
             return "] state";
         }
