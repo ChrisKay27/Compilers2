@@ -137,8 +137,8 @@ public class ScannerStateMachine {
 
         }
 
-        public State nextState() {
-            return nextState;
+        public String toString() {
+            return "num state";
         }
     };
 
@@ -285,8 +285,8 @@ public class ScannerStateMachine {
             return null;
         }
 
-        public State nextState() {
-            return nextState;
+        public String toString() {
+            return "orElse state";
         }
     };
 
@@ -354,6 +354,9 @@ public class ScannerStateMachine {
             }
             return null;
         }
+        public String toString() {
+            return "blockComment state";
+        }
 
         // reached upon receiving '/' from the block comment state
         // * -> increment the counter and return to block comment state
@@ -369,6 +372,9 @@ public class ScannerStateMachine {
                 return null;
             }
 
+            public String toString() {
+                return "nestedComment state";
+            }
         };
 
         // reached upon receiving '*' from the blockComment state
@@ -389,6 +395,9 @@ public class ScannerStateMachine {
                 }
                 return null;
             }
+            public String toString() {
+                return "endComment state";
+            }
         };
 
         private void increment() {
@@ -408,11 +417,17 @@ public class ScannerStateMachine {
         public Token consume(char c) {
             return new Token(Tokens.LCRLY, null);
         }
+        public String toString() {
+            return "{ state";
+        }
     };
 
     State rightBrace = new State() {
         public Token consume(char c) {
             return new Token(Tokens.LCRLY, null);
+        }
+        public String toString() {
+            return "} state";
         }
     };
 
@@ -420,10 +435,16 @@ public class ScannerStateMachine {
         public Token consume(char c) {
             return new Token(Tokens.LPAREN, null);
         }
+        public String toString() {
+            return "( state";
+        }
     };
     State rightParen = new State() {
         public Token consume(char c) {
             return new Token(Tokens.RPAREN, null);
+        }
+        public String toString() {
+            return ") state";
         }
     };
 
@@ -431,25 +452,40 @@ public class ScannerStateMachine {
         public Token consume(char c) {
             return new Token(Tokens.PLUS, null);
         }
+        public String toString() {
+            return "+ state";
+        }
     };
     State semiColon = new State() {
         public Token consume(char c) {
             return new Token(Tokens.SEMI, null);
+        }
+        public String toString() {
+            return "; state";
         }
     };
     State comma = new State() {
         public Token consume(char c) {
             return new Token(Tokens.COMMA, null);
         }
+        public String toString() {
+            return ", state";
+        }
     };
     State leftSquare = new State() {
         public Token consume(char c) {
             return new Token(Tokens.LSQR, null);
         }
+        public String toString() {
+            return "[ state";
+        }
     };
     State rightSquare = new State() {
         public Token consume(char c) {
             return new Token(Tokens.RSQR, null);
+        }
+        public String toString() {
+            return "] state";
         }
     };
 

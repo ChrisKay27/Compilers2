@@ -7,6 +7,10 @@ import java.io.*;
 import java.nio.charset.Charset;
 
 public class Administration implements Administrator {
+    // development
+    private static boolean debug = true;
+    public static boolean debug(){return debug;}
+    // end development
 
     private Scanner scanner;
     private Parser parser;

@@ -1,5 +1,6 @@
 package scanner;
 
+import admininstration.Administration;
 import parser.Tokens;
 import stateMachine.State;
 
@@ -35,7 +36,7 @@ public class Scanner {
         if( nextChar == -1 )
             return new Token(Tokens.ENDFILE,null);
 
-        //System.out.println("Starting in init state");
+        if (Administration.debug()) System.out.println("Starting in init state");
         state = ssm.init;
         Token t = null;
         while( t == null ) {
@@ -43,13 +44,13 @@ public class Scanner {
                 lineCount++;
                 colCount = 0;
             }
-            //System.out.println("looking at char: " + nextChar);
+            if (Administration.debug()) System.out.println("looking at char: " + (char)nextChar + "["+nextChar+"]");
             t = state.consume((char)nextChar);
             state = state.nextState();
 
 
             if(t == null) {
-                //System.out.println("Going to state:" + state);
+                if (Administration.debug()) System.out.println("Going to state:" + state);
                 nextChar = nextChar();
                 colCount++;
                 if( nextChar == -1 ) {
@@ -64,7 +65,7 @@ public class Scanner {
                 state = ssm.init;
             }
         }
-        System.out.println("Found Token:" + t);
+        if (Administration.debug()) System.out.println("Found Token:" + t);
         return t;
     }
 

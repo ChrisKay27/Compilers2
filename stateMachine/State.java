@@ -18,4 +18,6 @@ public abstract class State {
         return sb;
     }
 
+    public abstract String toString();
+
 }
