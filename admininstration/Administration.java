@@ -18,6 +18,7 @@ public class Administration implements Administrator {
 
     public Administration(Reader reader) throws IOException {
 
+
         this.scanner = new Scanner(reader);
         this.parser = new Parser(this.scanner);
         this.parser.startParsing();
