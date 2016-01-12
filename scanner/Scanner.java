@@ -73,10 +73,9 @@ public class Scanner {
                 lineCount++;
                 colCount = 0;
             }
-            //if (Administration.debug()) System.out.println("looking at char: " + (char)nextChar + "["+nextChar+"]");
             t = state.consume((char)nextChar);
             state = state.nextState();
-            if (Administration.debug()) System.out.println("went to "+state+" after char: " + (char)nextChar);
+            if (Administration.debug()) System.out.println((char) nextChar + "[" + nextChar + "] -> '" + state + "'");
 
             if(t == null) {
                 if (Administration.debug()) System.out.println("Going to state:" + state);

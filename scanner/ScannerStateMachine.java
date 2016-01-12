@@ -4,8 +4,7 @@ import parser.Tokens;
 import stateMachine.Lexicon;
 import stateMachine.State;
 
-import static stateMachine.Lexicon.isDigit;
-import static stateMachine.Lexicon.isLetter;
+import static stateMachine.Lexicon.*;
 
 /**
  * Created by Chris on 1/9/2016.
@@ -18,6 +17,14 @@ public class ScannerStateMachine {
             //System.out.println("Matching " + c);
             if (c <= 32) {
                 nextState = init;
+            } else if (isDigit(c)) {
+                nextState = num;
+                nextState.getSb().replace(0, nextState.getSb().length(), "");
+                nextState.getSb().append(c);
+            } else if (isLetter(c)) {
+                nextState = id;
+                nextState.getSb().replace(0, nextState.getSb().length(), "");
+                nextState.getSb().append(c);
             } else {
                 switch (c) {
                     case '{':
@@ -57,6 +64,11 @@ public class ScannerStateMachine {
                         break;
                     case '-':
                         nextState = minus;
+                        nextState.getSb().replace(0, nextState.getSb().length(), "");
+                        nextState.getSb().append(c);
+                        break;
+                    case '*':
+                        nextState = multiply;
                         nextState.getSb().replace(0, nextState.getSb().length(), "");
                         nextState.getSb().append(c);
                         break;
@@ -100,17 +112,10 @@ public class ScannerStateMachine {
                         nextState.getSb().replace(0, nextState.getSb().length(), "");
                         nextState.getSb().append(c);
                         break;
-
+                    default: // report the following illegitimate characters: !"#$%\'.?@^_`
+                        nextState = init;
+                        System.err.println("Error - Illegitimate character " + c + " found.");
                 }
-            }
-            if (isDigit(c)) {
-                nextState = num;
-                nextState.getSb().replace(0, nextState.getSb().length(), "");
-                nextState.getSb().append(c);
-            } else if (isLetter(c)) {
-                nextState = id;
-                nextState.getSb().replace(0, nextState.getSb().length(), "");
-                nextState.getSb().append(c);
             }
             return null;
         }
@@ -145,7 +150,7 @@ public class ScannerStateMachine {
 
     State id = new State() {
         public Token consume(char c) {
-            if (isLetter(c)) {
+            if (isIdCharacter(c)) {
                 sb.append(c);
                 nextState = this;
                 return null;
@@ -190,12 +195,10 @@ public class ScannerStateMachine {
             if (c == Lexicon.MINUS) {
                 //line comment
                 nextState = lineComment;
-                this.nextState();
             } else {
                 // negation or subtraction
-                String value = sb.toString();
-                sb = new StringBuilder();
-                return new Token(Tokens.MINUS, value);
+
+                return new Token(Tokens.MINUS, null);
             }
             return null;
         }
@@ -205,25 +208,34 @@ public class ScannerStateMachine {
             return "minus state";
         }
     };
+    State multiply = new State() {
+
+        public Token consume(char c) {
+            return new Token(Tokens.MULT, null);
+        }
+
+        @Override
+        public String toString() {
+            return "multiply state";
+        }
+    };
 
     State divOrComment = new State() {
 
-        public Token consume(char c){
-            if(c == '*' && sb.toString().equals("/")){
+        public Token consume(char c) {
+            if (c == '*' && sb.toString().equals("/")) {
                 sb = new StringBuilder();
                 nextState = blockComment;
-                nextState.getSb().replace(0,nextState.getSb().length(),"");
+                nextState.getSb().replace(0, nextState.getSb().length(), "");
                 nextState.getSb().append("/*");
-            }
-            else if(c == '=' && sb.toString().equals("/")){
+            } else if (c == '=' && sb.toString().equals("/")) {
                 sb = new StringBuilder();
                 nextState = neq;
                 //nextState.getSb().replace(0,nextState.getSb().length(),"");
                 //nextState.getSb().append("/=");
-            }
-            else{
-                sb.replace(0,sb.length(),"");
-                return new Token(Tokens.DIV,null);
+            } else {
+                sb.replace(0, sb.length(), "");
+                return new Token(Tokens.DIV, null);
             }
 
             return null;
@@ -238,7 +250,7 @@ public class ScannerStateMachine {
     State neq = new State() {
 
         public Token consume(char c) {
-            return new Token(Tokens.NEQ,null);
+            return new Token(Tokens.NEQ, null);
         }
 
         @Override
@@ -319,11 +331,10 @@ public class ScannerStateMachine {
                 sb.replace(0, sb.length(), "");
                 return new Token(Tokens.ASSIGN, null);
             }
-
             if (c == '=') {
                 sb.append('=');
             } else {
-                return new Token(Tokens.EQ, null);
+                throw new BadTokenException("Bad Token: " + sb.toString() + c);
             }
             return null;
         }
@@ -378,6 +389,7 @@ public class ScannerStateMachine {
             }
             return null;
         }
+
         public String toString() {
             return "blockComment state";
         }
@@ -395,6 +407,7 @@ public class ScannerStateMachine {
                 nextState = blockComment;
                 return null;
             }
+
             @Override
             public String toString() {
                 return "nestedComment state";
@@ -459,16 +472,18 @@ public class ScannerStateMachine {
         public Token consume(char c) {
             return new Token(Tokens.LCRLY, null);
         }
+
         @Override
         public String toString() {
             return "{ state";
         }
     };
 
-    State rightBrace = new State(){
-        public Token consume(char c){
-            return new Token(Tokens.RCRLY,null);
+    State rightBrace = new State() {
+        public Token consume(char c) {
+            return new Token(Tokens.RCRLY, null);
         }
+
         @Override
         public String toString() {
             return "} state";
@@ -479,6 +494,7 @@ public class ScannerStateMachine {
         public Token consume(char c) {
             return new Token(Tokens.LPAREN, null);
         }
+
         public String toString() {
             return "( state";
         }
@@ -487,6 +503,7 @@ public class ScannerStateMachine {
         public Token consume(char c) {
             return new Token(Tokens.RPAREN, null);
         }
+
         @Override
         public String toString() {
             return ") state";
@@ -497,6 +514,7 @@ public class ScannerStateMachine {
         public Token consume(char c) {
             return new Token(Tokens.PLUS, null);
         }
+
         @Override
         public String toString() {
             return "+ state";
@@ -506,6 +524,7 @@ public class ScannerStateMachine {
         public Token consume(char c) {
             return new Token(Tokens.SEMI, null);
         }
+
         public String toString() {
             return "; state";
         }
@@ -514,6 +533,7 @@ public class ScannerStateMachine {
         public Token consume(char c) {
             return new Token(Tokens.COMMA, null);
         }
+
         @Override
         public String toString() {
             return ", state";
@@ -523,6 +543,7 @@ public class ScannerStateMachine {
         public Token consume(char c) {
             return new Token(Tokens.LSQR, null);
         }
+
         public String toString() {
             return "[ state";
         }
@@ -531,6 +552,7 @@ public class ScannerStateMachine {
         public Token consume(char c) {
             return new Token(Tokens.RSQR, null);
         }
+
         @Override
         public String toString() {
             return "] state";

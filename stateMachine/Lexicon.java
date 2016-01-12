@@ -33,6 +33,10 @@ public class Lexicon {
     }
 
     public static boolean isLetter(char c) {
+        return isUppercase(c) || isLowercase(c);
+    }
+
+    public static boolean isIdCharacter(char c) {
         return isUppercase(c) || isLowercase(c) || c == '_' || c == '$' || Lexicon.isDigit(c);
     }
 
