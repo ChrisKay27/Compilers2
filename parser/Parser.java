@@ -5,7 +5,6 @@ import scanner.Token;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Chris on 1/9/2016.
@@ -13,13 +12,23 @@ import java.util.List;
 public class Parser {
 
     private final Scanner scanner;
+    private ArrayList<Token> tokens;
 
     public Parser(Scanner scanner) {
         this.scanner = scanner;
+        tokens = new ArrayList<>();
     }
 
-    public void startParsing() throws IOException {
-        List<Token> tokens = new ArrayList<>();
+    public ArrayList<Token> getTokenString() {
+        return this.tokens;
+    }
+
+    /**
+     * @return String which represents the abstract syntax tree,
+     * at this stage it retuns the string of tokens recieved from the scanner
+     * @throws IOException
+     */
+    public String startParsing() throws IOException {
 
         Token nextToken = scanner.nextToken();
 
@@ -28,6 +37,6 @@ public class Parser {
             nextToken = scanner.nextToken();
         }
 
-        System.out.println(tokens);
+        return tokens.toString();
     }
 }

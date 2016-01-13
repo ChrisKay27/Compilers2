@@ -1,0 +1,44 @@
+--//if (x>0) y := x+1; /**/ -- example
+--if (x>0) y := x+1; /*/**/*/ -- example
+
+if (x>0) y := x+1; /*/*
+fgsgsergsergse/**/--*/*/ -- example
+
+int x; /* first x */
+bool b;
+
+/* Dont need this anymore
+void p(int x, int y) /* second x */
+{
+    writeint(x); /* writes second x */
+    if (b) {
+        int x; /* third x */
+        x := y + 1;
+        writeint(x); /* writes third x */
+    }
+    else
+        writeint(x); /* writes second x */
+}
+*/
+
+void q(void) {
+    writeint(x); /* writes first x */
+}
+
+int y := 1;
+
+void main(String[] args){
+
+
+    --Input array, WARNING SUBJECT TO OVERFLOW!
+    char[] input := new char[255];
+    int index := 0;
+    loop{
+        int c := readInt();
+        if( c /= -1 ){
+            index := index + 1;
+        }
+    }
+    end;
+}
+

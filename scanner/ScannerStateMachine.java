@@ -19,7 +19,9 @@ public class ScannerStateMachine {
         public Token consume(char c) {
 
             nextState = init;
-            if (c <= 32) {
+            if (c == (char) -1) { //added end of file case in the state machine
+                return new Token(Tokens.ENDFILE, null);
+            } else if (c <= 32) {
                 nextState = init;
             } else if (isDigit(c)) {
                 nextState = num;
@@ -175,7 +177,6 @@ public class ScannerStateMachine {
         }
     };
 
-
     /**
      * Remains in this state and ignores consumed characters until the end of line character is reached then returns
      * a null token that will be ignored by the parser
@@ -239,7 +240,7 @@ public class ScannerStateMachine {
     State divOrComment = new State() {
 
         public Token consume(char c) {
-            if (sb.toString().equals("/") && c == '*' ) {
+            if (sb.toString().equals("/") && c == '*') {
                 sb = new StringBuilder();
                 nextState = blockComment;
                 blockComment.count = 1;
@@ -394,7 +395,8 @@ public class ScannerStateMachine {
      * OTHER -> loopback
      */
     BlockCommentState blockComment = new BlockCommentState();
-    public class BlockCommentState extends State{
+
+    public class BlockCommentState extends State {
         private int count;
 
         public Token consume(char c) {
@@ -416,7 +418,8 @@ public class ScannerStateMachine {
             return "blockComment state";
         }
 
-        /** reached upon receiving '/' from the block comment state
+        /**
+         * reached upon receiving '/' from the block comment state
          * * -> increment the counter and return to block comment state
          * OTHER ignore and return to the block comment state
          */
@@ -497,8 +500,6 @@ public class ScannerStateMachine {
     }
 
 
-
-
     /**
      * Will only return a { token.
      */
@@ -516,9 +517,9 @@ public class ScannerStateMachine {
     /**
      * Will only return a } token.
      */
-    State rightBrace = new State(){
-        public Token consume(char c){
-            return new Token(Tokens.RCRLY,null);
+    State rightBrace = new State() {
+        public Token consume(char c) {
+            return new Token(Tokens.RCRLY, null);
         }
 
         @Override
