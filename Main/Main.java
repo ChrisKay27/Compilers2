@@ -20,21 +20,22 @@ public class Main {
 
     public static void main(String[] args) {
 
-//        if (debug()) { // RUN PREBUILT TEST CASES
-//            //Test.init();
-//            System.out.println("Tests results: " + Test.runAll());
-//        } else { // RUNS WITH COMMAND LINE ARGUMENTS
         String srcFilePath = null;
         String errorLogFilePath = null;
-        for(int i=0;i < args.length; i++){
-            String s = args[i];
 
-            if(ERR.equals(s)){
-                errorLogFilePath = args[++i];
+        try {
+            for (int i = 0; i < args.length; i++) {
+                String s = args[i];
+
+                if (ERR.equals(s)) {
+                    errorLogFilePath = args[++i];
+                } else if (PATH.equals(s)) {
+                    srcFilePath = args[++i];
+                }
             }
-            else if(PATH.equals(s)){
-                srcFilePath = args[++i];
-            }
+        }
+        catch(Exception e){
+            System.err.println("Error parsing parameters, try -c Path/To/File.cs16 -err Path/To/FileLogFile.txt");
         }
 
         if( srcFilePath == null ){

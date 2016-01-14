@@ -17,6 +17,7 @@ public class ErrorReporter {
     }
 
     public void print(String msg) {
+        System.out.println("Writing error: " + msg);
         out.accept(msg);
     }
 }

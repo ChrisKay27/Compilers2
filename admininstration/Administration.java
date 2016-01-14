@@ -11,6 +11,7 @@ import java.nio.charset.Charset;
 public class Administration implements Administrator {
     // development
     private static final boolean debug = false;
+    private BufferedWriter errorWriter;
 
     public static boolean debug() {
         return debug;
@@ -50,6 +51,11 @@ public class Administration implements Administrator {
      */
     public void close() throws IOException {
         buffer.close();
+        if( errorWriter != null ) {
+            System.out.println("Closing error writer");
+            errorWriter.flush();
+            errorWriter.close();
+        }
     }
 
     public void printLineTrace(String line){
@@ -93,10 +99,10 @@ public class Administration implements Administrator {
 
             OutputStream in = new FileOutputStream(input);
             Writer writer = new PrintWriter(in);
-            BufferedWriter bufferedWriter = new BufferedWriter(writer);
+            errorWriter = new BufferedWriter(writer);
             errorReporter.setOutput((str) -> {
                 try {
-                    bufferedWriter.write(str);
+                    errorWriter.write(str);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

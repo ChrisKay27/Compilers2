@@ -49,7 +49,7 @@ public class Scanner {
     private final List<Token> tokensOnCurrentLine = new ArrayList<>();
     private final StringBuilder currentLine = new StringBuilder();
 
-    private ScannerStateMachine ssm = new ScannerStateMachine();
+    private ScannerStateMachine ssm;
 
     private int lineCount = 1;
     private int colCount = 1;
@@ -64,8 +64,8 @@ public class Scanner {
 
         this.lineTraceOutput = lineTraceOutput;
 
-
         this.errorOutput = errorOutput;
+        ssm = new ScannerStateMachine(errorOutput);
     }
 
     private int nextChar;
