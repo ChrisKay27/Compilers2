@@ -57,6 +57,7 @@ public class Scanner {
     private Map<String,Integer> symbolTable = new HashMap<>();
     private String[] reverseSymbolTable = new String[1000000];
     private int symbolCount;
+    private boolean traceEnabled;
 
 
     public Scanner(Reader reader, Consumer<String> lineTraceOutput, Consumer<String> errorOutput) throws IOException {
@@ -83,8 +84,9 @@ public class Scanner {
             initNextChar = false;
         }
 
-        //Add the character to the current line to be output during the line trace
-        currentLine.append((char)nextChar);
+        if( traceEnabled )
+            //Add the character to the current line to be output during the line traceEnabled
+            currentLine.append((char)nextChar);
 
         if( nextChar == -1 )
             return new Token(Tokens.ENDFILE,null);
@@ -100,18 +102,18 @@ public class Scanner {
             //Keeping track of the line number
             if(nextChar == '\n') {
 
-                //Line Trace Output
-                if( !tokensOnCurrentLine.isEmpty() ) {
+                if( traceEnabled ) {
+                    //Line Trace Output
+                    if (!tokensOnCurrentLine.isEmpty()) {
+                        lineTraceOutput.accept(lineCount + ":" + currentLine.toString().trim()); //replaceAll("(\r|\n)
+                        for (Token token : tokensOnCurrentLine)
+                            lineTraceOutput.accept(lineCount + ":" + "\t\t" + token);
+                        tokensOnCurrentLine.clear();
+                    } else
+                        lineTraceOutput.accept(lineCount + ":");
 
-                    lineTraceOutput.accept(lineCount + ":" + currentLine.toString().trim() ); //replaceAll("(\r|\n)
-                    for(Token token : tokensOnCurrentLine )
-                        lineTraceOutput.accept(lineCount + ":" + "\t\t" + token);
-                    tokensOnCurrentLine.clear();
+                    currentLine.replace(0, currentLine.length(), "");
                 }
-                else
-                    lineTraceOutput.accept("");
-
-                currentLine.replace(0, currentLine.length(), "");
 
                 lineCount++;
                 colCount = 0;
@@ -145,8 +147,9 @@ public class Scanner {
                 //keep track of what column we are on
                 colCount++;
 
-                //Add the character to the current line to be output during the line trace
-                currentLine.append((char)nextChar);
+                if( traceEnabled )
+                    //Add the character to the current line to be output during the line traceEnabled
+                    currentLine.append((char)nextChar);
             }
             else if( t.token == Tokens.ID ){ //If we have received an ID token then we now check to see if it is actually a keyword
                 Token keyword = keywords.get(t.attrValue);
@@ -174,9 +177,10 @@ public class Scanner {
 
         if (Administration.debug()) System.out.println("Found Token:" + t);
 
-        currentLine.deleteCharAt(currentLine.length()-1);
-        tokensOnCurrentLine.add(t);
-
+        if( traceEnabled ) {
+            currentLine.deleteCharAt(currentLine.length() - 1);
+            tokensOnCurrentLine.add(t);
+        }
 
         return t;
     }
@@ -199,4 +203,11 @@ public class Scanner {
 
     }
 
+    public void setTraceEnabled(boolean traceEnabled) {
+        this.traceEnabled = traceEnabled;
+    }
+
+    public boolean isTraceEnabled() {
+        return traceEnabled;
+    }
 }

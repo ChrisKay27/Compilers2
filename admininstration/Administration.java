@@ -11,6 +11,7 @@ import java.nio.charset.Charset;
 public class Administration implements Administrator {
     // development
     private static final boolean debug = false;
+    private final boolean trace;
     private BufferedWriter errorWriter;
 
     public static boolean debug() {
@@ -22,7 +23,8 @@ public class Administration implements Administrator {
     protected Scanner scanner;
     protected Parser parser;
 
-    public Administration(@NotNull String path, @Nullable String errorFilePath) throws IOException, UnrecognizedSourceCodeException {
+    public Administration(@NotNull String path, @Nullable String errorFilePath, boolean trace) throws IOException, UnrecognizedSourceCodeException {
+        this.trace = trace;
         this.initReader(path);
 
         if( errorFilePath != null )
@@ -30,6 +32,7 @@ public class Administration implements Administrator {
 
 
         this.scanner = new Scanner(buffer,this::printLineTrace,this::printErrorMessage);
+        scanner.setTraceEnabled(trace);
         this.parser = new Parser(this.scanner,this::printErrorMessage);
     }
 
@@ -52,7 +55,7 @@ public class Administration implements Administrator {
     public void close() throws IOException {
         buffer.close();
         if( errorWriter != null ) {
-            System.out.println("Closing error writer");
+            //System.out.println("Closing error writer");
             errorWriter.flush();
             errorWriter.close();
         }

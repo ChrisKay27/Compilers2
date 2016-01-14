@@ -306,13 +306,17 @@ public class ScannerStateMachine {
     State lessThanOrEq = new State() {
 
         public Token consume(char c) {
-            if (c == '=') {
-                sb.replace(0, sb.length(), "");
+            if( sb.toString().equals("<=") ){
                 return new Token(Tokens.LTEQ, null);
+            }
+
+            if (c == '=') {
+                sb.append('=');
             } else {
                 sb.replace(0, sb.length(), "");
                 return new Token(Tokens.LT, null);
             }
+            return null;
         }
 
         @Override
@@ -325,13 +329,17 @@ public class ScannerStateMachine {
     State greaterThanOrEq = new State() {
 
         public Token consume(char c) {
-            if (c == '=') {
-                sb.replace(0, sb.length(), "");
+            if( sb.toString().equals(">=") ){
                 return new Token(Tokens.GTEQ, null);
+            }
+
+            if (c == '=') {
+                sb.append('=');
             } else {
                 sb.replace(0, sb.length(), "");
                 return new Token(Tokens.GT, null);
             }
+            return null;
         }
 
         @Override
