@@ -4,12 +4,20 @@ import parser.Tokens;
 import stateMachine.Lexicon;
 import stateMachine.State;
 
+import java.util.function.Consumer;
+
 import static stateMachine.Lexicon.*;
 
 /**
  * Created by Chris on 1/9/2016.
  */
 public class ScannerStateMachine {
+
+    private final Consumer<String> errorOutput;
+
+    public ScannerStateMachine(Consumer<String> errorOutput) {
+        this.errorOutput = errorOutput;
+    }
 
     /**
      *
@@ -124,7 +132,7 @@ public class ScannerStateMachine {
                         nextState.getSb().replace(0, nextState.getSb().length(), "");
                         //Adds this character into that states string builder
                         nextState.getSb().append(c);
-                        //System.err.println("Error - Illegitimate character " + c + " found.");
+                        errorOutput.accept("Error - Illegitimate character " + c + " found.");
                 }
             }
             return null;
@@ -411,6 +419,7 @@ public class ScannerStateMachine {
      * OTHER -> loopback
      */
     BlockCommentState blockComment = new BlockCommentState();
+
 
     public class BlockCommentState extends State {
         private int count;
