@@ -119,8 +119,12 @@ public class ScannerStateMachine {
                         nextState.getSb().append(c);
                         break;
                     default: // report the following illegitimate characters: !"#$%\'.?@^_`
-                        nextState = init;
-                        System.err.println("Error - Illegitimate character " + c + " found.");
+                        nextState = error;
+                        //Clears the string builder at the next state
+                        nextState.getSb().replace(0, nextState.getSb().length(), "");
+                        //Adds this character into that states string builder
+                        nextState.getSb().append(c);
+                        //System.err.println("Error - Illegitimate character " + c + " found.");
                 }
             }
             return null;
@@ -129,6 +133,20 @@ public class ScannerStateMachine {
         @Override
         public String toString() {
             return "init state";
+        }
+    };
+
+    /**
+     * Deals with reading numbers and producing NUM tokens
+     */
+    final State error = new State() {
+        public Token consume(char c) {
+            String badChar = sb.toString();
+            return new Token(Tokens.ERROR, badChar);
+        }
+
+        public String toString() {
+            return "error state";
         }
     };
 

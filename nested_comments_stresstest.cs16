@@ -31,6 +31,7 @@ int y := 1;
 
 void main(String[] args){
 
+
     --Input array, WARNING SUBJECT TO OVERFLOW!
     char[] input := new char[255];
     int index := 0;

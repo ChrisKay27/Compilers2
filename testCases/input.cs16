@@ -4,26 +4,25 @@
     Date: Jan 12, 2016
 */
 
-int z := 0;
+int x := 0;
 int y := 0;
 
-
 public static void main(String[] args){
-    sout(z + y);
-    sout(z[] + y);
+    sout(x + y);
+    sout(x[] + y);
 
     if( true ){
 
-        sout( z - y );
-        sout( z / y ); --hello
-        sout( z * y ); --moto
+        sout( x - y );
+        sout( x / y ); --hello
+        sout( x * y ); --moto
 
         --\n new line
 
-        if( z < y && y < z || z >= y || y >= z )
+        if( x < y && y < x || x >= y || y >= x )
             loop{
-                z := z - 1;
-                if( z < 0 )
+                x := x - 1;
+                if( x < 0 )
                     exit;
                 else
                     continue;

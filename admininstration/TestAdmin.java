@@ -14,13 +14,13 @@ import java.util.List;
 public class TestAdmin extends Administration {
 
     public TestAdmin(String path) throws IOException, UnrecognizedSourceCodeException {
-        super(path);
+        super(path,null);
     }
 
     public boolean validateParse(List<Token> expectedTokens) {
         List receivedTokens = getParse();
         boolean passed = true;
-        for (int i = 0; i < expectedTokens.size() && i < receivedTokens.size(); i++) {
+        for (int i = 0; i < expectedTokens.size(); i++) {
             if( !(expectedTokens.get(i).equals(receivedTokens.get(i)))) {
                 System.out.println(expectedTokens.get(i) + " /= " + receivedTokens.get(i));
                 passed &= false;

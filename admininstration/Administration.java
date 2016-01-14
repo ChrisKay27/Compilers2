@@ -1,5 +1,7 @@
 package admininstration;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import parser.Parser;
 import scanner.Scanner;
 
@@ -8,22 +10,29 @@ import java.nio.charset.Charset;
 
 public class Administration implements Administrator {
     // development
-    private static final boolean debug = true;
+    private static final boolean debug = false;
 
     public static boolean debug() {
         return debug;
     }
     // end development
-
+    protected ErrorReporter errorReporter = new ErrorReporter(System.out::println);
     protected Reader buffer;
     protected Scanner scanner;
     protected Parser parser;
 
-    public Administration(String path) throws IOException, UnrecognizedSourceCodeException {
+    public Administration(@NotNull String path, @Nullable String errorFilePath) throws IOException, UnrecognizedSourceCodeException {
         this.initReader(path);
-        this.scanner = new Scanner(buffer);
-        this.parser = new Parser(this.scanner);
+
+        if( errorFilePath != null )
+            initErrorFile(errorFilePath);
+
+
+        this.scanner = new Scanner(buffer,this::printLineTrace,this::printErrorMessage);
+        this.parser = new Parser(this.scanner,this::printErrorMessage);
     }
+
+
 
     /**
      * starts the parser
@@ -43,6 +52,13 @@ public class Administration implements Administrator {
         buffer.close();
     }
 
+    public void printLineTrace(String line){
+        System.out.println(line);
+    }
+
+    public void printErrorMessage(String msg){
+        errorReporter.print(msg);
+    }
     /**
      * initializes the buffered reader to the source code file
      * if the file does not have the .cs16 file extension then this method throws an UnrecognizedSourceCodeException
@@ -62,10 +78,32 @@ public class Administration implements Administrator {
                 this.buffer = new BufferedReader(reader);
             } catch (IOException e) {
                 e.printStackTrace();
-            } finally {
-
             }
         } else throw new UnrecognizedSourceCodeException("The file located at" + path + "is not a .cs16 file");
+    }
+
+    private void initErrorFile(String errorFilePath) {
+        try {
+            File input = new File(errorFilePath);
+            if(!input.exists()) {
+                boolean success = input.createNewFile();
+                if( !success )
+                    throw new RuntimeException("Cannot create output file: " + errorFilePath);
+            }
+
+            OutputStream in = new FileOutputStream(input);
+            Writer writer = new PrintWriter(in);
+            BufferedWriter bufferedWriter = new BufferedWriter(writer);
+            errorReporter.setOutput((str) -> {
+                try {
+                    bufferedWriter.write(str);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public boolean isCs16File(String path) {
