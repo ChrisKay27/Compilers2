@@ -15,7 +15,7 @@ import java.util.*;
  */
 public class Test {
     //
-    private static final String TEST_CASE_PATH = "testCases/";
+    private static final String TEST_CASE_PATH = "src/testCases/";
     //
     protected List<Token> expectedTokens;
     protected String name;
