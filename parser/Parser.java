@@ -5,6 +5,7 @@ import scanner.Token;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Chris on 1/9/2016.
@@ -12,14 +13,14 @@ import java.util.ArrayList;
 public class Parser {
 
     private final Scanner scanner;
-    private ArrayList<Token> tokens;
+    private List<Token> tokens;
 
     public Parser(Scanner scanner) {
         this.scanner = scanner;
         tokens = new ArrayList<>();
     }
 
-    public ArrayList<Token> getTokenString() {
+    public List<Token> getTokenList() {
         return this.tokens;
     }
 
@@ -30,12 +31,12 @@ public class Parser {
      */
     public String startParsing() throws IOException {
 
-        Token nextToken = scanner.nextToken();
+        Token nextToken;
 
-        while(nextToken.token != Tokens.ENDFILE){
-            tokens.add(nextToken);
+        do{
             nextToken = scanner.nextToken();
-        }
+            tokens.add(nextToken);
+        }while(nextToken.token != Tokens.ENDFILE);
 
         return tokens.toString();
     }

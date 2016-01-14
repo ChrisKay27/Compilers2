@@ -16,8 +16,8 @@ public class Main {
     public static void main(String[] args) {
 
         if (debug()) { // RUN PREBUILT TEST CASES
-            Test.init();
-            Test.runAll();
+            //Test.init();
+            System.out.println("Tests results: " + Test.runAll());
         } else { // RUNS WITH COMMAND LINE ARGUMENTS
             if (args[0].equals("-c")) { // command line switch for compile option
                 String path = args[1]; // command line argument for source code file path

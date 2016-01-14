@@ -145,7 +145,7 @@ public class ScannerStateMachine {
                 nextState = init;
                 String value = sb.toString();
                 sb.replace(0, sb.length(), "");
-                return new Token(Tokens.NUM, value);
+                return new Token(Tokens.NUM, Integer.parseInt(value));
             }
 
         }
@@ -317,14 +317,12 @@ public class ScannerStateMachine {
     State orElse = new State() {
 
         public Token consume(char c) {
-
+            if (sb.toString().equals("||")) {
+                sb = new StringBuilder();
+                return new Token(Tokens.ORELSE,null);
+            }
             if (c == '|') {
-
                 sb.append('|');
-                if (sb.toString().equals("||")) {
-                    nextState = init;
-
-                }
 
             } else if (sb.toString().equals("|")) {
                 throw new BadTokenException("Bad Token: " + sb.toString() + c);

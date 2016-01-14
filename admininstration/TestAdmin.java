@@ -3,7 +3,7 @@ package admininstration;
 import scanner.Token;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Compilers
@@ -17,11 +17,19 @@ public class TestAdmin extends Administration {
         super(path);
     }
 
-    public boolean validateParse(ArrayList<Token> expectedTokens) {
-        return this.parser.getTokenString().equals(expectedTokens);
+    public boolean validateParse(List<Token> expectedTokens) {
+        List receivedTokens = getParse();
+        boolean passed = true;
+        for (int i = 0; i < expectedTokens.size(); i++) {
+            if( !(expectedTokens.get(i).equals(receivedTokens.get(i)))) {
+                System.out.println(expectedTokens.get(i) + " /= " + receivedTokens.get(i));
+                passed &= false;
+            }
+        }
+        return passed;
     }
 
-    public ArrayList<Token> getParse() {
-        return parser.getTokenString();
+    public List<Token> getParse() {
+        return parser.getTokenList();
     }
 }

@@ -35,8 +35,8 @@ public class Scanner {
         keywords.put("ref", new Token(Tokens.REF, null));
         keywords.put("return", new Token(Tokens.RETURN, null));
         keywords.put("void", new Token(Tokens.VOID, null));
-        keywords.put("true", new Token(Tokens.BOOL, 1));
-        keywords.put("false", new Token(Tokens.BOOL, 0));
+        keywords.put("true", new Token(Tokens.BLIT, 1));
+        keywords.put("false", new Token(Tokens.BLIT, 0));
     }
 
 
