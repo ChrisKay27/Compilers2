@@ -79,10 +79,10 @@ public class Test {
                 new Token(Tokens.RPAREN,null), new Token(Tokens.LCRLY,null),new Token(Tokens.ID,7),new Token(Tokens.LPAREN,null),new Token(Tokens.ID,0),
                 new Token(Tokens.PLUS,null),new Token(Tokens.ID,1),new Token(Tokens.RPAREN,null),new Token(Tokens.SEMI,null),new Token(Tokens.ID,7),
                 new Token(Tokens.LPAREN,null), new Token(Tokens.ID,0),new Token(Tokens.LSQR,null),new Token(Tokens.RSQR,null),new Token(Tokens.PLUS,null),
-                new Token(Tokens.ID,1)    ,new Token(Tokens.RPAREN,null),    new Token(Tokens.SEMI,null)    ,new Token(Tokens.IF,null),
-                new Token(Tokens.LPAREN,null)    ,new Token(Tokens.BLIT,1),    new Token(Tokens.RPAREN,null)    ,new Token(Tokens.LCRLY,null),
+                new Token(Tokens.ID,1) ,new Token(Tokens.RPAREN,null), new Token(Tokens.SEMI,null) ,new Token(Tokens.IF,null),
+                new Token(Tokens.LPAREN,null) ,new Token(Tokens.BLIT,1), new Token(Tokens.RPAREN,null) ,new Token(Tokens.LCRLY,null),
                 new Token(Tokens.ID,7) ,new Token(Tokens.LPAREN,null), new Token(Tokens.ID,0)  ,new Token(Tokens.MINUS,null),
-                new Token(Tokens.ID,1) ,new Token(Tokens.RPAREN,null), new Token(Tokens.SEMI,null)   ,
+                new Token(Tokens.ID,1) ,new Token(Tokens.RPAREN,null), new Token(Tokens.SEMI,null) ,
                 new Token(Tokens.ID,7) ,new Token(Tokens.LPAREN,null), new Token(Tokens.ID,0) ,new Token(Tokens.DIV,null),
                 new Token(Tokens.ID,1) ,new Token(Tokens.RPAREN,null), new Token(Tokens.SEMI,null)   ,
                 new Token(Tokens.ID,7) ,new Token(Tokens.LPAREN,null), new Token(Tokens.ID,0) ,new Token(Tokens.MULT,null),
@@ -95,10 +95,10 @@ public class Test {
                 new Token(Tokens.ID,0) ,new Token(Tokens.ASSIGN,null), new Token(Tokens.ID,0) ,new Token(Tokens.MINUS,null),
                 new Token(Tokens.NUM,1) ,new Token(Tokens.SEMI,null), new Token(Tokens.IF,null) ,new Token(Tokens.LPAREN,null),
                 new Token(Tokens.ID,0) ,new Token(Tokens.LT,null), new Token(Tokens.NUM,0) ,new Token(Tokens.RPAREN,null),
-                new Token(Tokens.EXIT,null) ,new Token(Tokens.SEMI,null), new Token(Tokens.ELSE,null) ,new Token(Tokens.CONTINUE,null),new Token(Tokens.SEMI,null),
-                new Token(Tokens.RCRLY,null) ,new Token(Tokens.END,null), new Token(Tokens.RCRLY,null) ,new Token(Tokens.ID,8),
-                new Token(Tokens.LPAREN,null),new Token(Tokens.NUM,0),new Token(Tokens.RPAREN,null),new Token(Tokens.SEMI,null),
-                new Token(Tokens.RCRLY,null), new Token(Tokens.ENDFILE,null)
+                new Token(Tokens.EXIT,null) ,new Token(Tokens.SEMI,null), new Token(Tokens.ELSE,null) ,new Token(Tokens.CONTINUE,null),
+                new Token(Tokens.SEMI,null), new Token(Tokens.RCRLY,null) ,new Token(Tokens.END,null), new Token(Tokens.RCRLY,null) ,
+                new Token(Tokens.ID,8), new Token(Tokens.LPAREN,null),new Token(Tokens.NUM,0),new Token(Tokens.RPAREN,null),
+                new Token(Tokens.SEMI,null), new Token(Tokens.RCRLY,null), new Token(Tokens.ENDFILE,null)
                 );
         testCases.put(fileName, new Test(fileName, expectedTokens));
 //        new Test("input.cs16", new ArrayList<>()) {
