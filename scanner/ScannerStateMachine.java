@@ -216,6 +216,7 @@ public class ScannerStateMachine {
                 return Token.COMMENT_TOKEN;
             } else if (Lexicon.isNewLine(c)) {
                 newLineFound = true;
+                nextState = this;
             } else {
                 nextState = this;
             }
@@ -518,12 +519,12 @@ public class ScannerStateMachine {
         };
 
         private void increment() {
-            System.out.println("inc count");
+            //System.out.println("inc count");
             count++;
         }
 
         private void decrement() {
-            System.out.println("dec count");
+            //System.out.println("dec count");
             count--;
         }
 
