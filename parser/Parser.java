@@ -32,15 +32,17 @@ public class Parser {
      * at this stage it returns the string of tokens received from the scanner
      * @throws IOException
      */
-    public String startParsing() throws IOException {
+    public boolean startParsing() throws IOException {
 
         Token nextToken;
-
+        boolean pass = true;
         do{
             nextToken = scanner.nextToken();
+            if( nextToken.token == Tokens.ERROR )
+                pass = false;
             tokens.add(nextToken);
         }while(nextToken.token != Tokens.ENDFILE);
 
-        return tokens.toString();
+        return pass;
     }
 }

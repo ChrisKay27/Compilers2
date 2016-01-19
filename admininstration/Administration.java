@@ -11,28 +11,31 @@ import java.nio.charset.Charset;
 public class Administration implements Administrator {
     // development
     private static final boolean debug = false;
-    private final boolean trace;
-    private BufferedWriter errorWriter;
-
     public static boolean debug() {
         return debug;
     }
     // end development
+
+    private BufferedWriter errorWriter, outputWriter;
+    private final Options options;
     protected ErrorReporter errorReporter = new ErrorReporter(System.out::println);
     protected Reader buffer;
     protected Scanner scanner;
     protected Parser parser;
 
-    public Administration(@NotNull String path, @Nullable String errorFilePath, boolean trace) throws IOException, UnrecognizedSourceCodeException {
-        this.trace = trace;
-        this.initReader(path);
+    public Administration(@NotNull Options options) throws IOException, UnrecognizedSourceCodeException {
 
-        if( errorFilePath != null )
-            initErrorFile(errorFilePath);
+        this.options = options;
 
+        this.initReader(options.inputFilePath);
+
+        if( options.errorFilePath != null )
+            initErrorFile(options.errorFilePath);
+        if( options.outputFilePath != null )
+            initOutputFileWriter(options.outputFilePath);
 
         this.scanner = new Scanner(buffer,this::printLineTrace,this::printErrorMessage);
-        scanner.setTraceEnabled(trace);
+        scanner.setTraceEnabled(options.verbose);
         this.parser = new Parser(this.scanner,this::printErrorMessage);
     }
 
@@ -44,7 +47,12 @@ public class Administration implements Administrator {
      * @throws IOException
      */
     public void compile() throws IOException {
-        this.parser.startParsing();
+        boolean success = parser.startParsing();
+        if( options.verbose )
+            if(success)
+                System.out.println("Pass");
+            else
+                System.out.println("Fail");
     }
 
     /**
@@ -59,10 +67,23 @@ public class Administration implements Administrator {
             errorWriter.flush();
             errorWriter.close();
         }
+        if( outputWriter != null ) {
+            //System.out.println("Closing output writer");
+            outputWriter.flush();
+            outputWriter.close();
+        }
     }
 
     public void printLineTrace(String line){
-        System.out.println(line);
+        if( outputWriter != null ){
+            try {
+                outputWriter.write(line + "\r\n");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        else
+            System.out.println(line);
     }
 
     public void printErrorMessage(String msg){
@@ -97,7 +118,7 @@ public class Administration implements Administrator {
             if(!input.exists()) {
                 boolean success = input.createNewFile();
                 if( !success )
-                    throw new RuntimeException("Cannot create output file: " + errorFilePath);
+                    throw new RuntimeException("Cannot create error output file: " + errorFilePath);
             }
 
             OutputStream in = new FileOutputStream(input);
@@ -110,6 +131,23 @@ public class Administration implements Administrator {
                     e.printStackTrace();
                 }
             });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void initOutputFileWriter(String outputFilePath) {
+        try {
+            File input = new File(outputFilePath);
+            if(!input.exists()) {
+                boolean success = input.createNewFile();
+                if( !success )
+                    throw new RuntimeException("Cannot create output file: " + outputFilePath);
+            }
+
+            OutputStream in = new FileOutputStream(input);
+            Writer writer = new PrintWriter(in);
+            outputWriter = new BufferedWriter(writer);
         } catch (IOException e) {
             e.printStackTrace();
         }

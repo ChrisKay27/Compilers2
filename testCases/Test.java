@@ -1,5 +1,7 @@
 package testCases;
 
+import admininstration.Administration;
+import admininstration.Options;
 import admininstration.TestAdmin;
 import parser.Tokens;
 import scanner.Token;
@@ -20,20 +22,23 @@ public class Test {
     private static final String TEST_CASE_PATH = "src/testCases/";
     //
     protected List<Token> expectedTokens;
+    private final Options options;
     protected String name;
     private TestAdmin admin;
     private boolean traceEnabled;
 
     //
-    public Test(String name, List<Token> expectedTokens, boolean traceEnabled) {
+    public Test(String name, List<Token> expectedTokens, Options options) {
         this.name = name;
         this.expectedTokens = expectedTokens;
+        this.options = options;
         this.traceEnabled = traceEnabled;
     }
 
     public boolean run() {
+        options.inputFilePath = TEST_CASE_PATH + this.name;
         try {
-            admin = new TestAdmin(TEST_CASE_PATH + this.name, traceEnabled);
+            admin = new TestAdmin(options );
             admin.compile();
             admin.close();
             if (admin.validateParse(expectedTokens)) return true;
@@ -49,11 +54,13 @@ public class Test {
         return false;
     }
 
-    public static boolean runAll(boolean traceEnabled) {
+    public static boolean runAll(Options options) {
 
         boolean res = true;
-        for (Test test : getTestCases(traceEnabled).values()) {
+        for (Test test : getTestCases(options).values()) {
             //String name = test.getKey();
+
+            System.out.println("Running test: " + test.name);
             boolean success = test.run();
             if(!success){
                 System.out.println("Expected Tokens:" + test.expectedTokens);
@@ -61,20 +68,19 @@ public class Test {
             }
 
             res &= success;
-
         }
         return res;
     }
 
 
-    public static HashMap<String, Test> getTestCases(boolean traceEnabled) {
+    public static HashMap<String, Test> getTestCases(Options options) {
         HashMap<String, Test> testCases = new HashMap<>();
 
         String fileName = "simple.cs16";
         List<Token> expectedTokens = Arrays.asList(new Token(Tokens.IF,null),new Token(Tokens.LPAREN,null),new Token(Tokens.ID,0),
                 new Token(Tokens.GT,null),new Token(Tokens.NUM,0),new Token(Tokens.RPAREN,null),new Token(Tokens.ID,1),new Token(Tokens.ASSIGN,null),
                 new Token(Tokens.ID,0),new Token(Tokens.PLUS,null),new Token(Tokens.NUM,1),new Token(Tokens.SEMI,null),new Token(Tokens.ENDFILE,null));
-        testCases.put(fileName, new Test(fileName, expectedTokens, traceEnabled));
+        testCases.put(fileName, new Test(fileName, expectedTokens, options));
 
         fileName = "input.cs16";
         expectedTokens = Arrays.asList(new Token(Tokens.INT,null),new Token(Tokens.ID,0),new Token(Tokens.ASSIGN,null),
@@ -105,7 +111,7 @@ public class Test {
                 new Token(Tokens.ID,8), new Token(Tokens.LPAREN,null),new Token(Tokens.NUM,0),new Token(Tokens.RPAREN,null),
                 new Token(Tokens.SEMI,null), new Token(Tokens.RCRLY,null), new Token(Tokens.ENDFILE,null)
                 );
-        testCases.put(fileName, new Test(fileName, expectedTokens, traceEnabled));
+        testCases.put(fileName, new Test(fileName, expectedTokens, options));
 
 
         fileName = "keywords.cs16";
@@ -113,9 +119,17 @@ public class Test {
                 new Token(Tokens.BLIT,1),new Token(Tokens.BLIT,0),new Token(Tokens.END,null),new Token(Tokens.EXIT,null),
                 new Token(Tokens.VOID,null),new Token(Tokens.INT,null),new Token(Tokens.ID,0), new Token(Tokens.ENDFILE,null)
         );
-        testCases.put(fileName, new Test(fileName, expectedTokens, traceEnabled));
+        testCases.put(fileName, new Test(fileName, expectedTokens, options));
 
+        fileName = "commentHell.cs16";
+        expectedTokens = Arrays.asList( new Token(Tokens.ENDFILE,null)
+        );
+        testCases.put(fileName, new Test(fileName, expectedTokens, options));
 
+//        fileName = "hugeFile.cs16";
+//        expectedTokens = Arrays.asList( new Token(Tokens.ENDFILE,null)
+//        );
+//        testCases.put(fileName, new Test(fileName, expectedTokens, options));
 //        new Test("general_tokens.cs16", new ArrayList<>()) {
 //        };
         //new Test("commentHell.cs16", new ArrayList<>()){};
@@ -126,18 +140,42 @@ public class Test {
     public static void main(String[] args) {
         String srcFilePath = null;
         String errorLogFilePath = null;
+        String outputFilePath = null;
         boolean traceEnabled = false;
+        boolean quietEnabled = false;
+        boolean verboseEnabled = false;
+
+        boolean tuplePhase = false, lexicalPhase = false, semanticPhase = false, parsePhase = false, compilePhase = false;
+
         try {
-            int x = 0;
-            errorLogFilePath = getErrorLogFilePath(args);
-            srcFilePath = getInputFilePath(args);
-            traceEnabled = isTraceEnabled(args);
+            errorLogFilePath = getTrailingFilePath(args,ERROR,ERROR2);
+            outputFilePath = getTrailingFilePath(args,OUTPUT,OUTPUT2);
+            quietEnabled = hasOption(args,QUIET);
+            verboseEnabled = hasOption(args,VERBOSE,VERBOSE2);
+
+            lexicalPhase = hasOption(args,LEXICAL_PHASE,LEXICAL_PHASE2);
+            parsePhase = hasOption(args,PARSER_PHASE,PARSER_PHASE2);
+            semanticPhase = hasOption(args,SEMANTIC_PHASE, SEMANTIC_PHASE2);
+            tuplePhase = hasOption(args,TUPLE_PHASE, TUPLE_PHASE2);
+            compilePhase = hasOption(args,COMPILE_PHASE, COMPILE_PHASE2);
         }
         catch(Exception e){
-            System.err.println("Error parsing parameters, try -c Path/To/File.cs16 -err Path/To/FileLogFile.txt");
+            System.err.println("Error parsing parameters, try -t Path/To/File.cs16 -e Path/To/FileLogFile.txt");
+            System.exit(2);
         }
 
-        System.out.println("Tests results: " + Test.runAll(traceEnabled));
+        Options options  = new Options(quietEnabled,verboseEnabled,tuplePhase, parsePhase,compilePhase, lexicalPhase,semanticPhase,outputFilePath,errorLogFilePath,srcFilePath);
+
+        TestAdmin admin;
+        try {
+            admin = new TestAdmin(options);
+            admin.compile();
+            admin.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        System.out.println("Tests results: " + Test.runAll(options));
     }
 
 }
