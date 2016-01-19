@@ -13,8 +13,8 @@ import java.util.List;
  */
 public class TestAdmin extends Administration {
 
-    public TestAdmin(String path) throws IOException, UnrecognizedSourceCodeException {
-        super(path,null);
+    public TestAdmin(String path, boolean trace) throws IOException, UnrecognizedSourceCodeException {
+        super(path,null, trace);
     }
 
     public boolean validateParse(List<Token> expectedTokens) {

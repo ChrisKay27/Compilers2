@@ -6,6 +6,8 @@ import scanner.Token;
 
 import java.util.*;
 
+import static Main.Main.*;
+
 /**
  * Concept test cases class, perhaps how the test cases are structured needs some work
  * but the idea that there is a class that handles the testing will be useful.
@@ -20,16 +22,18 @@ public class Test {
     protected List<Token> expectedTokens;
     protected String name;
     private TestAdmin admin;
+    private boolean traceEnabled;
 
     //
-    public Test(String name, List<Token> expectedTokens) {
+    public Test(String name, List<Token> expectedTokens, boolean traceEnabled) {
         this.name = name;
         this.expectedTokens = expectedTokens;
+        this.traceEnabled = traceEnabled;
     }
 
     public boolean run() {
         try {
-            admin = new TestAdmin(TEST_CASE_PATH + this.name);
+            admin = new TestAdmin(TEST_CASE_PATH + this.name, traceEnabled);
             admin.compile();
             admin.close();
             if (admin.validateParse(expectedTokens)) return true;
@@ -45,9 +49,10 @@ public class Test {
         return false;
     }
 
-    public static boolean runAll() {
+    public static boolean runAll(boolean traceEnabled) {
+
         boolean res = true;
-        for (Test test : getTestCases().values()) {
+        for (Test test : getTestCases(traceEnabled).values()) {
             //String name = test.getKey();
             boolean success = test.run();
             if(!success){
@@ -62,14 +67,14 @@ public class Test {
     }
 
 
-    public static HashMap<String, Test> getTestCases() {
+    public static HashMap<String, Test> getTestCases(boolean traceEnabled) {
         HashMap<String, Test> testCases = new HashMap<>();
 
         String fileName = "simple.cs16";
         List<Token> expectedTokens = Arrays.asList(new Token(Tokens.IF,null),new Token(Tokens.LPAREN,null),new Token(Tokens.ID,0),
                 new Token(Tokens.GT,null),new Token(Tokens.NUM,0),new Token(Tokens.RPAREN,null),new Token(Tokens.ID,1),new Token(Tokens.ASSIGN,null),
                 new Token(Tokens.ID,0),new Token(Tokens.PLUS,null),new Token(Tokens.NUM,1),new Token(Tokens.SEMI,null),new Token(Tokens.ENDFILE,null));
-        testCases.put(fileName, new Test(fileName, expectedTokens));
+        testCases.put(fileName, new Test(fileName, expectedTokens, traceEnabled));
 
         fileName = "input.cs16";
         expectedTokens = Arrays.asList(new Token(Tokens.INT,null),new Token(Tokens.ID,0),new Token(Tokens.ASSIGN,null),
@@ -100,7 +105,7 @@ public class Test {
                 new Token(Tokens.ID,8), new Token(Tokens.LPAREN,null),new Token(Tokens.NUM,0),new Token(Tokens.RPAREN,null),
                 new Token(Tokens.SEMI,null), new Token(Tokens.RCRLY,null), new Token(Tokens.ENDFILE,null)
                 );
-        testCases.put(fileName, new Test(fileName, expectedTokens));
+        testCases.put(fileName, new Test(fileName, expectedTokens, traceEnabled));
 
 
         fileName = "keywords.cs16";
@@ -108,7 +113,7 @@ public class Test {
                 new Token(Tokens.BLIT,1),new Token(Tokens.BLIT,0),new Token(Tokens.END,null),new Token(Tokens.EXIT,null),
                 new Token(Tokens.VOID,null),new Token(Tokens.INT,null),new Token(Tokens.ID,0), new Token(Tokens.ENDFILE,null)
         );
-        testCases.put(fileName, new Test(fileName, expectedTokens));
+        testCases.put(fileName, new Test(fileName, expectedTokens, traceEnabled));
 
 
 //        new Test("general_tokens.cs16", new ArrayList<>()) {
@@ -119,7 +124,20 @@ public class Test {
 
 
     public static void main(String[] args) {
-        System.out.println("Tests results: " + Test.runAll());
+        String srcFilePath = null;
+        String errorLogFilePath = null;
+        boolean traceEnabled = false;
+        try {
+            int x = 0;
+            errorLogFilePath = getErrorLogFilePath(args);
+            srcFilePath = getInputFilePath(args);
+            traceEnabled = isTraceEnabled(args);
+        }
+        catch(Exception e){
+            System.err.println("Error parsing parameters, try -c Path/To/File.cs16 -err Path/To/FileLogFile.txt");
+        }
+
+        System.out.println("Tests results: " + Test.runAll(traceEnabled));
     }
 
 }
