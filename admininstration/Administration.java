@@ -38,8 +38,6 @@ public class Administration implements Administrator {
         this.parser = new Parser(this.scanner,this::printErrorMessage);
     }
 
-
-
     /**
      * starts the parser
      *

@@ -43,7 +43,7 @@ public class Scanner {
     }
 
 
-    private final Reader reader;
+    private Reader reader;
     private final Consumer<String> lineTraceOutput;
     private final Consumer<String> errorOutput;
     private final List<Token> tokensOnCurrentLine = new ArrayList<>();
@@ -69,6 +69,13 @@ public class Scanner {
         ssm = new ScannerStateMachine(errorOutput);
     }
 
+    public Reader redirectReader(Reader input){
+        Reader temp = this.reader;
+        this.reader = input;
+        this.initNextChar = true;
+        return temp;
+    }
+
     private int nextChar;
     private boolean initNextChar = true;
 
@@ -80,6 +87,7 @@ public class Scanner {
      * @throws IOException
      */
     public Token nextToken() throws IOException {
+
         if (initNextChar) {
             nextChar = nextChar();
             initNextChar = false;
