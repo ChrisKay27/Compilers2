@@ -76,6 +76,7 @@ public class Scanner {
         this.initNextChar = true;
         this.lineCount = 1;
         this.colCount = 1;
+        this.EOFFound = false;
         return temp;
     }
 
@@ -152,8 +153,8 @@ public class Scanner {
                         return new Token(Tokens.ERROR, "Unexpected end of file at line:" + lineCount + " col:" + colCount);
                     else { //else the end of file token is returned
                         t = state.consume(' ');
-                        if (t == null)
-                            return new Token(Tokens.ENDFILE, null);
+                        if( t == null )
+                            t = new Token(Tokens.ENDFILE, null);
                     }
                 }
 
@@ -192,6 +193,9 @@ public class Scanner {
         }
 
         if (Administration.debug()) System.out.println("Found Token:" + t);
+
+        //So we don't append this character here because if we are returning a token we haven't consumed this character
+        //so it should not be added to the current line yet
 
         if (traceEnabled) {
             currentLine.deleteCharAt(currentLine.length() - 1);
