@@ -15,6 +15,7 @@ import java.util.function.Consumer;
  */
 public class Parser {
 
+    // standard library
     private static String[] libraries = {
             "int readint(void);",
             "void writeint(int x);",
@@ -37,11 +38,14 @@ public class Parser {
     }
 
     /**
+     * Tokenizes the standard library and the source file.
+     *
      * @return String which represents the abstract syntax tree,
      * at this stage it returns the string of tokens received from the scanner
      * @throws IOException
      */
     public boolean startParsing() throws IOException {
+
         injectLibraries();
 
         boolean pass = parse();
@@ -49,6 +53,13 @@ public class Parser {
         return pass;
     }
 
+    /**
+     * Tokenizes the standard library line by line
+     * Disables the trace temporarily so that the tokenizing process is never apart of output
+     * Restores the trace flag to its previous value before returning.
+     *
+     * @throws java.io.IOException
+     */
     public void injectLibraries() throws java.io.IOException {
 
         boolean temp = scanner.isTraceEnabled();
@@ -63,6 +74,12 @@ public class Parser {
         scanner.setTraceEnabled(temp);
     }
 
+    /**
+     * Drives the scanner to produce new tokens until the scanner reaches the end of it's input.
+     *
+     * @return - true when there were no error tokens produced, otherwise false
+     * @throws java.io.IOException
+     */
     public boolean parse() throws java.io.IOException {
 
         Token nextToken;
@@ -79,6 +96,15 @@ public class Parser {
         return pass;
     }
 
+    /**
+     * Redirects the scanner's Reader to a StringReader for the line given,
+     * then parses the line, once the scanner finishes with that line,
+     * the end of file token is dropped from the accumulated tokens,
+     * then returns the scanner's Reader to the previous Reader object.
+     *
+     * @param line - String to be tokenized
+     * @throws java.io.IOException
+     */
     public void parseLine(String line) throws java.io.IOException {
         Reader fileReader = this.scanner.redirectReader(new StringReader(line));
 
