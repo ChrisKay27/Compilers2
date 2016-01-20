@@ -105,8 +105,8 @@ public class Scanner {
 
                 if (traceEnabled) {
                     //Line Trace Output
-                    //if (!tokensOnCurrentLine.isEmpty()) { //doesn't print the line if it did not produce tokens
-                    lineTraceOutput.accept(lineCount + ":" + currentLine.toString().trim()); //replaceAll("(\r|\n)
+                    //if (!tokensOnCurrentLine.isEmpty()) {
+                    lineTraceOutput.accept(lineCount + ":" + currentLine.toString().trim());
                     for (Token token : tokensOnCurrentLine)
                         lineTraceOutput.accept(lineCount + ":" + "\t\t" + token);
                     tokensOnCurrentLine.clear();
@@ -138,9 +138,12 @@ public class Scanner {
                 if (nextChar == -1) {
                     //However if we are not in the correct states which allow the end of file to be reached, we throw an exception
                     if (!ssm.blockComment.countZero())
-                        throw new UnexpectedEndOfFileException("Unexpected End of file state=" + state + " at line:" + lineCount + " col:" + colCount);
-                    else //else the end of file token is returned
-                        return new Token(Tokens.ENDFILE, null);
+                        return new Token(Tokens.ERROR,"Unexpected end of file at line:" + lineCount + " col:" + colCount);
+                    else { //else the end of file token is returned
+                        t = state.consume(' ');
+                        if( t == null )
+                            return new Token(Tokens.ENDFILE, null);
+                    }
                 }
 
                 if (Administration.debug()) System.out.println("Going to state:" + state);
@@ -152,26 +155,30 @@ public class Scanner {
                 if (traceEnabled)
                     //Add the character to the current line to be output during the line traceEnabled
                     currentLine.append((char) nextChar);
-            } else if (t.token == Tokens.ID) { //If we have received an ID token then we now check to see if it is actually a keyword
-                Token keyword = keywords.get(t.attrValue);
-                if (keyword != null)
-                    t = keyword;
-                else {//else the ID is not for a keyword, then we add it to the symbol table if it is not already there.
-                    String attrValue = (String) t.attrValue;
-                    if (!symbolTable.containsKey(attrValue))
-                        symbolTable.put(attrValue, symbolCount++);
 
-                    //We then replace the ID value with a numeral which represents that string
-                    int id = symbolTable.get(attrValue);
-                    t.attrValue = id;
-                    reverseSymbolTable[id] = attrValue;
-                }
             } else if (t == Token.COMMENT_TOKEN) {//If its a comment token we ignore it, resetting the state back to the init state
                 t = null;
                 state = ssm.init;
-            } else if (t.token == Tokens.ERROR) {//If its a error token we set which line and column it appeared on
-                t.attrValue = t.attrValue + " at line:" + lineCount + " col:" + colCount;
             }
+        }
+
+        if (t.token == Tokens.ID) { //If we have received an ID token then we now check to see if it is actually a keyword
+            Token keyword = keywords.get(t.attrValue);
+            if (keyword != null)
+                t = keyword;
+            else {//else the ID is not for a keyword, then we add it to the symbol table if it is not already there.
+                String attrValue = (String) t.attrValue;
+                if (!symbolTable.containsKey(attrValue))
+                    symbolTable.put(attrValue, symbolCount++);
+
+                //We then replace the ID value with a numeral which represents that string
+                int id = symbolTable.get(attrValue);
+                t.attrValue = id;
+                reverseSymbolTable[id] = attrValue;
+            }
+        }
+        else if (t.token == Tokens.ERROR) {//If its a error token we set which line and column it appeared on
+            t.attrValue = t.attrValue + " at line:" + lineCount + " col:" + colCount;
         }
 
         if (Administration.debug()) System.out.println("Found Token:" + t);
@@ -184,11 +191,17 @@ public class Scanner {
         return t;
     }
 
+
+
+    private boolean EOFFound = false;
     private int nextChar() throws IOException {
         int r;
         if ((r = reader.read()) != -1)
             return r;
-        return -1;
+        if( EOFFound )
+            return -1;
+        EOFFound = true;
+        return '\n';
     }
 
     public String getIdentifier(int id) {

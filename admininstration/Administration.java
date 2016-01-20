@@ -1,7 +1,5 @@
 package admininstration;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import parser.Parser;
 import scanner.Scanner;
 
@@ -23,7 +21,8 @@ public class Administration implements Administrator {
     protected Scanner scanner;
     protected Parser parser;
 
-    public Administration(@NotNull Options options) throws IOException, UnrecognizedSourceCodeException {
+
+    public Administration(Options options) throws IOException, UnrecognizedSourceCodeException {
 
         this.options = options;
 
@@ -89,6 +88,7 @@ public class Administration implements Administrator {
     public void printErrorMessage(String msg){
         errorReporter.print(msg);
     }
+
     /**
      * initializes the buffered reader to the source code file
      * if the file does not have the .cs16 file extension then this method throws an UnrecognizedSourceCodeException

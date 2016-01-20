@@ -1,6 +1,5 @@
 package scanner;
 
-import org.jetbrains.annotations.Nullable;
 import parser.Tokens;
 
 /**
@@ -11,10 +10,9 @@ public class Token {
     public static final Token COMMENT_TOKEN = new Token(null, null);
 
     public Tokens token;
-    @Nullable
     public Object attrValue;
 
-    public Token(Tokens token, @Nullable Object attrValue) {
+    public Token(Tokens token, Object attrValue) {
         this.token = token;
         this.attrValue = attrValue;
     }

@@ -2,9 +2,7 @@ package Main;
 
 import admininstration.Administration;
 import admininstration.Options;
-import org.jetbrains.annotations.NotNull;
 
-import static java.lang.System.getenv;
 import static java.lang.System.out;
 
 /**
@@ -104,7 +102,6 @@ public class Main {
                "\t  java Main -o myapp myapp.cs16     -- Compile myapp.txt to executable the compiler and the completed scanner. \n *");
     }
 
-    @NotNull
     public static String getInputFilePath(String[] args){
         boolean ignoreNext = false;
         for (int i = 0; i < args.length; i++) {
@@ -135,7 +132,7 @@ public class Main {
 //        return null;
 //    }
 
-    public static boolean hasOption(@NotNull String[] args, @NotNull String... flags){
+    public static boolean hasOption( String[] args, String... flags){
         for (String s : args)
             for(String flag : flags)
                 if (flag.equals(s))
