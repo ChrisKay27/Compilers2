@@ -54,7 +54,7 @@ public class Scanner {
     private int lineCount = 1;
     private int colCount = 1;
 
-    private Map<String,Integer> symbolTable = new HashMap<>();
+    private Map<String, Integer> symbolTable = new HashMap<>();
     private String[] reverseSymbolTable = new String[1000000];
     private int symbolCount;
     private boolean traceEnabled;
@@ -74,22 +74,23 @@ public class Scanner {
 
     /**
      * Returns tokens in the file.
+     *
      * @return Returns the next token in this file. If the end file token has been returned previously, it will continue
      * to be returned if this method is called again.
      * @throws IOException
      */
     public Token nextToken() throws IOException {
-        if(initNextChar){
+        if (initNextChar) {
             nextChar = nextChar();
             initNextChar = false;
         }
 
-        if( traceEnabled )
+        if (traceEnabled)
             //Add the character to the current line to be output during the line traceEnabled
-            currentLine.append((char)nextChar);
+            currentLine.append((char) nextChar);
 
-        if( nextChar == -1 )
-            return new Token(Tokens.ENDFILE,null);
+        if (nextChar == -1)
+            return new Token(Tokens.ENDFILE, null);
 
         if (Administration.debug()) System.out.println("Starting in init state");
 
@@ -97,20 +98,20 @@ public class Scanner {
         State state = ssm.init;
         Token t = null;
         //Consume characters until we produce a token.
-        while( t == null ) {
+        while (t == null) {
 
             //Keeping track of the line number
-            if(nextChar == '\n') {
+            if (nextChar == '\n') {
 
-                if( traceEnabled ) {
+                if (traceEnabled) {
                     //Line Trace Output
-                    if (!tokensOnCurrentLine.isEmpty()) {
-                        lineTraceOutput.accept(lineCount + ":" + currentLine.toString().trim()); //replaceAll("(\r|\n)
-                        for (Token token : tokensOnCurrentLine)
-                            lineTraceOutput.accept(lineCount + ":" + "\t\t" + token);
-                        tokensOnCurrentLine.clear();
-                    } else
-                        lineTraceOutput.accept(lineCount + ":");
+                    //if (!tokensOnCurrentLine.isEmpty()) { //doesn't print the line if it did not produce tokens
+                    lineTraceOutput.accept(lineCount + ":" + currentLine.toString().trim()); //replaceAll("(\r|\n)
+                    for (Token token : tokensOnCurrentLine)
+                        lineTraceOutput.accept(lineCount + ":" + "\t\t" + token);
+                    tokensOnCurrentLine.clear();
+                    //} else
+                    //   lineTraceOutput.accept(lineCount + ":");
 
                     currentLine.replace(0, currentLine.length(), "");
                 }
@@ -119,26 +120,27 @@ public class Scanner {
                 colCount = 0;
             }
 
-            if (Administration.debug()) System.out.println("looking at char: " + (char)nextChar + "["+nextChar+"]");
+            if (Administration.debug())
+                System.out.println("looking at char: " + (char) nextChar + "[" + nextChar + "]");
 
             //let the current state consume the next character
-            t = state.consume((char)nextChar);
+            t = state.consume((char) nextChar);
             //get the next state that we must transition to
             state = state.nextState();
 
-            if (Administration.debug()) System.out.println("went to "+ state +" after char: " + (char)nextChar);
+            if (Administration.debug()) System.out.println("went to " + state + " after char: " + (char) nextChar);
 
 
             //If the current state did not produce a token
-            if(t == null) {
+            if (t == null) {
 
                 //-1 indicates we have reached the end of the file
-                if( nextChar == -1 ) {
+                if (nextChar == -1) {
                     //However if we are not in the correct states which allow the end of file to be reached, we throw an exception
-                    if ( !ssm.blockComment.countZero() )
-                        throw new UnexpectedEndOfFileException("Unexpected End of file state="+ state +" at line:" + lineCount + " col:" + colCount);
+                    if (!ssm.blockComment.countZero())
+                        throw new UnexpectedEndOfFileException("Unexpected End of file state=" + state + " at line:" + lineCount + " col:" + colCount);
                     else //else the end of file token is returned
-                        return new Token(Tokens.ENDFILE,null);
+                        return new Token(Tokens.ENDFILE, null);
                 }
 
                 if (Administration.debug()) System.out.println("Going to state:" + state);
@@ -147,37 +149,34 @@ public class Scanner {
                 //keep track of what column we are on
                 colCount++;
 
-                if( traceEnabled )
+                if (traceEnabled)
                     //Add the character to the current line to be output during the line traceEnabled
-                    currentLine.append((char)nextChar);
-            }
-            else if( t.token == Tokens.ID ){ //If we have received an ID token then we now check to see if it is actually a keyword
+                    currentLine.append((char) nextChar);
+            } else if (t.token == Tokens.ID) { //If we have received an ID token then we now check to see if it is actually a keyword
                 Token keyword = keywords.get(t.attrValue);
-                if( keyword != null )
+                if (keyword != null)
                     t = keyword;
-                else{//else the ID is not for a keyword, then we add it to the symbol table if it is not already there.
+                else {//else the ID is not for a keyword, then we add it to the symbol table if it is not already there.
                     String attrValue = (String) t.attrValue;
-                    if( !symbolTable.containsKey(attrValue) )
-                        symbolTable.put(attrValue,symbolCount++);
+                    if (!symbolTable.containsKey(attrValue))
+                        symbolTable.put(attrValue, symbolCount++);
 
                     //We then replace the ID value with a numeral which represents that string
                     int id = symbolTable.get(attrValue);
                     t.attrValue = id;
                     reverseSymbolTable[id] = attrValue;
                 }
-            }
-            else if( t == Token.COMMENT_TOKEN ){//If its a comment token we ignore it, resetting the state back to the init state
+            } else if (t == Token.COMMENT_TOKEN) {//If its a comment token we ignore it, resetting the state back to the init state
                 t = null;
                 state = ssm.init;
-            }
-            else if( t.token == Tokens.ERROR ){//If its a error token we set which line and column it appeared on
+            } else if (t.token == Tokens.ERROR) {//If its a error token we set which line and column it appeared on
                 t.attrValue = t.attrValue + " at line:" + lineCount + " col:" + colCount;
             }
         }
 
         if (Administration.debug()) System.out.println("Found Token:" + t);
 
-        if( traceEnabled ) {
+        if (traceEnabled) {
             currentLine.deleteCharAt(currentLine.length() - 1);
             tokensOnCurrentLine.add(t);
         }
@@ -192,7 +191,7 @@ public class Scanner {
         return -1;
     }
 
-    public String getIdentifier(int id){
+    public String getIdentifier(int id) {
         return reverseSymbolTable[id];
     }
 

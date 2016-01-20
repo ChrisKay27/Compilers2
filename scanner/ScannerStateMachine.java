@@ -41,6 +41,7 @@ public class ScannerStateMachine {
                 nextState.getSb().append(c);
             } else {
                 switch (c) {
+                    case '=': nextState = equal; break;
                     case '{':
                         nextState = leftBrace;
                         break;
@@ -358,9 +359,10 @@ public class ScannerStateMachine {
             }
             if (c == '|') {
                 sb.append('|');
-
             } else if (sb.toString().equals("|")) {
-                throw new BadTokenException("Bad Token: " + sb.toString() + c);
+                String err = sb.toString();
+                sb = new StringBuilder();
+                return new Token(Tokens.ERROR, err);
             }
 
             return null;
@@ -408,7 +410,9 @@ public class ScannerStateMachine {
             if (c == '&') {
                 sb.append('&');
             } else {
-                throw new BadTokenException("Bad Token: " + sb.toString() + c);
+                String err = sb.toString();
+                sb = new StringBuilder();
+                return new Token(Tokens.ERROR, err);
             }
             return null;
         }
@@ -604,17 +608,28 @@ public class ScannerStateMachine {
     };
 
     /**
-     * Will only return a ; token.
+     * Will only return a = token.
      */
-    State semiColon = new State() {
+    State equal = new State() {
         public Token consume(char c) {
-            return new Token(Tokens.SEMI, null);
+            return new Token(Tokens.EQ, null);
         }
 
         public String toString() {
-            return "; state";
+            return "= equal";
         }
-    };
+    }; /**
+     * Will only return a ; token.
+     */
+    State semiColon = new State() {
+                public Token consume(char c) {
+                    return new Token(Tokens.SEMI, null);
+                }
+
+                public String toString() {
+                    return "; state";
+                }
+            };
 
     /**
      * Will only return a , token.
