@@ -69,10 +69,13 @@ public class Scanner {
         ssm = new ScannerStateMachine(errorOutput);
     }
 
-    public Reader redirectReader(Reader input){
+    public Reader redirectReader(Reader input) {
+
         Reader temp = this.reader;
         this.reader = input;
         this.initNextChar = true;
+        this.lineCount = 1;
+        this.colCount = 1;
         return temp;
     }
 
@@ -146,10 +149,10 @@ public class Scanner {
                 if (nextChar == -1) {
                     //However if we are not in the correct states which allow the end of file to be reached, we throw an exception
                     if (!ssm.blockComment.countZero())
-                        return new Token(Tokens.ERROR,"Unexpected end of file at line:" + lineCount + " col:" + colCount);
+                        return new Token(Tokens.ERROR, "Unexpected end of file at line:" + lineCount + " col:" + colCount);
                     else { //else the end of file token is returned
                         t = state.consume(' ');
-                        if( t == null )
+                        if (t == null)
                             return new Token(Tokens.ENDFILE, null);
                     }
                 }
@@ -184,8 +187,7 @@ public class Scanner {
                 t.attrValue = id;
                 reverseSymbolTable[id] = attrValue;
             }
-        }
-        else if (t.token == Tokens.ERROR) {//If its a error token we set which line and column it appeared on
+        } else if (t.token == Tokens.ERROR) {//If its a error token we set which line and column it appeared on
             t.attrValue = t.attrValue + " at line:" + lineCount + " col:" + colCount;
         }
 
@@ -200,13 +202,13 @@ public class Scanner {
     }
 
 
-
     private boolean EOFFound = false;
+
     private int nextChar() throws IOException {
         int r;
         if ((r = reader.read()) != -1)
             return r;
-        if( EOFFound )
+        if (EOFFound)
             return -1;
         EOFFound = true;
         return '\n';

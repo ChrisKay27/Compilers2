@@ -83,7 +83,7 @@ public class Parser {
         Reader fileReader = this.scanner.redirectReader(new StringReader(line));
 
         parse();
-
+        this.tokens.remove(this.tokens.size() -1);//remove endfile token
         this.scanner.redirectReader(fileReader);
     }
 }
