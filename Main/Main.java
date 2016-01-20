@@ -19,7 +19,7 @@ public class Main {
     public static final String SEMANTIC_PHASE = "-s",SEMANTIC_PHASE2 = "-sem";
     public static final String TUPLE_PHASE = "-t",TUPLE_PHASE2 = "-tup";
     public static final String COMPILE_PHASE = "-c",COMPILE_PHASE2 = "-compile";
-    public static final String QUIET = "-q",QUIET2 = "-quiet";
+    public static final String QUIET = "-q", QUIET2 = "-quiet";
     public static final String VERBOSE = "-v",VERBOSE2 = "-verbose";
     public static final String OUTPUT = "-o",OUTPUT2 = "-out";
     public static final String ERROR = "-e",ERROR2 = "-err";
@@ -43,7 +43,7 @@ public class Main {
             errorLogFilePath = getTrailingFilePath(args,ERROR,ERROR2);
             srcFilePath = getInputFilePath(args);
             outputFilePath = getTrailingFilePath(args,OUTPUT,OUTPUT2);
-            quietEnabled = hasOption(args,QUIET);
+            quietEnabled = hasOption(args,QUIET, QUIET2);
             verboseEnabled = hasOption(args,VERBOSE,VERBOSE2);
 
             lexicalPhase = hasOption(args,LEXICAL_PHASE,LEXICAL_PHASE2);
@@ -81,7 +81,9 @@ public class Main {
         return null;
     }
 
-
+    /**
+     * Outputs all help text to STDOUT
+     */
     public static void printHelpMenu() {
        out.println("****** Help Menu ********");
        out.println("* Available Options *");
@@ -102,6 +104,13 @@ public class Main {
                "\t  java Main -o myapp myapp.cs16     -- Compile myapp.txt to executable the compiler and the completed scanner. \n *");
     }
 
+    /**
+     * Takes the command line arguments and scans them for the path argument then returns it.
+     *
+     * @param args - String[] from the command line arguments to main
+     * @return - returns the path to the scource file to be compiled
+     * @throws - RunTimeException when the path couldn't be found in args
+     */
     public static String getInputFilePath(String[] args){
         boolean ignoreNext = false;
         for (int i = 0; i < args.length; i++) {
