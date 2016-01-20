@@ -70,6 +70,16 @@ public class Main {
         //}
     }
 
+    /**
+     * Gets the file path for either the error log file or compiler output file and returns it.
+     * ERROR | ERROR2 => error log file
+     * OUTPUT | OUTPUT2 => compiler output file
+     *
+     * @param args - String[] args from the command line arguments
+     * @param flag1 - Either ERROR, or OUTPUT
+     * @param flag2 - Either ERROR2, or OUTPUT2
+     * @return String - the file path to either the error log file or compiler output file
+     */
     public static String getTrailingFilePath(String[] args, String flag1, String flag2) {
 
         for (int i = 0; i < args.length; i++) {
@@ -78,6 +88,7 @@ public class Main {
             if (flag1.equals(s) || flag2.equals(s))
                 return args[++i];
         }
+
         return null;
     }
 
@@ -105,10 +116,10 @@ public class Main {
     }
 
     /**
-     * Takes the command line arguments and scans them for the path argument then returns it.
+     * Takes the command line arguments and scans them for the path argument for the source file, then returns it.
      *
      * @param args - String[] from the command line arguments to main
-     * @return - returns the path to the scource file to be compiled
+     * @return - returns the path to the source file to be compiled
      * @throws - RunTimeException when the path couldn't be found in args
      */
     public static String getInputFilePath(String[] args){
@@ -141,6 +152,15 @@ public class Main {
 //        return null;
 //    }
 
+
+    /**
+     * Checks the command line arguments for flags that match the list of arguments
+     * Returns true when any flag is matched in the command line arguments
+     *
+     * @param args - String[] command line arguments
+     * @param flags - String... any number of flags to match
+     * @return true if there is a match in args from flags, false if nothing matched
+     */
     public static boolean hasOption( String[] args, String... flags){
         for (String s : args)
             for(String flag : flags)
