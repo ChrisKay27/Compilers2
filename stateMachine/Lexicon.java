@@ -1,6 +1,8 @@
 package stateMachine;
 
 /**
+ * Class that assists with dealing with character data
+ *
  * Created by Carston on 1/9/2016.
  */
 public class Lexicon {

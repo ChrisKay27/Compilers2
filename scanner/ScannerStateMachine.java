@@ -444,7 +444,12 @@ public class ScannerStateMachine {
         }
     };
 
-
+     /**
+     * Reached after receiving a '&' from the init state
+     * If a '&' is received, return to this state
+     * if the string so far is '&&' return a ANDTHEN token
+     * Otherwise return an ERROR token
+     */
     State andThen = new State() {
         public Token consume(char c) {
             //If this state has the string && built up then we clear its string and return the ANDTHEN token
@@ -585,7 +590,8 @@ public class ScannerStateMachine {
 
 
     /**
-     * Will only return a { token.
+     * Reached from init after recieving '{'
+     * Returns a LCRLY token.
      */
     State leftBrace = new State() {
         public Token consume(char c) {
@@ -599,7 +605,8 @@ public class ScannerStateMachine {
     };
 
     /**
-     * Will only return a } token.
+     * Reached from init after recieving '}'
+     * Returns a RCRLY token.
      */
     State rightBrace = new State() {
         public Token consume(char c) {
@@ -613,7 +620,8 @@ public class ScannerStateMachine {
     };
 
     /**
-     * Will only return a ( token.
+     * Reached from init after receiving '('
+     * Returns a LPAREN token.
      */
     State leftParen = new State() {
         public Token consume(char c) {
@@ -626,7 +634,8 @@ public class ScannerStateMachine {
     };
 
     /**
-     * Will only return a ) token.
+     * Reached from init after receiving ')'
+     * Returns a RPAREN token.
      */
     State rightParen = new State() {
         public Token consume(char c) {
@@ -640,59 +649,8 @@ public class ScannerStateMachine {
     };
 
     /**
-     * Will only return a + token.
-     */
-    State plus = new State() {
-        public Token consume(char c) {
-            return new Token(Tokens.PLUS, null);
-        }
-
-        @Override
-        public String toString() {
-            return "+ state";
-        }
-    };
-
-    /**
-     * Will only return a = token.
-     */
-    State equal = new State() {
-        public Token consume(char c) {
-            return new Token(Tokens.EQ, null);
-        }
-
-        public String toString() {
-            return "= equal";
-        }
-    }; /**
-     * Will only return a ; token.
-     */
-    State semiColon = new State() {
-                public Token consume(char c) {
-                    return new Token(Tokens.SEMI, null);
-                }
-
-                public String toString() {
-                    return "; state";
-                }
-            };
-
-    /**
-     * Will only return a , token.
-     */
-    State comma = new State() {
-        public Token consume(char c) {
-            return new Token(Tokens.COMMA, null);
-        }
-
-        @Override
-        public String toString() {
-            return ", state";
-        }
-    };
-
-    /**
-     * Will only return a [ token.
+     * Reached from init after receiving '['
+     * Returns a LSQR token.
      */
     State leftSquare = new State() {
         public Token consume(char c) {
@@ -705,7 +663,8 @@ public class ScannerStateMachine {
     };
 
     /**
-     * Will only return a ] token.
+     * Reached from init after receiving ']'
+     * Returns a RSQR token.
      */
     State rightSquare = new State() {
         public Token consume(char c) {
@@ -717,5 +676,61 @@ public class ScannerStateMachine {
             return "] state";
         }
     };
+    /**
+     * Reached from init after receiving '+'
+     * Returns a PLUS token.
+     */
+    State plus = new State() {
+        public Token consume(char c) {
+            return new Token(Tokens.PLUS, null);
+        }
+
+        @Override
+        public String toString() {
+            return "+ state";
+        }
+    };
+    /**
+     * Reached from init after receiving '='
+     * Returns a EQ token.
+     */
+    State equal = new State() {
+        public Token consume(char c) {
+            return new Token(Tokens.EQ, null);
+        }
+
+        public String toString() {
+            return "= equal";
+        }
+    };
+    /**
+     * Reached from init after receiving ';'
+     * Returns a SEMI token.
+     */
+    State semiColon = new State() {
+                public Token consume(char c) {
+                    return new Token(Tokens.SEMI, null);
+                }
+
+                public String toString() {
+                    return "; state";
+                }
+            };
+
+    /**
+     * Reached from init after receiving ','
+     * Returns a COMMA token.
+     */
+    State comma = new State() {
+        public Token consume(char c) {
+            return new Token(Tokens.COMMA, null);
+        }
+
+        @Override
+        public String toString() {
+            return ", state";
+        }
+    };
+
 
 }
