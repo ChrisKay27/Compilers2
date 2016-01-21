@@ -2,6 +2,7 @@ package Main;
 
 import admininstration.Administration;
 import admininstration.Options;
+import testCases.Test;
 
 import static java.lang.System.out;
 
@@ -23,8 +24,14 @@ public class Main {
     public static final String VERBOSE = "-v",VERBOSE2 = "-verbose";
     public static final String OUTPUT = "-o",OUTPUT2 = "-out";
     public static final String ERROR = "-e",ERROR2 = "-err";
+    public static final String UNITTEST = "-unittest";
 
     public static void main(String[] args) {
+        if(hasOption(args,UNITTEST)){
+            Test.main(args);
+            return;
+        }
+
 
         String srcFilePath = null;
         String errorLogFilePath = null;
@@ -72,8 +79,8 @@ public class Main {
 
     /**
      * Gets the file path for either the error log file or compiler output file and returns it.
-     * ERROR | ERROR2 => error log file
-     * OUTPUT | OUTPUT2 => compiler output file
+     * ERROR | ERROR2 => error log file path
+     * OUTPUT | OUTPUT2 => compiler output file path
      *
      * @param args - String[] args from the command line arguments
      * @param flag1 - Either ERROR, or OUTPUT
@@ -108,6 +115,7 @@ public class Main {
                "-v | -verbose  \t-- Display all trace messages\n" +
                "-o | -out      \t-- Output file (defaults to -out=STDOUT)\n" +
                "-e | -err      \t-- Error file (defaults to -err=STDOUT)\n" +
+               "-unittest      \t-- Run our unit tests\n" +
                "\t  \n" +
                "\n" +
                "Examples:\n" +
@@ -142,15 +150,7 @@ public class Main {
         throw new RuntimeException("Did not find input file path!");
     }
 
-//    public static String getErrorLogFilePath(String[] args){
-//        for (int i = 0; i < args.length; i++) {
-//            String s = args[i];
-//
-//            if (ERROR.equals(s) || ERROR2.equals(s))
-//                return args[++i];
-//        }
-//        return null;
-//    }
+
 
 
     /**

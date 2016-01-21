@@ -19,7 +19,7 @@ public class Token {
 
     @Override
     public String toString() {// "new Token(Tokens."+this.token.toString()+","+this.attrValue +")"
-        return token == null ? "Comment Token" : '(' + token.toString() + "," + attrValue + ')';
+        return "new Token(Tokens."+this.token.toString()+","+this.attrValue +")";//token == null ? "Comment Token" : '(' + token.toString() + "," + attrValue + ')';
     }
 
     @Override

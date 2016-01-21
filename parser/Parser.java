@@ -92,7 +92,7 @@ public class Parser {
             tokens.add(nextToken);
         } while (nextToken.token != Tokens.ENDFILE);
 
-        System.out.println("Tokens: " + tokens);
+        //System.out.println("Tokens: " + tokens);
         return pass;
     }
 
