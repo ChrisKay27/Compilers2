@@ -437,9 +437,8 @@ public class ScannerStateMachine {
             if (c == '=') {
                 sb.append('=');
             } else {
-                String err = sb.toString();
                 sb = new StringBuilder();
-                return new Token(Tokens.ERROR, err);
+                return new Token(Tokens.COLON, null);
             }
             return null;
         }

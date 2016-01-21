@@ -32,7 +32,7 @@ public class Test {
                 new Token(Tokens.VOID, null), new Token(Tokens.ID, 1), new Token(Tokens.LPAREN, null), new Token(Tokens.INT, null), new Token(Tokens.ID, 2), new Token(Tokens.RPAREN, null), new Token(Tokens.SEMI, null),
                 new Token(Tokens.BOOL, null), new Token(Tokens.ID, 3), new Token(Tokens.LPAREN, null), new Token(Tokens.VOID, null), new Token(Tokens.RPAREN, null), new Token(Tokens.SEMI, null),
                 new Token(Tokens.VOID, null), new Token(Tokens.ID, 4), new Token(Tokens.LPAREN, null), new Token(Tokens.BOOL, null), new Token(Tokens.ID, 2), new Token(Tokens.RPAREN, null), new Token(Tokens.SEMI, null)
-        );
+                );
     }
 
     private final Options options;
@@ -45,7 +45,7 @@ public class Test {
         this.name = name;
         this.expectedTokens = expectedTokens;
         this.options = options;
-        this.traceEnabled = traceEnabled;
+        this.traceEnabled = options.verbose;
     }
 
     public boolean run() {
@@ -71,13 +71,19 @@ public class Test {
 
         boolean res = true;
         for (Test test : getTestCases(options).values()) {
-            //String name = test.getKey();
 
-            System.out.println("Running test: " + test.name);
+            if( options.verbose )
+                System.out.println("Running test: " + test.name);
+
             boolean success = test.run();
-            if (!success) {
-                System.out.println("Expected Tokens:" + test.expectedTokens);
-                System.out.println("Received Tokens:" + test.admin.getParse());
+
+            if( options.verbose ) {
+                if (!success) {
+                    System.out.println("Expected Tokens:" + test.expectedTokens);
+                    System.out.println("Received Tokens:" + test.admin.getParse());
+                }
+                //else
+                //    System.out.println("Passed");
             }
 
             res &= success;
@@ -91,9 +97,19 @@ public class Test {
 
         String fileName = "simple.cs16";
         List<Token> expectedTokens = new ArrayList(Test.libraryTokens);
-        expectedTokens.addAll(Arrays.asList(new Token(Tokens.IF, null), new Token(Tokens.LPAREN, null), new Token(Tokens.ID, 0),
-                new Token(Tokens.GT, null), new Token(Tokens.NUM, 0), new Token(Tokens.RPAREN, null), new Token(Tokens.ID, 1), new Token(Tokens.ASSIGN, null),
-                new Token(Tokens.ID, 0), new Token(Tokens.PLUS, null), new Token(Tokens.NUM, 1), new Token(Tokens.SEMI, null), new Token(Tokens.ENDFILE, null)));
+        expectedTokens.addAll(Arrays.asList(new Token(Tokens.IF, null),
+                new Token(Tokens.LPAREN, null),
+                new Token(Tokens.ID, 2),
+                new Token(Tokens.GT, null),
+                new Token(Tokens.NUM, 0),
+                new Token(Tokens.RPAREN, null),
+                new Token(Tokens.ID, 5),
+                new Token(Tokens.ASSIGN, null),
+                new Token(Tokens.ID, 2),
+                new Token(Tokens.PLUS, null),
+                new Token(Tokens.NUM, 1),
+                new Token(Tokens.SEMI, null),
+                new Token(Tokens.ENDFILE, null)));
         testCases.put(fileName, new Test(fileName, expectedTokens, options));
 
         fileName = "input.cs16";
@@ -102,18 +118,18 @@ public class Test {
                 new Token(Tokens.INT, null), new Token(Tokens.ID, 2), new Token(Tokens.ASSIGN, null), new Token(Tokens.NUM, 0),
                 new Token(Tokens.SEMI, null), new Token(Tokens.INT, null), new Token(Tokens.ID, 5), new Token(Tokens.ASSIGN, null),
                 new Token(Tokens.NUM, 0), new Token(Tokens.SEMI, null), new Token(Tokens.ID, 6), new Token(Tokens.ID, 7),
-                new Token(Tokens.VOID, null), new Token(Tokens.ID, 8), new Token(Tokens.LPAREN, null), new Token(Tokens.ID, 9),
-                new Token(Tokens.LSQR, null), new Token(Tokens.RSQR, null), new Token(Tokens.ID, 10), new Token(Tokens.RPAREN, null),
-                new Token(Tokens.LCRLY, null), new Token(Tokens.ID, 11), new Token(Tokens.LPAREN, null), new Token(Tokens.ID, 2),
+                new Token(Tokens.VOID, null), new Token(Tokens.ID, 8), new Token(Tokens.LPAREN, null), new Token(Tokens.INT, null),
+                new Token(Tokens.LSQR, null), new Token(Tokens.RSQR, null), new Token(Tokens.ID, 9), new Token(Tokens.RPAREN, null),
+                new Token(Tokens.LCRLY, null), new Token(Tokens.ID, 10), new Token(Tokens.LPAREN, null), new Token(Tokens.ID, 2),
                 new Token(Tokens.PLUS, null), new Token(Tokens.ID, 5), new Token(Tokens.RPAREN, null), new Token(Tokens.SEMI, null),
-                new Token(Tokens.ID, 11), new Token(Tokens.LPAREN, null), new Token(Tokens.ID, 2), new Token(Tokens.LSQR, null),
+                new Token(Tokens.ID, 10), new Token(Tokens.LPAREN, null), new Token(Tokens.ID, 2), new Token(Tokens.LSQR, null),
                 new Token(Tokens.RSQR, null), new Token(Tokens.PLUS, null), new Token(Tokens.ID, 5), new Token(Tokens.RPAREN, null),
                 new Token(Tokens.SEMI, null), new Token(Tokens.IF, null), new Token(Tokens.LPAREN, null), new Token(Tokens.BLIT, 1),
-                new Token(Tokens.RPAREN, null), new Token(Tokens.LCRLY, null), new Token(Tokens.ID, 11), new Token(Tokens.LPAREN, null),
+                new Token(Tokens.RPAREN, null), new Token(Tokens.LCRLY, null), new Token(Tokens.ID, 10), new Token(Tokens.LPAREN, null),
                 new Token(Tokens.ID, 2), new Token(Tokens.MINUS, null), new Token(Tokens.ID, 5), new Token(Tokens.RPAREN, null),
-                new Token(Tokens.SEMI, null), new Token(Tokens.ID, 11), new Token(Tokens.LPAREN, null), new Token(Tokens.ID, 2),
+                new Token(Tokens.SEMI, null), new Token(Tokens.ID, 10), new Token(Tokens.LPAREN, null), new Token(Tokens.ID, 2),
                 new Token(Tokens.DIV, null), new Token(Tokens.ID, 5), new Token(Tokens.RPAREN, null), new Token(Tokens.SEMI, null),
-                new Token(Tokens.ID, 11), new Token(Tokens.LPAREN, null), new Token(Tokens.ID, 2), new Token(Tokens.MULT, null),
+                new Token(Tokens.ID, 10), new Token(Tokens.LPAREN, null), new Token(Tokens.ID, 2), new Token(Tokens.MULT, null),
                 new Token(Tokens.ID, 5), new Token(Tokens.RPAREN, null), new Token(Tokens.SEMI, null), new Token(Tokens.IF, null),
                 new Token(Tokens.LPAREN, null), new Token(Tokens.ID, 2), new Token(Tokens.LT, null), new Token(Tokens.ID, 5),
                 new Token(Tokens.ANDTHEN, null), new Token(Tokens.ID, 5), new Token(Tokens.LT, null), new Token(Tokens.ID, 2),
@@ -124,7 +140,7 @@ public class Test {
                 new Token(Tokens.SEMI, null), new Token(Tokens.IF, null), new Token(Tokens.LPAREN, null), new Token(Tokens.ID, 2),
                 new Token(Tokens.LT, null), new Token(Tokens.NUM, 0), new Token(Tokens.RPAREN, null), new Token(Tokens.EXIT, null),
                 new Token(Tokens.SEMI, null), new Token(Tokens.ELSE, null), new Token(Tokens.CONTINUE, null), new Token(Tokens.SEMI, null),
-                new Token(Tokens.RCRLY, null), new Token(Tokens.END, null), new Token(Tokens.RCRLY, null), new Token(Tokens.ID, 12),
+                new Token(Tokens.RCRLY, null), new Token(Tokens.END, null), new Token(Tokens.RCRLY, null), new Token(Tokens.ID, 11),
                 new Token(Tokens.LPAREN, null), new Token(Tokens.NUM, 0), new Token(Tokens.RPAREN, null), new Token(Tokens.SEMI, null),
                 new Token(Tokens.RCRLY, null), new Token(Tokens.ENDFILE, null)
         ));
@@ -133,58 +149,118 @@ public class Test {
 
         fileName = "keywords.cs16";
         expectedTokens = new ArrayList(Test.libraryTokens);
-        expectedTokens.addAll(Arrays.asList(new Token(Tokens.IF, null),
-                new Token(Tokens.ELSE, null),
-                new Token(Tokens.LOOP, null),
-                new Token(Tokens.BLIT, 1),
-                new Token(Tokens.BLIT, 0),
-                new Token(Tokens.END, null),
-                new Token(Tokens.EXIT, null),
-                new Token(Tokens.VOID, null),
-                new Token(Tokens.INT, null),
-                new Token(Tokens.ID, 5),
-                new Token(Tokens.AND, null),
-                new Token(Tokens.OR, null),
-                new Token(Tokens.NOT, null),
-                new Token(Tokens.CONTINUE, null),
-                new Token(Tokens.ID, 6),
-                new Token(Tokens.EXIT, null),
-                new Token(Tokens.END, null),
-                new Token(Tokens.ID, 7),
-                new Token(Tokens.LOOP, null),
-                new Token(Tokens.CASE, null),
-                new Token(Tokens.DEFAULT, null),
-                new Token(Tokens.BOOL, null),
-                new Token(Tokens.ASSIGN, null),
-                new Token(Tokens.LPAREN, null),
-                new Token(Tokens.RPAREN, null),
-                new Token(Tokens.LSQR, null),
-                new Token(Tokens.RSQR, null),
-                new Token(Tokens.LCRLY, null),
-                new Token(Tokens.RCRLY, null),
-                new Token(Tokens.MINUS, null),
-                new Token(Tokens.PLUS, null),
-                new Token(Tokens.DIV, null),
-                new Token(Tokens.MULT, null),
-                new Token(Tokens.MOD, null),
-                new Token(Tokens.SEMI, null),
-                new Token(Tokens.ANDTHEN, null),
-                new Token(Tokens.ORELSE, null),
-                new Token(Tokens.LT, null),
-                new Token(Tokens.LTEQ, null),
-                new Token(Tokens.GT, null),
-                new Token(Tokens.GTEQ, null),
-                new Token(Tokens.EQ, null),
-                new Token(Tokens.ASSIGN, null),
-                new Token(Tokens.EQ, null),
-                new Token(Tokens.ERROR, "& at line:46 col:2"),
-                new Token(Tokens.ERROR, "& at line:46 col:7"),
-                new Token(Tokens.NEQ, null),
-                new Token(Tokens.COLON, null),
-                new Token(Tokens.COMMA, null),
-                new Token(Tokens.VOID, null),
-                new Token(Tokens.RETURN, null),
-                new Token(Tokens.REF, null),
+        expectedTokens.addAll( Arrays.asList(new Token(Tokens.IF,null),
+                new Token(Tokens.ELSE,null),
+                new Token(Tokens.LOOP,null),
+                new Token(Tokens.BLIT,1),
+                new Token(Tokens.BLIT,0),
+                new Token(Tokens.END,null),
+                new Token(Tokens.EXIT,null),
+                new Token(Tokens.VOID,null),
+                new Token(Tokens.INT,null),
+                new Token(Tokens.ID,5),
+                new Token(Tokens.AND,null),
+                new Token(Tokens.OR,null),
+                new Token(Tokens.NOT,null),
+                new Token(Tokens.CONTINUE,null),
+                new Token(Tokens.ID,6),
+                new Token(Tokens.EXIT,null),
+                new Token(Tokens.END,null),
+                new Token(Tokens.ID,7),
+                new Token(Tokens.LOOP,null),
+                new Token(Tokens.CASE,null),
+                new Token(Tokens.DEFAULT,null),
+                new Token(Tokens.BOOL,null),
+                new Token(Tokens.ASSIGN,null),
+                new Token(Tokens.LPAREN,null),
+                new Token(Tokens.RPAREN,null),
+                new Token(Tokens.LSQR,null),
+                new Token(Tokens.RSQR,null),
+                new Token(Tokens.LCRLY,null),
+                new Token(Tokens.RCRLY,null),
+                new Token(Tokens.MINUS,null),
+                new Token(Tokens.PLUS,null),
+                new Token(Tokens.DIV,null),
+                new Token(Tokens.MULT,null),
+                new Token(Tokens.MOD,null),
+                new Token(Tokens.SEMI,null),
+                new Token(Tokens.ANDTHEN,null),
+                new Token(Tokens.ORELSE,null),
+                new Token(Tokens.LT,null),
+                new Token(Tokens.LTEQ,null),
+                new Token(Tokens.GT,null),
+                new Token(Tokens.GTEQ,null),
+                new Token(Tokens.EQ,null),
+                new Token(Tokens.ASSIGN,null),
+                new Token(Tokens.EQ,null),
+                new Token(Tokens.ERROR,"& at line:46 col:2"),
+                new Token(Tokens.ERROR,"& at line:46 col:7"),
+                new Token(Tokens.NEQ,null),
+                new Token(Tokens.COLON,null),
+                new Token(Tokens.COMMA,null),
+                new Token(Tokens.VOID,null),
+                new Token(Tokens.RETURN,null),
+                new Token(Tokens.REF,null),
+                new Token(Tokens.ENDFILE, null)
+        ));
+        testCases.put(fileName, new Test(fileName, expectedTokens, options));
+
+
+        fileName = "keywordsContinuous.cs16";
+        expectedTokens = new ArrayList(Test.libraryTokens);
+        expectedTokens.addAll( Arrays.asList(new Token(Tokens.IF,null),
+                new Token(Tokens.ELSE,null),
+                new Token(Tokens.LOOP,null),
+                new Token(Tokens.BLIT,1),
+                new Token(Tokens.BLIT,0),
+                new Token(Tokens.END,null),
+                new Token(Tokens.EXIT,null),
+                new Token(Tokens.VOID,null),
+                new Token(Tokens.INT,null),
+                new Token(Tokens.ID,5),
+                new Token(Tokens.AND,null),
+                new Token(Tokens.OR,null),
+                new Token(Tokens.NOT,null),
+                new Token(Tokens.CONTINUE,null),
+                new Token(Tokens.ID,6),
+                new Token(Tokens.EXIT,null),
+                new Token(Tokens.END,null),
+                new Token(Tokens.ID,7),
+                new Token(Tokens.LOOP,null),
+                new Token(Tokens.CASE,null),
+                new Token(Tokens.DEFAULT,null),
+                new Token(Tokens.BOOL,null),
+                new Token(Tokens.ASSIGN,null),
+                new Token(Tokens.LPAREN,null),
+                new Token(Tokens.RPAREN,null),
+                new Token(Tokens.LSQR,null),
+                new Token(Tokens.RSQR,null),
+                new Token(Tokens.LCRLY,null),
+                new Token(Tokens.RCRLY,null),
+                new Token(Tokens.MINUS,null),
+                new Token(Tokens.PLUS,null),
+                new Token(Tokens.DIV,null),
+                new Token(Tokens.MULT,null),
+                new Token(Tokens.MOD,null),
+                new Token(Tokens.SEMI,null),
+                new Token(Tokens.ANDTHEN,null),
+                new Token(Tokens.ORELSE,null),
+                new Token(Tokens.LT,null),
+                new Token(Tokens.LTEQ,null),
+                new Token(Tokens.GT,null),
+                new Token(Tokens.GTEQ,null),
+                new Token(Tokens.EQ,null),
+                new Token(Tokens.ASSIGN,null),
+                new Token(Tokens.EQ,null),
+                new Token(Tokens.ERROR,"& at line:23 col:37"),
+                new Token(Tokens.ERROR,"& at line:23 col:42"),
+                new Token(Tokens.NEQ,null),
+                new Token(Tokens.COLON,null),
+                new Token(Tokens.COMMA,null),
+                new Token(Tokens.VOID,null),
+                new Token(Tokens.RETURN,null),
+                new Token(Tokens.REF,null),
+                new Token(Tokens.ID,8),
                 new Token(Tokens.ENDFILE, null)
         ));
         testCases.put(fileName, new Test(fileName, expectedTokens, options));
@@ -230,8 +306,8 @@ public class Test {
         );
 
         fileName = "commentHell.cs16";
-        expectedTokens = Arrays.asList(new Token(Tokens.ENDFILE, null)
-        );
+        expectedTokens = new ArrayList(Test.libraryTokens);
+        expectedTokens.addAll( Arrays.asList(new Token(Tokens.ENDFILE, null)  ));
         testCases.put(fileName, new Test(fileName, expectedTokens, options));
 
 //        fileName = "hugeFile.cs16";
@@ -273,14 +349,15 @@ public class Test {
 
         Options options = new Options(quietEnabled, verboseEnabled, tuplePhase, parsePhase, compilePhase, lexicalPhase, semanticPhase, outputFilePath, errorLogFilePath, srcFilePath);
 
-        TestAdmin admin;
-        try {
-            admin = new TestAdmin(options);
-            admin.compile();
-            admin.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+
+//        TestAdmin admin;
+//        try {
+//            admin = new TestAdmin(options);
+//            admin.compile();
+//            admin.close();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
 
         System.out.println("Tests results: " + Test.runAll(options));
     }
