@@ -304,6 +304,7 @@ public class Test {
                         new Token(Tokens.ID, 9)
                 )
         );
+        testCases.put(fileName, new Test(fileName, expectedTokens, options));
 
         fileName = "commentHell.cs16";
         expectedTokens = new ArrayList(Test.libraryTokens);
