@@ -205,6 +205,7 @@ public class Test {
         ));
         testCases.put(fileName, new Test(fileName, expectedTokens, options));
 
+
         fileName = "keywordsContinuous.cs16";
         expectedTokens = new ArrayList(Test.libraryTokens);
         expectedTokens.addAll( Arrays.asList(new Token(Tokens.IF,null),
@@ -263,6 +264,46 @@ public class Test {
                 new Token(Tokens.ENDFILE, null)
         ));
         testCases.put(fileName, new Test(fileName, expectedTokens, options));
+
+        fileName = "errors.cs16";
+        expectedTokens = new ArrayList(Test.libraryTokens);
+        expectedTokens.addAll(
+                Arrays.asList(
+                        new Token(Tokens.ERROR, "& at line:1 col:2"),
+                        new Token(Tokens.ERROR, "| at line:1 col:3"),
+                        new Token(Tokens.ERROR, "! at line:1 col:4"),
+                        new Token(Tokens.ERROR, "\" at line:1 col:5"),
+                        new Token(Tokens.ERROR, "# at line:1 col:6"),
+                        new Token(Tokens.ERROR, "$ at line:1 col:7"),
+                        new Token(Tokens.ERROR, "% at line:1 col:8"),
+                        new Token(Tokens.ERROR, "\\ at line:1 col:9"),
+                        new Token(Tokens.ERROR, "' at line:1 col:10"),
+                        new Token(Tokens.ERROR, ". at line:1 col:11"),
+                        new Token(Tokens.ERROR, "? at line:1 col:12"),
+                        new Token(Tokens.ERROR, "@ at line:1 col:13"),
+                        new Token(Tokens.ERROR, "^ at line:1 col:14"),
+                        new Token(Tokens.ERROR, "_ at line:1 col:15"),
+                        new Token(Tokens.ERROR, "` at line:1 col:16"),
+                        new Token(Tokens.ERROR, "~ at line:1 col:17"),
+                        new Token(Tokens.NUM, 3),
+                        new Token(Tokens.ID, 5),
+                        new Token(Tokens.ERROR, ". at line:2 col:8"),
+                        new Token(Tokens.ERROR, "$ at line:2 col:9"),
+                        new Token(Tokens.NUM, 34),
+                        new Token(Tokens.ID, 6),
+                        new Token(Tokens.ERROR, "` at line:2 col:15"),
+                        new Token(Tokens.ID, 7),
+                        new Token(Tokens.ERROR, "~ at line:2 col:20"),
+                        new Token(Tokens.NUM, 12),
+                        new Token(Tokens.ID, 8), new Token(Tokens.ERROR, "% at line:2 col:25"),
+                        new Token(Tokens.ERROR, "Number format exception For input string: \"348653445994559459694596\" at line:3 col:25"),
+                        new Token(Tokens.MINUS, null),
+                        new Token(Tokens.ERROR, "Number format exception For input string: \"344329493299993929310031\" at line:4 col:26"),
+                        new Token(Tokens.NUM, 2147483647),
+                        new Token(Tokens.ERROR, "Number format exception For input string: \"2147483648\" at line:6 col:11"),
+                        new Token(Tokens.ID, 9)
+                )
+        );
 
         fileName = "commentHell.cs16";
         expectedTokens = new ArrayList(Test.libraryTokens);

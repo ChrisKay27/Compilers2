@@ -133,7 +133,7 @@ public class ScannerStateMachine {
                         nextState.getSb().replace(0, nextState.getSb().length(), "");
                         //Adds this character into that states string builder
                         nextState.getSb().append(c);
-                        errorOutput.accept("Error - Illegitimate character " + c + " found.");
+                        //errorOutput.accept("Error - Illegitimate character " + c + " found.");
                 }
             }
             return null;
@@ -177,7 +177,13 @@ public class ScannerStateMachine {
                 nextState = init;
                 String value = sb.toString();
                 sb.replace(0, sb.length(), "");
-                return new Token(Tokens.NUM, Integer.parseInt(value));
+                int number;
+                try{
+                    number = Integer.parseInt(value);
+                } catch(java.lang.NumberFormatException e){
+                    return new Token(Tokens.ERROR, "Number format exception " + e.getMessage());
+                }
+                return new Token(Tokens.NUM, number);
             }
 
         }
