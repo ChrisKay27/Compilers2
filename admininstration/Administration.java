@@ -47,9 +47,9 @@ public class Administration implements Administrator {
         boolean success = parser.startParsing();
         if( options.verbose )
             if(success)
-                System.out.println("Pass");
+                System.out.println("Compile Successful");
             else
-                System.out.println("Fail");
+                System.out.println("Compile Failed");
     }
 
     /**

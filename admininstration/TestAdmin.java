@@ -14,8 +14,11 @@ import java.util.List;
 public class TestAdmin extends Administration {
 
 
+    private Options options;
+
     public TestAdmin(Options options) throws IOException, UnrecognizedSourceCodeException {
         super(options);
+        this.options = options;
     }
 
     public boolean validateParse(List<Token> expectedTokens) {
@@ -23,7 +26,10 @@ public class TestAdmin extends Administration {
         boolean passed = true;
         for (int i = 0; i < expectedTokens.size(); i++) {
             if( !(expectedTokens.get(i).equals(receivedTokens.get(i)))) {
-                System.out.println(expectedTokens.get(i) + " /= " + receivedTokens.get(i));
+
+                if( options.verbose )
+                    System.out.println(expectedTokens.get(i) + " /= " + receivedTokens.get(i));
+
                 passed &= false;
             }
         }

@@ -137,6 +137,8 @@ public class Scanner {
 
             //let the current state consume the next character
             t = state.consume((char) nextChar);
+
+
             //get the next state that we must transition to
             state = state.nextState();
 
@@ -198,7 +200,8 @@ public class Scanner {
         //so it should not be added to the current line yet
 
         if (traceEnabled) {
-            currentLine.deleteCharAt(currentLine.length() - 1);
+            if( currentLine.length() > 0 )
+                currentLine.deleteCharAt(currentLine.length() - 1);
             tokensOnCurrentLine.add(t);
         }
 
