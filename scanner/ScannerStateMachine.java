@@ -20,7 +20,7 @@ public class ScannerStateMachine {
     }
 
     /**
-     *
+     * Reached when after returning a token or when the state machine is initialized
      */
     final State init = new State() {
 
@@ -146,7 +146,8 @@ public class ScannerStateMachine {
     };
 
     /**
-     * Deals with reading numbers and producing NUM tokens
+     * Reached when an illegal character is read
+     * Returns an ERROR token with value equal to the string so far
      */
     final State error = new State() {
         public Token consume(char c) {
@@ -161,6 +162,10 @@ public class ScannerStateMachine {
 
     /**
      * Deals with reading numbers and producing NUM tokens
+     *
+     * Reached upon receiving a digit in the init state
+     * Stays in this state as long as digits are received
+     * Otherwise returns a NUM token with value equal to the string so far
      */
     final State num = new State() {
         public Token consume(char c) {
@@ -184,6 +189,10 @@ public class ScannerStateMachine {
 
     /**
      * Deals with reading valid ID characters and producing ID tokens.
+     *
+     * Reached upon receiving a letter in the init state
+     * Stays in this state as long as letters, digits, $ or _ are received
+     * Otherwise returns an ID token with value equal to the string so far
      */
     final State id = new State() {
         public Token consume(char c) {
@@ -205,8 +214,9 @@ public class ScannerStateMachine {
     };
 
     /**
-     * Remains in this state and ignores consumed characters until the end of line character is reached then returns
-     * a null token that will be ignored by the parser
+     * Reached upon receiving '--' from the minus state
+     * Remains in this state and ignores consumed characters until the end of line character is reached
+     * Returns a COMMENT token that will be ignored by the parser
      */
     State lineComment = new State() {
         boolean newLineFound = false;
@@ -232,6 +242,10 @@ public class ScannerStateMachine {
 
     /**
      * State could be a dash for negation or subtraction or could be a dash to start a line comment
+     *
+     * Reached after receiving '-' in the init state
+     * If a '-' is received, go to the line comment state
+     * Otherwise returns a MINUS token
      */
     State minus = new State() {
         public Token consume(char c) {
@@ -263,7 +277,10 @@ public class ScannerStateMachine {
     };
 
     /**
-
+     *  Reached upon receiving a '/' in the init state
+     *  If a '*' is received, goes to the blockComment state
+     *  If a '=' is received goes to the neq state
+     *  Otherwise returns a DIV token
      */
     State divOrComment = new State() {
 
@@ -292,7 +309,10 @@ public class ScannerStateMachine {
             return "div or comment state";
         }
     };
-
+    /**
+     * Reached after receiving a '/=' from the divOrComment state
+     * Returns a NEQ token
+     */
     State neq = new State() {
 
         public Token consume(char c) {
@@ -304,7 +324,12 @@ public class ScannerStateMachine {
             return "/= state";
         }
     };
-
+    /**
+     * Reached after receiving a '<' from the init state
+     * If a '=' is received, return to this state
+     * if the string so far is '<=' return a LTEQ token
+     * Otherwise return a LT token
+     */
     State lessThanOrEq = new State() {
 
         public Token consume(char c) {
@@ -328,6 +353,12 @@ public class ScannerStateMachine {
     };
 
 
+    /**
+     * Reached after receiving a '>' from the init state
+     * If a '=' is received, return to this state
+     * if the string so far is '>=' return a GTEQ token
+     * Otherwise return a GT token
+     */
     State greaterThanOrEq = new State() {
 
         public Token consume(char c) {
@@ -350,6 +381,12 @@ public class ScannerStateMachine {
         }
     };
 
+    /**
+     * Reached after receiving a '|' from the init state
+     * If a '|' is received, return to this state
+     * if the string so far is '||' return a ORLESE token
+     * Otherwise return an ERROR token
+     */
     State orElse = new State() {
 
         public Token consume(char c) {
@@ -378,6 +415,13 @@ public class ScannerStateMachine {
         }
     };
 
+
+    /**
+     * Reached after receiving a ':' from the init state
+     * If a '=' is received, return to this state
+     * if the string so far is ':=' return a ASSIGN token
+     * Otherwise return an ERROR token
+     */
     State colonEq = new State() {
         public Token consume(char c) {
             if (sb.toString().equals(":=")) {
@@ -387,7 +431,9 @@ public class ScannerStateMachine {
             if (c == '=') {
                 sb.append('=');
             } else {
-                throw new BadTokenException("Bad Token: " + sb.toString() + c);
+                String err = sb.toString();
+                sb = new StringBuilder();
+                return new Token(Tokens.ERROR, err);
             }
             return null;
         }
