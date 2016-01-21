@@ -18,12 +18,15 @@ public class Token {
     }
 
     @Override
-    public String toString() {
+    public String toString() {// "new Token(Tokens."+this.token.toString()+","+this.attrValue +")"
         return token == null ? "Comment Token" : '(' + token.toString() + "," + attrValue + ')';
     }
 
     @Override
     public boolean equals(Object obj) {
+
+
+
         if (obj == this) return true;
         if (!(obj instanceof Token)) {
             return false;
