@@ -112,4 +112,14 @@ public class Parser {
         this.tokens.remove(this.tokens.size() -1);//remove endfile token
         this.scanner.redirectReader(fileReader);
     }
+
+
+
+
+
+
+
+
+
+
 }
