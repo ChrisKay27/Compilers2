@@ -129,7 +129,7 @@ public class FirstAndFollowSets {
     static{
         Set<Tokens> FIRST = new HashSet<>();
         FIRST.addAll(FIRSTofVarTail);
-        FIRST.addAll(FIRSTofCallTail);
+        //FIRST.addAll(FIRSTofCallTail);
         FIRSTofIDTail = FIRST;
     }
 
