@@ -1,5 +1,7 @@
 package parser;
 
+import com.sun.org.apache.xpath.internal.operations.Mod;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -76,6 +78,95 @@ public class FirstAndFollowSets {
         FIRSTofCase = FIRST;
     }
 
+    public static final Set<Tokens> FIRSTofUMinus;
+    static{
+        Set<Tokens> FIRST = new HashSet<>();
+        FIRST.add(MINUS);
+        FIRSTofUMinus = FIRST;
+    }
+
+    public static final Set<Tokens> FIRSTofMultop;
+    static{
+        Set<Tokens> FIRST = new HashSet<>();
+        FIRST.add(MULT);
+        FIRST.add(DIV);
+        FIRST.add(MOD);
+        FIRST.add(AND);
+        FIRST.add(ANDTHEN);
+        FIRSTofMultop = FIRST;
+    }
+
+    public static final Set<Tokens> FIRSTofAddOp;
+    static{
+        Set<Tokens> FIRST = new HashSet<>();
+        FIRST.add(PLUS);
+        FIRST.add(MINUS);
+        FIRST.add(OR);
+        FIRST.add(ORELSE);
+        FIRSTofAddOp = FIRST;
+    }
+
+    public static final Set<Tokens> FIRSTofRelop;
+    static{
+        Set<Tokens> FIRST = new HashSet<>();
+        FIRST.add(LTEQ);
+        FIRST.add(LT);
+        FIRST.add(GT);
+        FIRST.add(GTEQ);
+        FIRST.add(EQ);
+        FIRST.add(NEQ);
+        FIRSTofRelop = FIRST;
+    }
+
+    public static final Set<Tokens> FIRSTofVarTail;
+    static{
+        Set<Tokens> FIRST = new HashSet<>();
+        FIRST.add(LSQR);
+        FIRSTofVarTail = FIRST;
+    }
+
+    public static final Set<Tokens> FIRSTofIDTail;
+    static{
+        Set<Tokens> FIRST = new HashSet<>();
+        FIRST.addAll(FIRSTofVarTail);
+        FIRST.addAll(FIRSTofCallTail);
+        FIRSTofIDTail = FIRST;
+    }
+
+    public static final Set<Tokens> FIRSTofIDFactor;
+    static{
+        Set<Tokens> FIRST = new HashSet<>();
+        FIRST.add(ID);
+        FIRSTofIDFactor = FIRST;
+    }
+
+    public static final Set<Tokens> FIRSTofNidFactor;
+    static{
+        Set<Tokens> FIRST = new HashSet<>();
+        FIRST.add(NOT);
+        FIRST.add(LPAREN);
+        FIRST.add(NUM);
+        FIRST.add(BLIT);
+        FIRSTofNidFactor = FIRST;
+    }
+
+
+    public static final Set<Tokens> FIRSTofFactor;
+    static{
+        Set<Tokens> FIRST = new HashSet<>();
+        FIRST.addAll(FIRSTofNidFactor);
+        FIRST.addAll(FIRSTofIDFactor);
+        FIRSTofFactor = FIRST;
+    }
+
+
+    public static final Set<Tokens> FIRSTofTerm;
+    static{
+        Set<Tokens> FIRST = new HashSet<>();
+        FIRST.addAll(FIRSTofFactor);
+        FIRSTofTerm = FIRST;
+    }
+
     public static final Set<Tokens> FIRSTofAddExpr;
     static{
         Set<Tokens> FIRST = new HashSet<>();
@@ -91,38 +182,7 @@ public class FirstAndFollowSets {
         FIRSTofExpression = FIRST;
     }
 
-    public static final Set<Tokens> FIRSTofNidFactor;
-    static{
-        Set<Tokens> FIRST = new HashSet<>();
-        FIRST.add(NOT);
-        FIRST.add(LPAREN);
-        FIRST.add(NUM);
-        FIRST.add(BLIT);
-        FIRSTofNidFactor = FIRST;
-    }
 
-
-    public static final Set<Tokens> FIRSTofIDFactor;
-    static{
-        Set<Tokens> FIRST = new HashSet<>();
-        FIRST.add(ID);
-        FIRSTofIDFactor = FIRST;
-    }
-
-    public static final Set<Tokens> FIRSTofFactor;
-    static{
-        Set<Tokens> FIRST = new HashSet<>();
-        FIRST.addAll(FIRSTofNidFactor);
-        FIRST.addAll(FIRSTofIDFactor);
-        FIRSTofFactor = FIRST;
-    }
-
-    public static final Set<Tokens> FIRSTofTerm;
-    static{
-        Set<Tokens> FIRST = new HashSet<>();
-        FIRST.addAll(FIRSTofFactor);
-        FIRSTofTerm = FIRST;
-    }
 
 
 
