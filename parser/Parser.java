@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
 
+import static parser.FirstAndFollowSets.FIRSTofStatement;
+
 /**
  * Created by Chris on 1/9/2016.
  */
@@ -118,14 +120,15 @@ public class Parser {
     }
 
 
-    private static final Set<Tokens> FIRSTofStatement = new HashSet<>();
 
 
     private AbstractSyntaxTreeNode loop_stmt(Set<Tokens> synch){
 
         match(Tokens.LOOP,synch);
 
-        while(lookahead)
+        while(FIRSTofStatement.contains(lookahead)){
+
+        }
 
         return null;
     }
