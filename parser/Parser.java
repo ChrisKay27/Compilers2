@@ -8,6 +8,7 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Consumer;
 
 /**
@@ -26,6 +27,8 @@ public class Parser {
     private final Scanner scanner;
     private final Consumer<String> errorOutput;
     private List<Token> tokens;
+
+    private Tokens lookahead;
 
     public Parser(Scanner scanner, Consumer<String> errorOutput) {
         this.scanner = scanner;
@@ -112,4 +115,37 @@ public class Parser {
         this.tokens.remove(this.tokens.size() -1);//remove endfile token
         this.scanner.redirectReader(fileReader);
     }
+
+
+
+
+    private AbstractSyntaxTreeNode loop_stmt(Set<Tokens> synch){
+
+        match(Tokens.LOOP,synch);
+
+        return null;
+    }
+
+
+
+
+    private void match(Tokens expected, Set<Tokens> synch){
+       if(lookahead == expected)
+           lookahead = scanner.nextToken().token;
+
+        else
+           syntaxError(synch);
+        syntaxCheck(synch);
+    }
+
+
+    private void syntaxCheck(Set<Tokens> synch) {
+
+    }
+
+    private void syntaxError(Set<Tokens> synch) {
+        throw new SyntaxError();
+    }
+
+
 }

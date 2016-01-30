@@ -90,7 +90,7 @@ public class Scanner {
      * to be returned if this method is called again.
      * @throws IOException
      */
-    public Token nextToken() throws IOException {
+    public Token nextToken() {
 
         if (initNextChar) {
             nextChar = nextChar();
@@ -206,10 +206,15 @@ public class Scanner {
 
 
     private boolean EOFFound = false;
-    private int nextChar() throws IOException {
+    private int nextChar() {
         int r;
-        if ((r = reader.read()) != -1)
-            return r;
+        try {
+            if ((r = reader.read()) != -1)
+                return r;
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
         if (EOFFound)
             return -1;
         EOFFound = true;
