@@ -146,8 +146,6 @@ public class Parser {
         return null;
     }
 
-    private void statement(Set<Tokens> synch) {
-    }
 
     private AbstractSyntaxTreeNode declaration(Set<Tokens> synch) {
 
@@ -155,7 +153,7 @@ public class Parser {
             match(VOID, synch);
             match(ID, synch);
             fun_dec_tail(synch);
-        } else if (FIRSTofNonvoidspecifier.contains(lookahead)) {
+        } else if (FIRSTofNonvoid_specifier.contains(lookahead)) {
             nonvoid_specifier(synch);
             match(ID, synch);
             dec_tail(synch);
@@ -173,8 +171,8 @@ public class Parser {
 
     private AbstractSyntaxTreeNode dec_tail(Set<Tokens> synch) {
 
-        if (FIRSTofVarDectail.contains(lookahead)) var_dec_tail(synch);
-        if (FIRSTofFundectail.contains(lookahead)) fun_dec_tail(synch);
+        if (FIRSTofVar_dec_tail.contains(lookahead)) var_dec_tail(synch);
+        if (FIRSTofFun_dec_tail.contains(lookahead)) fun_dec_tail(synch);
 
         return null;
     }
@@ -236,7 +234,7 @@ public class Parser {
             match(REF, synch);
             nonvoid_specifier(synch);
             match(ID, synch);
-        } else if (FIRSTofNonvoidspecifier.contains(lookahead)) {
+        } else if (FIRSTofNonvoid_specifier.contains(lookahead)) {
             nonvoid_specifier(synch);
             match(ID, synch);
             if (lookahead == LSQR) {
@@ -247,8 +245,100 @@ public class Parser {
         return null;
     }
 
+    private AbstractSyntaxTreeNode statement(Set<Tokens> synch) {
+        if (FIRSTofId_stmt.contains(lookahead)) {
+            id_stmt(synch);
+        } else if (FIRSTofCompound_stmt.contains(lookahead)) {
+            compound_stmt(synch);
+        } else if (FIRSTofIf_stmt.contains(lookahead)) {
+            if_stmt(synch);
+        } else if (FIRSTofLoop_stmt.contains(lookahead)) {
+            loop_stmt(synch);
+        } else if (FIRSTofExit_stmt.contains(lookahead)) {
+            exit_stmt(synch);
+        } else if (FIRSTofContinue_stmt.contains(lookahead)) {
+            continue_stmt(synch);
+        } else if (FIRSTofReturn_stmt.contains(lookahead)) {
+            return_stmt(synch);
+        } else if (FIRSTofNull_stmt.contains(lookahead)) {
+            null_stmt(synch);
+        } else if (FIRSTofBranch_stmt.contains(lookahead)) {
+            branch_stmt(synch);
+        } else {
+            //error
+        }
+        return null;
+    }
+
+    private AbstractSyntaxTreeNode id_stmt(Set<Tokens> synch) {
+        match(ID, synch);
+        id_stmt_tail(synch);
+        return null;
+    }
+
+    private AbstractSyntaxTreeNode id_stmt_tail(Set<Tokens> synch) {
+        if (FIRSTofAssign_stmt_tail.contains(lookahead)) assign_stmt_tail(synch);
+        else if (FIRSTofCall_stmt_tail.contains(lookahead)) call_stmt_tail(synch);
+        else ; //error
+
+        return null;
+    }
+
+    private AbstractSyntaxTreeNode assign_stmt_tail(Set<Tokens> synch) {
+
+        if (lookahead == LSQR) {
+            match(LSQR, synch);
+            add_exp(synch);
+            match(RSQR, synch);
+        }
+
+        match(ASSIGN, synch);
+        expression(synch);
+        match(SEMI, synch);
+
+        return null;
+    }
+
+    private AbstractSyntaxTreeNode call_stmt_tail(Set<Tokens> synch) {
+        call_tail(synch);
+        match(SEMI, synch);
+        return null;
+    }
+
     private AbstractSyntaxTreeNode call_tail(Set<Tokens> synch) {
 
+        match(LPAREN, synch);
+        if(FIRSTofArguments.contains(lookahead)) arguments(synch);
+        match(RPAREN, synch);
+        return null;
+    }
+
+    private AbstractSyntaxTreeNode arguments(Set<Tokens> synch) {
+
+        expression(synch);
+        while(lookahead == COMMA){
+            match(COMMA, synch);
+            expression(synch);
+        }
+
+        return null;
+    }
+
+
+    private AbstractSyntaxTreeNode compound_stmt(Set<Tokens> synch) {
+
+        match(LCRLY, synch);
+
+        if(FIRSTofNonvoid_specifier.contains(lookahead)){
+            nonvoid_specifier(synch);
+            match(ID, synch);
+            var_dec_tail(synch);
+        }
+        do {
+            statement(synch);
+        } while(FIRSTofStatement.contains(lookahead));
+
+        match(RCRLY, synch);
 
         return null;
     }
@@ -308,7 +398,7 @@ public class Parser {
         match(RPAREN, synch);
 
         case_(synch);
-        while (FIRSTofCase.contains(lookahead)) {
+        while (FIRSTofCase_stmt.contains(lookahead)) {
             case_(synch);
         }
 
@@ -371,7 +461,7 @@ public class Parser {
     private AbstractSyntaxTreeNode factor(Set<Tokens> synch) {
 
 
-        if (FIRSTofNidFactor.contains(lookahead)) {
+        if (FIRSTofNid_factor.contains(lookahead)) {
             nid_factor(synch);
         } else {
             id_factor(synch);
@@ -409,7 +499,7 @@ public class Parser {
     }
 
     private AbstractSyntaxTreeNode id_tail(Set<Tokens> synch) {
-        if (FIRSTofVarTail.contains(lookahead)) {
+        if (FIRSTofVar_tail.contains(lookahead)) {
             var_tail(synch);
         } else {
             call_tail(synch);
