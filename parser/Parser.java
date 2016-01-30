@@ -16,6 +16,8 @@ import java.util.function.Consumer;
  */
 public class Parser {
 
+    private Grammar g;
+
     // standard library
     private static String[] libraries = {
             "int readint(void);",
@@ -30,8 +32,9 @@ public class Parser {
 
     private Tokens lookahead;
 
-    public Parser(Scanner scanner, Consumer<String> errorOutput) {
+    public Parser(Scanner scanner, Grammar g, Consumer<String> errorOutput) {
         this.scanner = scanner;
+        this.g = g;
         this.errorOutput = errorOutput;
         tokens = new ArrayList<>();
     }
@@ -85,14 +88,16 @@ public class Parser {
      */
     public boolean parse() throws java.io.IOException {
 
-        Token nextToken;
         boolean pass = true;
+        Token nextToken;
+        Token lookaheadToken = scanner.nextToken();
         do {
-            nextToken = scanner.nextToken();
+            nextToken = lookaheadToken;
+            lookaheadToken = scanner.nextToken();
             if (nextToken.token == Tokens.ERROR)
                 pass = false;
 
-            tokens.add(nextToken);
+
         } while (nextToken.token != Tokens.ENDFILE);
 
         //System.out.println("Tokens: " + tokens);

@@ -1,5 +1,6 @@
 package admininstration;
 
+import parser.Grammar;
 import parser.Parser;
 import scanner.Scanner;
 
@@ -20,6 +21,7 @@ public class Administration implements Administrator {
     protected Reader buffer;
     protected Scanner scanner;
     protected Parser parser;
+    protected Grammar g;
 
 
     public Administration(Options options) throws IOException, UnrecognizedSourceCodeException {
@@ -35,7 +37,8 @@ public class Administration implements Administrator {
 
         this.scanner = new Scanner(buffer,this::printLineTrace,this::printErrorMessage);
         scanner.setTraceEnabled(options.verbose);
-        this.parser = new Parser(this.scanner,this::printErrorMessage);
+        this.parser = new Parser(this.scanner,this.g,this::printErrorMessage);
+        this.g = new Grammar();
     }
 
     /**
