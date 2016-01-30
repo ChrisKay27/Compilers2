@@ -126,6 +126,28 @@ public class Parser {
     }
 
 
+    private void call_tail(Set<Tokens> synch) {
+    }
+
+
+    private AbstractSyntaxTreeNode if_stmt(Set<Tokens> synch){
+
+        match(IF,synch);
+        match(LPAREN,synch);
+        expression(synch);
+        match(RPAREN,synch);
+        statement(synch);
+
+        if( lookahead == ELSE ){
+            match(ELSE,synch);
+            statement(synch);
+        }
+
+        return null;
+    }
+
+    private void statement(Set<Tokens> synch) {
+    }
 
 
     private AbstractSyntaxTreeNode loop_stmt(Set<Tokens> synch){
@@ -167,8 +189,7 @@ public class Parser {
         return null;
     }
 
-    private void expression(Set<Tokens> synch) {
-    }
+
 
     private AbstractSyntaxTreeNode null_stmt(Set<Tokens> synch){
         match(SEMI,synch);
@@ -195,9 +216,7 @@ public class Parser {
         return null;
     }
 
-    private void add_exp(Set<Tokens> synch) {
 
-    }
 
     private AbstractSyntaxTreeNode case_(Set<Tokens> synch){
 
@@ -216,9 +235,176 @@ public class Parser {
         return null;
     }
 
-
-    private void statement(Set<Tokens> synch) {
+    private AbstractSyntaxTreeNode expression(Set<Tokens> synch){
+        add_exp(synch);
+        if( FIRSTofRelop.contains(lookahead) ){
+            relop(synch);
+            add_exp(synch);
+        }
+        return null;
     }
+
+
+    private AbstractSyntaxTreeNode add_exp(Set<Tokens> synch){
+
+        if( FIRSTofUMinus.contains(lookahead) ){
+            uminus(synch);
+            term(synch);
+            if( FIRSTofAddOp.contains(lookahead) ){
+                addop(synch);
+                term(synch);
+            }
+        }
+        return null;
+    }
+
+    private AbstractSyntaxTreeNode term(Set<Tokens> synch){
+        factor(synch);
+
+        if( FIRSTofMultop.contains(lookahead) ){
+            multop(synch);
+            factor(synch);
+        }
+        return null;
+    }
+
+    private AbstractSyntaxTreeNode factor(Set<Tokens> synch){
+
+
+        if( FIRSTofNidFactor.contains(lookahead) ){
+            nid_factor(synch);
+        }
+        else{
+            id_factor(synch);
+        }
+        return null;
+    }
+
+    private AbstractSyntaxTreeNode nid_factor(Set<Tokens> synch){
+
+        switch(lookahead){
+            case NOT:
+                match(NOT,synch);
+                factor(synch);
+                break;
+            case LPAREN:
+                match(LPAREN,synch);
+                expression(synch);
+                match(RPAREN,synch);
+                break;
+            case NUM:
+                match(NUM,synch);
+                break;
+            case BLIT:
+                match(BLIT,synch);
+                break;
+        }
+
+        return null;
+    }
+
+    private AbstractSyntaxTreeNode id_factor(Set<Tokens> synch){
+        match(ID,synch);
+        id_tail(synch);
+        return null;
+    }
+
+    private AbstractSyntaxTreeNode id_tail(Set<Tokens> synch){
+        if( FIRSTofVarTail.contains(lookahead) ){
+            var_tail(synch);
+        }
+        else{
+            call_tail(synch);
+
+        }
+
+        return null;
+    }
+
+
+    private AbstractSyntaxTreeNode var_tail(Set<Tokens> synch) {
+        match(LSQR,synch);
+        add_exp(synch);
+        match(RSQR,synch);
+        return null;
+    }
+
+    private AbstractSyntaxTreeNode relop(Set<Tokens> synch){
+
+        switch(lookahead){
+            case LTEQ:
+                match(LTEQ,synch);
+                break;
+            case LT:
+                match(LT,synch);
+                break;
+            case GT:
+                match(GT,synch);
+                break;
+            case GTEQ:
+                match(GTEQ,synch);
+                break;
+            case EQ:
+                match(EQ,synch);
+                break;
+            case NEQ:
+                match(NEQ,synch);
+                break;
+        }
+
+        return null;
+    }
+
+    private AbstractSyntaxTreeNode addop(Set<Tokens> synch){
+
+        switch(lookahead){
+            case PLUS:
+                match(PLUS,synch);
+                break;
+            case MINUS:
+                match(MINUS,synch);
+                break;
+            case OR:
+                match(OR,synch);
+                break;
+            case ORELSE:
+                match(ORELSE,synch);
+                break;
+        }
+
+        return null;
+    }
+
+    private AbstractSyntaxTreeNode multop(Set<Tokens> synch){
+
+        switch(lookahead){
+            case MULT:
+                match(MULT,synch);
+                break;
+            case DIV:
+                match(DIV,synch);
+                break;
+            case MOD:
+                match(MOD,synch);
+                break;
+            case AND:
+                match(AND,synch);
+                break;
+            case ANDTHEN:
+                match(ANDTHEN,synch);
+                break;
+        }
+
+        return null;
+    }
+
+    private AbstractSyntaxTreeNode uminus(Set<Tokens> synch) {
+        match(MINUS,synch);
+        return null;
+    }
+
+
+
 
 
     private void match(Tokens expected, Set<Tokens> synch){
