@@ -7,9 +7,12 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
+
+import static parser.FirstAndFollowSets.FIRSTofStatement;
 
 /**
  * Created by Chris on 1/9/2016.
@@ -127,6 +130,10 @@ public class Parser {
     private AbstractSyntaxTreeNode loop_stmt(Set<Tokens> synch){
 
         match(Tokens.LOOP,synch);
+
+        while(FIRSTofStatement.contains(lookahead)){
+
+        }
 
         return null;
     }
