@@ -1,0 +1,19 @@
+int x, y, z;
+void f(int x)
+{
+ int y, s, t;
+ {
+ int x, u, s;
+ ; -- point A
+ }
+ -- point B
+}
+int g(bool b)
+{
+ int x, v;
+ ;
+}
+int main(void)
+{
+ ;
+}
