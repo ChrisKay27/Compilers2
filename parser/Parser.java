@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -117,11 +118,14 @@ public class Parser {
     }
 
 
+    private static final Set<Tokens> FIRSTofStatement = new HashSet<>();
 
 
     private AbstractSyntaxTreeNode loop_stmt(Set<Tokens> synch){
 
         match(Tokens.LOOP,synch);
+
+        while(lookahead)
 
         return null;
     }
