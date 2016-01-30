@@ -12,7 +12,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
 
-import static parser.FirstAndFollowSets.FIRSTofStatement;
+import static parser.FirstAndFollowSets.*;
+import static parser.Tokens.*;
 
 /**
  * Created by Chris on 1/9/2016.
@@ -129,16 +130,95 @@ public class Parser {
 
     private AbstractSyntaxTreeNode loop_stmt(Set<Tokens> synch){
 
-        match(Tokens.LOOP,synch);
+        match(LOOP,synch);
 
+        statement(synch);
         while(FIRSTofStatement.contains(lookahead)){
+            statement(synch);
+        }
+        match(END,synch);
 
+        return null;
+    }
+
+    private AbstractSyntaxTreeNode exit_stmt(Set<Tokens> synch){
+
+        match(EXIT,synch);
+        match(SEMI,synch);
+
+        return null;
+    }
+
+    private AbstractSyntaxTreeNode continue_stmt(Set<Tokens> synch){
+
+        match(CONTINUE,synch);
+        match(SEMI,synch);
+
+        return null;
+    }
+
+    private AbstractSyntaxTreeNode return_stmt(Set<Tokens> synch){
+
+        match(RETURN,synch);
+        if( FIRSTofExpression.contains(lookahead) )
+            expression(synch);
+        match(SEMI,synch);
+
+        return null;
+    }
+
+    private void expression(Set<Tokens> synch) {
+    }
+
+    private AbstractSyntaxTreeNode null_stmt(Set<Tokens> synch){
+        match(SEMI,synch);
+
+        return null;
+    }
+
+    private AbstractSyntaxTreeNode branch_stmt(Set<Tokens> synch){
+        match(BRANCH,synch);
+        match(LPAREN,synch);
+
+        add_exp(synch);
+
+        match(RPAREN,synch);
+
+        case_(synch);
+        while(FIRSTofCase.contains(lookahead)){
+            case_(synch);
+        }
+
+        match(END,synch);
+        match(SEMI,synch);
+
+        return null;
+    }
+
+    private void add_exp(Set<Tokens> synch) {
+
+    }
+
+    private AbstractSyntaxTreeNode case_(Set<Tokens> synch){
+
+        if( lookahead == CASE ) {
+            match(CASE, synch);
+            match(NUM, synch);
+            match(COLON, synch);
+            statement(synch);
+        }
+        else{
+            match(DEFAULT,synch);
+            match(COLON,synch);
+            statement(synch);
         }
 
         return null;
     }
 
 
+    private void statement(Set<Tokens> synch) {
+    }
 
 
     private void match(Tokens expected, Set<Tokens> synch){
