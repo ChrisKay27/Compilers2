@@ -1,4 +1,6 @@
-package parser;
+package parser.grammar;
+
+import parser.Tokens;
 
 import java.util.HashSet;
 import java.util.Set;

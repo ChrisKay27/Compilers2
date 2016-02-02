@@ -1,5 +1,6 @@
-package parser;
+package parser.grammar;
 
+import parser.Type;
 import scanner.Token;
 
 /**
@@ -13,7 +14,6 @@ public class FuncDeclaration extends Declaration {
 
     public FuncDeclaration(Type type, Token ID, Declaration params, Statement body) {
         super(type,ID);
-        this.ID = ID;
         this.params = params;
         this.body = body;
     }

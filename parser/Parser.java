@@ -1,5 +1,6 @@
 package parser;
 
+import parser.grammar.*;
 import scanner.Scanner;
 import scanner.Token;
 
@@ -7,14 +8,16 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
 
-import static parser.FirstAndFollowSets.*;
 import static parser.Tokens.*;
+import static parser.grammar.FirstAndFollowSets.*;
 
 /**
+ *
  * Created by Chris on 1/9/2016.
  */
 public class Parser {
@@ -31,7 +34,9 @@ public class Parser {
     private final Consumer<String> errorOutput;
     private List<Token> tokens;
 
+    private Token lookaheadToken;
     private Tokens lookahead;
+
 
     public Parser(Scanner scanner, Consumer<String> errorOutput) {
         this.scanner = scanner;
@@ -54,9 +59,9 @@ public class Parser {
 
         injectLibraries();
 
-        boolean pass = parse();
+        AST ast = parse();
 
-        return pass;
+        return true;
     }
 
     /**
@@ -86,22 +91,15 @@ public class Parser {
      * @return - true when there were no error tokens produced, otherwise false
      * @throws java.io.IOException
      */
-    public boolean parse() throws java.io.IOException {
+    public AST parse() throws java.io.IOException {
 
         boolean pass = true;
-        Token nextToken;
-        Token lookaheadToken = scanner.nextToken();
 
-        do {
-            nextToken = lookaheadToken;
-            lookaheadToken = scanner.nextToken();
-            if (nextToken.token == Tokens.ERROR)
-                pass = false;
-
-        } while (nextToken.token != Tokens.ENDFILE);
+        lookaheadToken = scanner.nextToken();
+        lookahead = lookaheadToken.token;
 
         //System.out.println("Tokens: " + tokens);
-        return pass;
+        return program(new HashSet<>());
     }
 
     /**
@@ -121,33 +119,44 @@ public class Parser {
         this.scanner.redirectReader(fileReader);
     }
 
-    private AbstractSyntaxTreeNode program(Set<Tokens> synch) {
-        AbstractSyntaxTreeNode current;
+    private AST program(Set<Tokens> synch) {
+        AST current = null;
         do {
-            declaration(synch);
+            AST temp = declaration(synch);
+            if( current != null )
+                current.setNextNode(temp);
+            current = temp;
+
         } while (FIRSTofDeclaration.contains(lookahead));
         return null;
     }
 
+    
+ 
 
-    private AbstractSyntaxTreeNode if_stmt(Set<Tokens> synch) {
+
+
+
+    private AST if_stmt(Set<Tokens> synch) {
 
         match(IF, synch);
         match(LPAREN, synch);
-        expression(synch);
+        Expression e = expression(synch);
         match(RPAREN, synch);
-        statement(synch);
+        Statement s = statement(synch);
 
+        Statement elseStatement = null;
         if (lookahead == ELSE) {
             match(ELSE, synch);
-            statement(synch);
+            elseStatement = statement(synch);
         }
 
-        return null;
+        return new IfStatement(e,s,elseStatement);
     }
 
 
-    private AbstractSyntaxTreeNode declaration(Set<Tokens> synch) {
+
+    private AST declaration(Set<Tokens> synch) {
 
         if (lookahead == VOID) {
             match(VOID, synch);
@@ -163,13 +172,13 @@ public class Parser {
         return null;
     }
 
-    private AbstractSyntaxTreeNode nonvoid_specifier(Set<Tokens> synch) {
+    private AST nonvoid_specifier(Set<Tokens> synch) {
         if (lookahead == INT) match(INT, synch);
         if (lookahead == BOOL) match(BOOL, synch);
         return null;
     }
 
-    private AbstractSyntaxTreeNode dec_tail(Set<Tokens> synch) {
+    private AST dec_tail(Set<Tokens> synch) {
 
         if (FIRSTofVar_dec_tail.contains(lookahead)) var_dec_tail(synch);
         if (FIRSTofFun_dec_tail.contains(lookahead)) fun_dec_tail(synch);
@@ -177,7 +186,7 @@ public class Parser {
         return null;
     }
 
-    private AbstractSyntaxTreeNode var_dec_tail(Set<Tokens> synch) {
+    private AST var_dec_tail(Set<Tokens> synch) {
 
         if (lookahead == LSQR) {
             match(LSQR, synch);
@@ -191,7 +200,7 @@ public class Parser {
         return null;
     }
 
-    private AbstractSyntaxTreeNode var_name(Set<Tokens> synch) {
+    private AST var_name(Set<Tokens> synch) {
 
         match(ID, synch);
 
@@ -204,7 +213,7 @@ public class Parser {
         return null;
     }
 
-    private AbstractSyntaxTreeNode fun_dec_tail(Set<Tokens> synch) {
+    private AST fun_dec_tail(Set<Tokens> synch) {
 
         match(LPAREN, synch);
         params(synch);
@@ -215,7 +224,7 @@ public class Parser {
     }
 
 
-    private AbstractSyntaxTreeNode params(Set<Tokens> synch) {
+    private AST params(Set<Tokens> synch) {
         if (lookahead == VOID) {
             match(VOID, synch);
         } else {
@@ -229,7 +238,7 @@ public class Parser {
         return null;
     }
 
-    private AbstractSyntaxTreeNode param(Set<Tokens> synch) {
+    private AST param(Set<Tokens> synch) {
         if (lookahead == REF) {
             match(REF, synch);
             nonvoid_specifier(synch);
@@ -245,7 +254,7 @@ public class Parser {
         return null;
     }
 
-    private AbstractSyntaxTreeNode statement(Set<Tokens> synch) {
+    private Statement statement(Set<Tokens> synch) {
         if (FIRSTofId_stmt.contains(lookahead)) {
             id_stmt(synch);
         } else if (FIRSTofCompound_stmt.contains(lookahead)) {
@@ -270,13 +279,13 @@ public class Parser {
         return null;
     }
 
-    private AbstractSyntaxTreeNode id_stmt(Set<Tokens> synch) {
+    private AST id_stmt(Set<Tokens> synch) {
         match(ID, synch);
         id_stmt_tail(synch);
         return null;
     }
 
-    private AbstractSyntaxTreeNode id_stmt_tail(Set<Tokens> synch) {
+    private AST id_stmt_tail(Set<Tokens> synch) {
         if (FIRSTofAssign_stmt_tail.contains(lookahead)) assign_stmt_tail(synch);
         else if (FIRSTofCall_stmt_tail.contains(lookahead)) call_stmt_tail(synch);
         else ; //error
@@ -284,7 +293,7 @@ public class Parser {
         return null;
     }
 
-    private AbstractSyntaxTreeNode assign_stmt_tail(Set<Tokens> synch) {
+    private AST assign_stmt_tail(Set<Tokens> synch) {
 
         if (lookahead == LSQR) {
             match(LSQR, synch);
@@ -296,16 +305,16 @@ public class Parser {
         expression(synch);
         match(SEMI, synch);
 
-        return null;
+        return new NullStatement();
     }
 
-    private AbstractSyntaxTreeNode call_stmt_tail(Set<Tokens> synch) {
+    private AST call_stmt_tail(Set<Tokens> synch) {
         call_tail(synch);
         match(SEMI, synch);
         return null;
     }
 
-    private AbstractSyntaxTreeNode call_tail(Set<Tokens> synch) {
+    private AST call_tail(Set<Tokens> synch) {
 
         match(LPAREN, synch);
         if(FIRSTofArguments.contains(lookahead)) arguments(synch);
@@ -313,7 +322,7 @@ public class Parser {
         return null;
     }
 
-    private AbstractSyntaxTreeNode arguments(Set<Tokens> synch) {
+    private AST arguments(Set<Tokens> synch) {
 
         expression(synch);
         while(lookahead == COMMA){
@@ -325,7 +334,7 @@ public class Parser {
     }
 
 
-    private AbstractSyntaxTreeNode compound_stmt(Set<Tokens> synch) {
+    private AST compound_stmt(Set<Tokens> synch) {
 
         match(LCRLY, synch);
 
@@ -343,73 +352,82 @@ public class Parser {
         return null;
     }
 
-    private AbstractSyntaxTreeNode loop_stmt(Set<Tokens> synch) {
+    private Statement loop_stmt(Set<Tokens> synch) {
 
         match(LOOP, synch);
 
-        statement(synch);
+
+        Statement first = statement(synch);
+        Statement temp = first;
         while (FIRSTofStatement.contains(lookahead)) {
-            statement(synch);
+            Statement temp2 = statement(synch);
+            temp.setNextNode(temp2);
+            temp = temp2;
         }
         match(END, synch);
 
-        return null;
+
+        return new LoopStatement(first);
     }
 
-    private AbstractSyntaxTreeNode exit_stmt(Set<Tokens> synch) {
+    private Statement exit_stmt(Set<Tokens> synch) {
 
         match(EXIT, synch);
         match(SEMI, synch);
 
-        return null;
+        return new ExitStatement();
     }
 
-    private AbstractSyntaxTreeNode continue_stmt(Set<Tokens> synch) {
+    private AST continue_stmt(Set<Tokens> synch) {
 
         match(CONTINUE, synch);
         match(SEMI, synch);
 
-        return null;
+        return new ContinueStatement();
     }
 
-    private AbstractSyntaxTreeNode return_stmt(Set<Tokens> synch) {
+    private AST return_stmt(Set<Tokens> synch) {
 
         match(RETURN, synch);
+        Expression returnValue = null;
         if (FIRSTofExpression.contains(lookahead))
-            expression(synch);
+            returnValue = expression(synch);
+        match(SEMI, synch);
+
+        return new ReturnStatement(returnValue);
+    }
+
+
+    private AST null_stmt(Set<Tokens> synch) {
         match(SEMI, synch);
 
         return null;
     }
 
-
-    private AbstractSyntaxTreeNode null_stmt(Set<Tokens> synch) {
-        match(SEMI, synch);
-
-        return null;
-    }
-
-    private AbstractSyntaxTreeNode branch_stmt(Set<Tokens> synch) {
+    private AST branch_stmt(Set<Tokens> synch) {
         match(BRANCH, synch);
         match(LPAREN, synch);
 
-        add_exp(synch);
+        AddExpression addexp = add_exp(synch);
 
         match(RPAREN, synch);
 
-        case_(synch);
+        CaseStatement caseStmt = case_(synch);
+        CaseStatement next = caseStmt;
         while (FIRSTofCase_stmt.contains(lookahead)) {
-            case_(synch);
+            CaseStatement temp = case_(synch);
+            next.setNextNode(temp);
+            next = temp;
         }
 
         match(END, synch);
         match(SEMI, synch);
 
-        return null;
+        return new BranchStatement(addexp,caseStmt);
     }
 
 
-    private AbstractSyntaxTreeNode case_(Set<Tokens> synch) {
+    private CaseStatement case_(Set<Tokens> synch) {
 
         if (lookahead == CASE) {
             match(CASE, synch);
@@ -425,7 +443,7 @@ public class Parser {
         return null;
     }
 
-    private AbstractSyntaxTreeNode expression(Set<Tokens> synch) {
+    private Expression expression(Set<Tokens> synch) {
         add_exp(synch);
         if (FIRSTofRelop.contains(lookahead)) {
             relop(synch);
@@ -435,20 +453,22 @@ public class Parser {
     }
 
 
-    private AbstractSyntaxTreeNode add_exp(Set<Tokens> synch) {
-
-        if (FIRSTofUMinus.contains(lookahead)) {
+    private AddExpression add_exp(Set<Tokens> synch) {
+        boolean hasMinus = false;
+        if (FIRSTofUMinus.contains(lookahead))
             uminus(synch);
+
+        term(synch);
+
+        if (FIRSTofAddOp.contains(lookahead)) {
+            addop(synch);
             term(synch);
-            if (FIRSTofAddOp.contains(lookahead)) {
-                addop(synch);
-                term(synch);
-            }
         }
+
         return null;
     }
 
-    private AbstractSyntaxTreeNode term(Set<Tokens> synch) {
+    private AST term(Set<Tokens> synch) {
         factor(synch);
 
         if (FIRSTofMultop.contains(lookahead)) {
@@ -458,7 +478,7 @@ public class Parser {
         return null;
     }
 
-    private AbstractSyntaxTreeNode factor(Set<Tokens> synch) {
+    private AST factor(Set<Tokens> synch) {
 
 
         if (FIRSTofNid_factor.contains(lookahead)) {
@@ -469,7 +489,7 @@ public class Parser {
         return null;
     }
 
-    private AbstractSyntaxTreeNode nid_factor(Set<Tokens> synch) {
+    private AST nid_factor(Set<Tokens> synch) {
 
         switch (lookahead) {
             case NOT:
@@ -492,13 +512,13 @@ public class Parser {
         return null;
     }
 
-    private AbstractSyntaxTreeNode id_factor(Set<Tokens> synch) {
+    private AST id_factor(Set<Tokens> synch) {
         match(ID, synch);
         id_tail(synch);
         return null;
     }
 
-    private AbstractSyntaxTreeNode id_tail(Set<Tokens> synch) {
+    private AST id_tail(Set<Tokens> synch) {
         if (FIRSTofVar_tail.contains(lookahead)) {
             var_tail(synch);
         } else {
@@ -510,14 +530,14 @@ public class Parser {
     }
 
 
-    private AbstractSyntaxTreeNode var_tail(Set<Tokens> synch) {
+    private AST var_tail(Set<Tokens> synch) {
         match(LSQR, synch);
         add_exp(synch);
         match(RSQR, synch);
         return null;
     }
 
-    private AbstractSyntaxTreeNode relop(Set<Tokens> synch) {
+    private AST relop(Set<Tokens> synch) {
 
         switch (lookahead) {
             case LTEQ:
@@ -543,7 +563,7 @@ public class Parser {
         return null;
     }
 
-    private AbstractSyntaxTreeNode addop(Set<Tokens> synch) {
+    private AST addop(Set<Tokens> synch) {
 
         switch (lookahead) {
             case PLUS:
@@ -563,7 +583,7 @@ public class Parser {
         return null;
     }
 
-    private AbstractSyntaxTreeNode multop(Set<Tokens> synch) {
+    private AST multop(Set<Tokens> synch) {
 
         switch (lookahead) {
             case MULT:
@@ -586,16 +606,17 @@ public class Parser {
         return null;
     }
 
-    private AbstractSyntaxTreeNode uminus(Set<Tokens> synch) {
+    private AST uminus(Set<Tokens> synch) {
         match(MINUS, synch);
-        return null;
+        return new MinusExpression();
     }
 
 
     private void match(Tokens expected, Set<Tokens> synch) {
-        if (lookahead == expected)
-            lookahead = scanner.nextToken().token;
-        else
+        if (lookahead == expected) {
+            lookaheadToken = scanner.nextToken();
+            lookahead = lookaheadToken.token;
+        }else
             syntaxError(synch);
         syntaxCheck(synch);
     }
