@@ -32,14 +32,16 @@ public class Parser {
 
     private final Scanner scanner;
     private final Consumer<String> errorOutput;
+    private final Consumer<String> lineTraceOutput;
     private List<Token> tokens;
 
     private Token lookaheadToken;
     private Tokens lookahead;
 
 
-    public Parser(Scanner scanner, Consumer<String> errorOutput) {
+    public Parser(Scanner scanner, Consumer<String> lineTraceOutput, Consumer<String> errorOutput) {
         this.scanner = scanner;
+        this.lineTraceOutput = lineTraceOutput;
         this.errorOutput = errorOutput;
         tokens = new ArrayList<>();
     }
@@ -56,7 +58,6 @@ public class Parser {
      * @throws IOException
      */
     public boolean startParsing() throws IOException {
-
         injectLibraries();
 
         AST ast = parse();
@@ -92,13 +93,11 @@ public class Parser {
      * @throws java.io.IOException
      */
     public AST parse() throws java.io.IOException {
-
         boolean pass = true;
 
         lookaheadToken = scanner.nextToken();
         lookahead = lookaheadToken.token;
 
-        //System.out.println("Tokens: " + tokens);
         return program(new HashSet<>());
     }
 
@@ -120,6 +119,7 @@ public class Parser {
     }
 
     private AST program(Set<Tokens> synch) {
+        this.lineTraceOutput.accept("\t\tEntering program");
         AST current = null;
         do {
             AST temp = declaration(synch);
@@ -128,6 +128,7 @@ public class Parser {
             current = temp;
 
         } while (FIRSTofDeclaration.contains(lookahead));
+        this.lineTraceOutput.accept("\t\tLeaving program");
         return null;
     }
 
@@ -139,6 +140,7 @@ public class Parser {
 
     private AST if_stmt(Set<Tokens> synch) {
 
+        this.lineTraceOutput.accept("\t\tEntering if-stmt");
         match(IF, synch);
         match(LPAREN, synch);
         Expression e = expression(synch);
@@ -151,6 +153,7 @@ public class Parser {
             elseStatement = statement(synch);
         }
 
+        this.lineTraceOutput.accept("\t\tLeaving if-stmt");
         return new IfStatement(e,s,elseStatement);
     }
 
@@ -158,6 +161,7 @@ public class Parser {
 
     private AST declaration(Set<Tokens> synch) {
 
+        this.lineTraceOutput.accept("\t\tEntering declaration");
         if (lookahead == VOID) {
             match(VOID, synch);
             match(ID, synch);
@@ -169,25 +173,28 @@ public class Parser {
         } else {
             //error
         }
+        this.lineTraceOutput.accept("\t\tLeaving declaration");
         return null;
     }
 
     private AST nonvoid_specifier(Set<Tokens> synch) {
+        this.lineTraceOutput.accept("\t\tEntering nonvoid-specifier");
         if (lookahead == INT) match(INT, synch);
         if (lookahead == BOOL) match(BOOL, synch);
+        this.lineTraceOutput.accept("\t\tLeaving nonvoid-specifier");
         return null;
     }
 
     private AST dec_tail(Set<Tokens> synch) {
-
+        this.lineTraceOutput.accept("\t\tEntering dec-tail");
         if (FIRSTofVar_dec_tail.contains(lookahead)) var_dec_tail(synch);
         if (FIRSTofFun_dec_tail.contains(lookahead)) fun_dec_tail(synch);
-
+        this.lineTraceOutput.accept("\t\tLeaving dec-tail");
         return null;
     }
 
     private AST var_dec_tail(Set<Tokens> synch) {
-
+        this.lineTraceOutput.accept("\t\tEntering var-dec-tail");
         if (lookahead == LSQR) {
             match(LSQR, synch);
             add_exp(synch);
@@ -197,10 +204,12 @@ public class Parser {
             var_name(synch);
         }
         match(SEMI, synch);
+        this.lineTraceOutput.accept("\t\tLeaving var-dec-tail");
         return null;
     }
 
     private AST var_name(Set<Tokens> synch) {
+        this.lineTraceOutput.accept("\t\tEntering var-name");
 
         match(ID, synch);
 
@@ -210,21 +219,25 @@ public class Parser {
             match(RSQR, synch);
         }
 
+        this.lineTraceOutput.accept("\t\tLeaving var-name");
         return null;
     }
 
     private AST fun_dec_tail(Set<Tokens> synch) {
 
+        this.lineTraceOutput.accept("\t\tEntering fun-dec-tail");
         match(LPAREN, synch);
         params(synch);
         match(RPAREN, synch);
         //compound_stmt(synch);
 
+        this.lineTraceOutput.accept("\t\tLeaving fun-dec-tail");
         return null;
     }
 
 
     private AST params(Set<Tokens> synch) {
+        this.lineTraceOutput.accept("\t\tEntering params");
         if (lookahead == VOID) {
             match(VOID, synch);
         } else {
@@ -235,10 +248,12 @@ public class Parser {
             }
         }
 
+        this.lineTraceOutput.accept("\t\tLeaving params");
         return null;
     }
 
     private AST param(Set<Tokens> synch) {
+        this.lineTraceOutput.accept("\t\tEntering param");
         if (lookahead == REF) {
             match(REF, synch);
             nonvoid_specifier(synch);
@@ -251,10 +266,12 @@ public class Parser {
                 match(RSQR, synch);
             }
         }
+        this.lineTraceOutput.accept("\t\tLeaving param");
         return null;
     }
 
     private Statement statement(Set<Tokens> synch) {
+        this.lineTraceOutput.accept("\t\tEntering statement");
         if (FIRSTofId_stmt.contains(lookahead)) {
             id_stmt(synch);
         } else if (FIRSTofCompound_stmt.contains(lookahead)) {
@@ -276,25 +293,31 @@ public class Parser {
         } else {
             //error
         }
+        this.lineTraceOutput.accept("\t\tLeaving statement");
         return null;
     }
 
     private AST id_stmt(Set<Tokens> synch) {
+        this.lineTraceOutput.accept("\t\tEntering id-stmt");
         match(ID, synch);
         id_stmt_tail(synch);
+        this.lineTraceOutput.accept("\t\tLeaving id-stmt");
         return null;
     }
 
     private AST id_stmt_tail(Set<Tokens> synch) {
+        this.lineTraceOutput.accept("\t\tEntering id-stmt-tail");
         if (FIRSTofAssign_stmt_tail.contains(lookahead)) assign_stmt_tail(synch);
         else if (FIRSTofCall_stmt_tail.contains(lookahead)) call_stmt_tail(synch);
         else ; //error
 
+        this.lineTraceOutput.accept("\t\tLeaving id-stmt-tail");
         return null;
     }
 
     private AST assign_stmt_tail(Set<Tokens> synch) {
 
+        this.lineTraceOutput.accept("\t\tEntering assign-stmt-tail");
         if (lookahead == LSQR) {
             match(LSQR, synch);
             add_exp(synch);
@@ -305,36 +328,44 @@ public class Parser {
         expression(synch);
         match(SEMI, synch);
 
+        this.lineTraceOutput.accept("\t\tLeaving assign-stmt-tail");
         return new NullStatement();
     }
 
     private AST call_stmt_tail(Set<Tokens> synch) {
+        this.lineTraceOutput.accept("\t\tEntering call-stmt-tail");
         call_tail(synch);
         match(SEMI, synch);
+        this.lineTraceOutput.accept("\t\tLeaving call-stmt-tail");
         return null;
     }
 
     private AST call_tail(Set<Tokens> synch) {
 
+        this.lineTraceOutput.accept("\t\tEntering call-tail");
         match(LPAREN, synch);
         if(FIRSTofArguments.contains(lookahead)) arguments(synch);
         match(RPAREN, synch);
+        this.lineTraceOutput.accept("\t\tLeaving call-tail");
         return null;
     }
 
     private AST arguments(Set<Tokens> synch) {
+        this.lineTraceOutput.accept("\t\tEntering argument");
 
         expression(synch);
         while(lookahead == COMMA){
             match(COMMA, synch);
             expression(synch);
         }
+        this.lineTraceOutput.accept("\t\tLeaving argument");
 
         return null;
     }
 
 
     private AST compound_stmt(Set<Tokens> synch) {
+        this.lineTraceOutput.accept("\t\tEntering compound-stmt");
 
         match(LCRLY, synch);
 
@@ -349,10 +380,12 @@ public class Parser {
 
         match(RCRLY, synch);
 
+        this.lineTraceOutput.accept("\t\tLeaving compound-stmt");
         return null;
     }
 
     private Statement loop_stmt(Set<Tokens> synch) {
+        this.lineTraceOutput.accept("\t\tEntering loop-stmt");
 
         match(LOOP, synch);
 
@@ -367,44 +400,54 @@ public class Parser {
         match(END, synch);
 
 
+        this.lineTraceOutput.accept("\t\tLeaving loop-stmt");
         return new LoopStatement(first);
     }
 
     private Statement exit_stmt(Set<Tokens> synch) {
 
+        this.lineTraceOutput.accept("\t\tEntering exit-stmt");
         match(EXIT, synch);
         match(SEMI, synch);
 
+        this.lineTraceOutput.accept("\t\tLeaving exit-stmt");
         return new ExitStatement();
     }
 
     private AST continue_stmt(Set<Tokens> synch) {
 
+        this.lineTraceOutput.accept("\t\tEntering continue-stmt");
         match(CONTINUE, synch);
         match(SEMI, synch);
 
+        this.lineTraceOutput.accept("\t\tLeaving continue-stmt");
         return new ContinueStatement();
     }
 
     private AST return_stmt(Set<Tokens> synch) {
 
+        this.lineTraceOutput.accept("\t\tEntering return-stmt");
         match(RETURN, synch);
         Expression returnValue = null;
         if (FIRSTofExpression.contains(lookahead))
             returnValue = expression(synch);
         match(SEMI, synch);
 
+        this.lineTraceOutput.accept("\t\tLeaving return-stmt");
         return new ReturnStatement(returnValue);
     }
 
 
     private AST null_stmt(Set<Tokens> synch) {
+        this.lineTraceOutput.accept("\t\tEntering null-stmt");
         match(SEMI, synch);
 
+        this.lineTraceOutput.accept("\t\tLeaving null-stmt");
         return null;
     }
 
     private AST branch_stmt(Set<Tokens> synch) {
+        this.lineTraceOutput.accept("\t\tEntering branch-stmt");
         match(BRANCH, synch);
         match(LPAREN, synch);
 
@@ -412,10 +455,10 @@ public class Parser {
 
         match(RPAREN, synch);
 
-        CaseStatement caseStmt = case_(synch);
+        CaseStatement caseStmt = case_stmt(synch);
         CaseStatement next = caseStmt;
         while (FIRSTofCase_stmt.contains(lookahead)) {
-            CaseStatement temp = case_(synch);
+            CaseStatement temp = case_stmt(synch);
             next.setNextNode(temp);
             next = temp;
         }
@@ -423,11 +466,13 @@ public class Parser {
         match(END, synch);
         match(SEMI, synch);
 
+        this.lineTraceOutput.accept("\t\tLeaving branch-stmt");
         return new BranchStatement(addexp,caseStmt);
     }
 
 
-    private CaseStatement case_(Set<Tokens> synch) {
+    private CaseStatement case_stmt(Set<Tokens> synch) {
+        this.lineTraceOutput.accept("\t\tEntering case-stmt");
 
         if (lookahead == CASE) {
             match(CASE, synch);
@@ -439,21 +484,25 @@ public class Parser {
             match(COLON, synch);
             statement(synch);
         }
+        this.lineTraceOutput.accept("\t\tLeaving case-stmt");
 
         return null;
     }
 
     private Expression expression(Set<Tokens> synch) {
+        this.lineTraceOutput.accept("\t\tEntering expression");
         add_exp(synch);
         if (FIRSTofRelop.contains(lookahead)) {
             relop(synch);
             add_exp(synch);
         }
+        this.lineTraceOutput.accept("\t\tLeaving expression");
         return null;
     }
 
 
     private AddExpression add_exp(Set<Tokens> synch) {
+        this.lineTraceOutput.accept("\t\tEntering add-exp");
         boolean hasMinus = false;
         if (FIRSTofUMinus.contains(lookahead))
             uminus(synch);
@@ -465,20 +514,24 @@ public class Parser {
             term(synch);
         }
 
+        this.lineTraceOutput.accept("\t\tLeaving add-exp");
         return null;
     }
 
     private AST term(Set<Tokens> synch) {
+        this.lineTraceOutput.accept("\t\tEntering term");
         factor(synch);
 
         if (FIRSTofMultop.contains(lookahead)) {
             multop(synch);
             factor(synch);
         }
+        this.lineTraceOutput.accept("\t\tLeaving term");
         return null;
     }
 
     private AST factor(Set<Tokens> synch) {
+        this.lineTraceOutput.accept("\t\tEntering factor");
 
 
         if (FIRSTofNid_factor.contains(lookahead)) {
@@ -486,10 +539,12 @@ public class Parser {
         } else {
             id_factor(synch);
         }
+        this.lineTraceOutput.accept("\t\tLeaving factor");
         return null;
     }
 
     private AST nid_factor(Set<Tokens> synch) {
+        this.lineTraceOutput.accept("\t\tEntering nid-factor");
 
         switch (lookahead) {
             case NOT:
@@ -509,16 +564,20 @@ public class Parser {
                 break;
         }
 
+        this.lineTraceOutput.accept("\t\tLeaving nid-factor");
         return null;
     }
 
     private AST id_factor(Set<Tokens> synch) {
+        this.lineTraceOutput.accept("\t\tEntering id-factor");
         match(ID, synch);
         id_tail(synch);
+        this.lineTraceOutput.accept("\t\tLeaving id-factor");
         return null;
     }
 
     private AST id_tail(Set<Tokens> synch) {
+        this.lineTraceOutput.accept("\t\tEntering id-tail");
         if (FIRSTofVar_tail.contains(lookahead)) {
             var_tail(synch);
         } else {
@@ -526,18 +585,22 @@ public class Parser {
 
         }
 
+        this.lineTraceOutput.accept("\t\tLeaving id-tail");
         return null;
     }
 
 
     private AST var_tail(Set<Tokens> synch) {
+        this.lineTraceOutput.accept("\t\tEntering var-tail");
         match(LSQR, synch);
         add_exp(synch);
         match(RSQR, synch);
+        this.lineTraceOutput.accept("\t\tLeaving var-tail");
         return null;
     }
 
     private AST relop(Set<Tokens> synch) {
+        this.lineTraceOutput.accept("\t\tEntering relop");
 
         switch (lookahead) {
             case LTEQ:
@@ -559,11 +622,13 @@ public class Parser {
                 match(NEQ, synch);
                 break;
         }
+        this.lineTraceOutput.accept("\t\tLeaving relop");
 
         return null;
     }
 
     private AST addop(Set<Tokens> synch) {
+        this.lineTraceOutput.accept("\t\tEntering addop");
 
         switch (lookahead) {
             case PLUS:
@@ -580,10 +645,12 @@ public class Parser {
                 break;
         }
 
+        this.lineTraceOutput.accept("\t\tLeaving addop");
         return null;
     }
 
     private AST multop(Set<Tokens> synch) {
+        this.lineTraceOutput.accept("\t\tEntering multop");
 
         switch (lookahead) {
             case MULT:
@@ -603,17 +670,21 @@ public class Parser {
                 break;
         }
 
+        this.lineTraceOutput.accept("\t\tLeaving multop");
         return null;
     }
 
     private AST uminus(Set<Tokens> synch) {
+        this.lineTraceOutput.accept("\t\tEntering unimus");
         match(MINUS, synch);
+        this.lineTraceOutput.accept("\t\tLeaving unimus");
         return new MinusExpression();
     }
 
 
     private void match(Tokens expected, Set<Tokens> synch) {
         if (lookahead == expected) {
+            this.lineTraceOutput.accept("\t\tMatched " + expected.toString());
             lookaheadToken = scanner.nextToken();
             lookahead = lookaheadToken.token;
         }else

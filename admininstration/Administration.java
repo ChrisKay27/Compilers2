@@ -36,7 +36,7 @@ public class Administration implements Administrator {
 
         this.scanner = new Scanner(buffer,this::printLineTrace,this::printErrorMessage);
         scanner.setTraceEnabled(options.verbose);
-        this.parser = new Parser(this.scanner,this::printErrorMessage);
+        this.parser = new Parser(this.scanner,this::printLineTrace,this::printErrorMessage);
     }
 
     /**
