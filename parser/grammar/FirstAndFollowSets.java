@@ -306,7 +306,9 @@ public class FirstAndFollowSets {
 
     static {
         Set<Tokens> FIRST = new HashSet<>();
-        FIRST.addAll(FIRSTofAdd_expr);
+        FIRST.add(Tokens.LSQR);
+        FIRST.add(Tokens.COMMA);
+        FIRST.add(Tokens.SEMI);
         FIRSTofVar_dec_tail = FIRST;
     }
 

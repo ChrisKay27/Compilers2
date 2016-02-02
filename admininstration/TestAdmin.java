@@ -24,12 +24,9 @@ public class TestAdmin extends Administration {
     public boolean validateParse(List<Token> expectedTokens) {
         List receivedTokens = getParse();
         boolean passed = true;
-        for (int i = 0; i < expectedTokens.size(); i++) {
-            if( !(expectedTokens.get(i).equals(receivedTokens.get(i)))) {
-
-                if( options.verbose )
-                    System.out.println(expectedTokens.get(i) + " /= " + receivedTokens.get(i));
-
+        for (int i = 0; i < expectedTokens.size() && i < receivedTokens.size(); i++) {
+            if (!(expectedTokens.get(i).equals(receivedTokens.get(i)))) {
+                if (options.verbose) System.out.println(expectedTokens.get(i) + " /= " + receivedTokens.get(i));
                 passed &= false;
             }
         }
