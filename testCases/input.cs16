@@ -4,13 +4,12 @@
     Date: Jan 12, 2016
 */
 
-int x := 0;
-int y := 0;
-
+int x;
+int y;
 
 /*
     /*
-    Here is main
+        Here is main
     */
 */
 public static void main(int[] args){

@@ -78,9 +78,7 @@ public class Parser {
         scanner.setTraceEnabled(false);
 
         for (String foo : libraries) {
-
             parseLine(foo);
-
         }
 
         scanner.setTraceEnabled(temp);
@@ -132,11 +130,6 @@ public class Parser {
         return null;
     }
 
-    
- 
-
-
-
 
     private AST if_stmt(Set<Tokens> synch) {
 
@@ -159,14 +152,16 @@ public class Parser {
 
 
 
-    private AST declaration(Set<Tokens> synch) {
+    private Declaration declaration(Set<Tokens> synch) {
 
         this.lineTraceOutput.accept("\t\tEntering declaration");
         if (lookahead == VOID) {
             match(VOID, synch);
+            Token token = lookaheadToken;
             match(ID, synch);
-            fun_dec_tail(synch);
-        } else if (FIRSTofNonvoid_specifier.contains(lookahead)) {
+            FuncDeclarationTail funcDecTail = fun_dec_tail(synch);
+            return new FuncDeclaration(Type.VOID,token,funcDecTail.getParams(),funcDecTail.getFuncBody());
+        } else if (FIRSTofNonvoid_specifier.contains(lookahead)  ) {
             nonvoid_specifier(synch);
             match(ID, synch);
             dec_tail(synch);
@@ -177,12 +172,19 @@ public class Parser {
         return null;
     }
 
-    private AST nonvoid_specifier(Set<Tokens> synch) {
+    private Type nonvoid_specifier(Set<Tokens> synch) {
         this.lineTraceOutput.accept("\t\tEntering nonvoid-specifier");
-        if (lookahead == INT) match(INT, synch);
-        if (lookahead == BOOL) match(BOOL, synch);
-        this.lineTraceOutput.accept("\t\tLeaving nonvoid-specifier");
-        return null;
+        if (lookahead == INT) {
+            match(INT, synch);
+            this.lineTraceOutput.accept("\t\tLeaving nonvoid-specifier");
+            return Type.INT;
+        }
+        if (lookahead == BOOL) {
+            match(BOOL, synch);
+            this.lineTraceOutput.accept("\t\tLeaving nonvoid-specifier");
+            return Type.BOOL;
+        }
+        throw new RuntimeException("probly remove this");
     }
 
     private AST dec_tail(Set<Tokens> synch) {
@@ -223,20 +225,21 @@ public class Parser {
         return null;
     }
 
-    private AST fun_dec_tail(Set<Tokens> synch) {
+    private FuncDeclarationTail fun_dec_tail(Set<Tokens> synch) {
 
         this.lineTraceOutput.accept("\t\tEntering fun-dec-tail");
         match(LPAREN, synch);
-        params(synch);
+        Declaration params = params(synch);
         match(RPAREN, synch);
-        //compound_stmt(synch);
+        CompoundStatement statement = compound_stmt(synch);
 
         this.lineTraceOutput.accept("\t\tLeaving fun-dec-tail");
-        return null;
+
+        return new FuncDeclarationTail(params,statement);
     }
 
 
-    private AST params(Set<Tokens> synch) {
+    private Declaration params(Set<Tokens> synch) {
         this.lineTraceOutput.accept("\t\tEntering params");
         if (lookahead == VOID) {
             match(VOID, synch);
@@ -364,24 +367,39 @@ public class Parser {
     }
 
 
-    private AST compound_stmt(Set<Tokens> synch) {
+    private CompoundStatement compound_stmt(Set<Tokens> synch) {
         this.lineTraceOutput.accept("\t\tEntering compound-stmt");
 
         match(LCRLY, synch);
 
+        Declaration declaration = null;
+
         if(FIRSTofNonvoid_specifier.contains(lookahead)){
-            nonvoid_specifier(synch);
+
+            Type decType = nonvoid_specifier(synch);
+            Token IDToken = lookaheadToken;
             match(ID, synch);
+
             var_dec_tail(synch);
+
+            declaration = new Declaration(decType,IDToken);
         }
+
+        Statement first = null;
+
         do {
-            statement(synch);
+            Statement temp = statement(synch);
+
+            if( first == null )
+                first = temp;
+            else
+                first.setNextNode(temp);
         } while(FIRSTofStatement.contains(lookahead));
 
         match(RCRLY, synch);
 
         this.lineTraceOutput.accept("\t\tLeaving compound-stmt");
-        return null;
+        return new CompoundStatement(declaration,first);
     }
 
     private Statement loop_stmt(Set<Tokens> synch) {
@@ -473,31 +491,38 @@ public class Parser {
 
     private CaseStatement case_stmt(Set<Tokens> synch) {
         this.lineTraceOutput.accept("\t\tEntering case-stmt");
-
+        Statement statement;
+        Token t = null;
         if (lookahead == CASE) {
             match(CASE, synch);
+            t = lookaheadToken;
             match(NUM, synch);
             match(COLON, synch);
-            statement(synch);
+            statement = statement(synch);
         } else {
             match(DEFAULT, synch);
             match(COLON, synch);
-            statement(synch);
+            statement = statement(synch);
         }
         this.lineTraceOutput.accept("\t\tLeaving case-stmt");
 
-        return null;
+        return new CaseStatement(t, statement);
     }
 
     private Expression expression(Set<Tokens> synch) {
         this.lineTraceOutput.accept("\t\tEntering expression");
-        add_exp(synch);
+
+        AddExpression addExpression = add_exp(synch);
+
         if (FIRSTofRelop.contains(lookahead)) {
-            relop(synch);
-            add_exp(synch);
+
+            Tokens relop = relop(synch);
+            AddExpression addExp2 = add_exp(synch);
+
+            return new Expression(addExpression,relop,addExp2);
         }
         this.lineTraceOutput.accept("\t\tLeaving expression");
-        return null;
+        return new Expression(addExpression,null,null);
     }
 
 
@@ -599,28 +624,28 @@ public class Parser {
         return null;
     }
 
-    private AST relop(Set<Tokens> synch) {
+    private Tokens relop(Set<Tokens> synch) {
         this.lineTraceOutput.accept("\t\tEntering relop");
 
         switch (lookahead) {
             case LTEQ:
                 match(LTEQ, synch);
-                break;
+                return LTEQ;
             case LT:
                 match(LT, synch);
-                break;
+                return LT;
             case GT:
                 match(GT, synch);
-                break;
+                return GT;
             case GTEQ:
                 match(GTEQ, synch);
-                break;
+                return GTEQ;
             case EQ:
                 match(EQ, synch);
-                break;
+                return EQ;
             case NEQ:
                 match(NEQ, synch);
-                break;
+                return NEQ;
         }
         this.lineTraceOutput.accept("\t\tLeaving relop");
 

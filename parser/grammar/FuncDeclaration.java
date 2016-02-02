@@ -4,20 +4,19 @@ import parser.Type;
 import scanner.Token;
 
 /**
+ *
  * Created by Chris on 1/30/2016.
  */
 public class FuncDeclaration extends Declaration {
 
     private final Declaration params;
+    private final CompoundStatement body;
 
-    private final Statement body;
-
-    public FuncDeclaration(Type type, Token ID, Declaration params, Statement body) {
+    public FuncDeclaration(Type type, Token ID, Declaration params, CompoundStatement body) {
         super(type,ID);
         this.params = params;
         this.body = body;
     }
-
 
     public Type getType() {
         return type;
@@ -29,5 +28,9 @@ public class FuncDeclaration extends Declaration {
 
     public Declaration getParams() {
         return params;
+    }
+
+    public CompoundStatement getBody() {
+        return body;
     }
 }
