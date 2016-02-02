@@ -191,6 +191,7 @@ public class Parser {
             return Type.BOOL;
         }
         if(this.scanner.isTraceEnabled())throw new RuntimeException("probly remove this");
+        return null;
     }
 
     private AST dec_tail(Set<Tokens> synch) {
