@@ -1,7 +1,7 @@
 package scanner;
 
 import admininstration.Administration;
-import parser.Tokens;
+import parser.TokenType;
 import stateMachine.State;
 
 import java.io.IOException;
@@ -20,26 +20,26 @@ public class Scanner {
     private static HashMap<Object, Token> keywords = new HashMap<>();
 
     static {
-        keywords.put("if", new Token(Tokens.IF, null));
-        keywords.put("and", new Token(Tokens.AND, null));
-        keywords.put("bool", new Token(Tokens.BOOL, null));
-        keywords.put("branch", new Token(Tokens.BRANCH, null));
-        keywords.put("case", new Token(Tokens.CASE, null));
-        keywords.put("continue", new Token(Tokens.CONTINUE, null));
-        keywords.put("default", new Token(Tokens.DEFAULT, null));
-        keywords.put("else", new Token(Tokens.ELSE, null));
-        keywords.put("end", new Token(Tokens.END, null));
-        keywords.put("exit", new Token(Tokens.EXIT, null));
-        keywords.put("int", new Token(Tokens.INT, null));
-        keywords.put("loop", new Token(Tokens.LOOP, null));
-        keywords.put("mod", new Token(Tokens.MOD, null));
-        keywords.put("not", new Token(Tokens.NOT, null));
-        keywords.put("or", new Token(Tokens.OR, null));
-        keywords.put("ref", new Token(Tokens.REF, null));
-        keywords.put("return", new Token(Tokens.RETURN, null));
-        keywords.put("void", new Token(Tokens.VOID, null));
-        keywords.put("true", new Token(Tokens.BLIT, 1));
-        keywords.put("false", new Token(Tokens.BLIT, 0));
+        keywords.put("if", new Token(TokenType.IF, null));
+        keywords.put("and", new Token(TokenType.AND, null));
+        keywords.put("bool", new Token(TokenType.BOOL, null));
+        keywords.put("branch", new Token(TokenType.BRANCH, null));
+        keywords.put("case", new Token(TokenType.CASE, null));
+        keywords.put("continue", new Token(TokenType.CONTINUE, null));
+        keywords.put("default", new Token(TokenType.DEFAULT, null));
+        keywords.put("else", new Token(TokenType.ELSE, null));
+        keywords.put("end", new Token(TokenType.END, null));
+        keywords.put("exit", new Token(TokenType.EXIT, null));
+        keywords.put("int", new Token(TokenType.INT, null));
+        keywords.put("loop", new Token(TokenType.LOOP, null));
+        keywords.put("mod", new Token(TokenType.MOD, null));
+        keywords.put("not", new Token(TokenType.NOT, null));
+        keywords.put("or", new Token(TokenType.OR, null));
+        keywords.put("ref", new Token(TokenType.REF, null));
+        keywords.put("return", new Token(TokenType.RETURN, null));
+        keywords.put("void", new Token(TokenType.VOID, null));
+        keywords.put("true", new Token(TokenType.BLIT, 1));
+        keywords.put("false", new Token(TokenType.BLIT, 0));
     }
 
 
@@ -102,7 +102,7 @@ public class Scanner {
             currentLine.append((char) nextChar);
 
         if (nextChar == -1)
-            return new Token(Tokens.ENDFILE, null);
+            return new Token(TokenType.ENDFILE, null);
 
         if (Administration.debug()) System.out.println("Starting in init state");
 
@@ -149,11 +149,11 @@ public class Scanner {
                 if (nextChar == -1) {
                     //However if we are not in the correct states which allow the end of file to be reached, we throw an exception
                     if (!ssm.blockComment.countZero())
-                        return new Token(Tokens.ERROR, "Unexpected end of file at line:" + lineCount + " col:" + colCount);
+                        return new Token(TokenType.ERROR, "Unexpected end of file at line:" + lineCount + " col:" + colCount);
                     else { //else the end of file token is returned
                         t = state.consume(' ');
                         if( t == null )
-                            t = new Token(Tokens.ENDFILE, null);
+                            t = new Token(TokenType.ENDFILE, null);
                     }
                 }
 
@@ -173,7 +173,7 @@ public class Scanner {
             }
         }
 
-        if (t.token == Tokens.ID) { //If we have received an ID token then we now check to see if it is actually a keyword
+        if (t.token == TokenType.ID) { //If we have received an ID token then we now check to see if it is actually a keyword
             Token keyword = keywords.get(t.attrValue);
             if (keyword != null)
                 t = keyword;
@@ -187,7 +187,7 @@ public class Scanner {
                 t.attrValue = id;
                 reverseSymbolTable[id] = attrValue;
             }
-        } else if (t.token == Tokens.ERROR) {//If its a error token we set which line and column it appeared on
+        } else if (t.token == TokenType.ERROR) {//If its a error token we set which line and column it appeared on
             t.attrValue = t.attrValue + " at line:" + lineCount + " col:" + colCount;
         }
 

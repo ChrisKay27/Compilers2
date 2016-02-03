@@ -1,20 +1,20 @@
 package parser.grammar;
 
-import parser.Tokens;
+import parser.TokenType;
 
 import java.util.HashSet;
 import java.util.Set;
 
-import static parser.Tokens.*;
+import static parser.TokenType.*;
 
 /**
  * Created by Chris on 1/30/2016.
  */
 public class FirstAndFollowSets {
-    public static final Set<Tokens> FIRSTofStatement;
+    public static final Set<TokenType> FIRSTofStatement;
 
     static {
-        Set<Tokens> FIRST = new HashSet<>();
+        Set<TokenType> FIRST = new HashSet<>();
         FIRST.add(ID);
         FIRST.add(LPAREN);
         FIRST.add(IF);
@@ -27,72 +27,72 @@ public class FirstAndFollowSets {
         FIRSTofStatement = FIRST;
     }
 
-    public static final Set<Tokens> FIRSTofLoop_stmt;
+    public static final Set<TokenType> FIRSTofLoop_stmt;
 
     static {
-        Set<Tokens> FIRST = new HashSet<>();
+        Set<TokenType> FIRST = new HashSet<>();
         FIRST.add(LOOP);
         FIRSTofLoop_stmt = FIRST;
     }
 
-    public static final Set<Tokens> FIRSTofExit_stmt;
+    public static final Set<TokenType> FIRSTofExit_stmt;
 
     static {
-        Set<Tokens> FIRST = new HashSet<>();
+        Set<TokenType> FIRST = new HashSet<>();
         FIRST.add(EXIT);
         FIRSTofExit_stmt = FIRST;
     }
 
-    public static final Set<Tokens> FIRSTofContinue_stmt;
+    public static final Set<TokenType> FIRSTofContinue_stmt;
 
     static {
-        Set<Tokens> FIRST = new HashSet<>();
+        Set<TokenType> FIRST = new HashSet<>();
         FIRST.add(CONTINUE);
         FIRSTofContinue_stmt = FIRST;
     }
 
-    public static final Set<Tokens> FIRSTofReturn_stmt;
+    public static final Set<TokenType> FIRSTofReturn_stmt;
 
     static {
-        Set<Tokens> FIRST = new HashSet<>();
+        Set<TokenType> FIRST = new HashSet<>();
         FIRST.add(RETURN);
         FIRSTofReturn_stmt = FIRST;
     }
 
-    public static final Set<Tokens> FIRSTofNull_stmt;
+    public static final Set<TokenType> FIRSTofNull_stmt;
 
     static {
-        Set<Tokens> FIRST = new HashSet<>();
+        Set<TokenType> FIRST = new HashSet<>();
         FIRST.add(SEMI);
         FIRSTofNull_stmt = FIRST;
     }
 
-    public static final Set<Tokens> FIRSTofBranch_stmt;
+    public static final Set<TokenType> FIRSTofBranch_stmt;
 
     static {
-        Set<Tokens> FIRST = new HashSet<>();
+        Set<TokenType> FIRST = new HashSet<>();
         FIRST.add(BRANCH);
         FIRSTofBranch_stmt = FIRST;
     }
 
-    public static final Set<Tokens> FIRSTofCase_stmt;
+    public static final Set<TokenType> FIRSTofCase_stmt;
 
     static {
-        Set<Tokens> FIRST = new HashSet<>();
+        Set<TokenType> FIRST = new HashSet<>();
         FIRST.add(CASE);
         FIRSTofCase_stmt = FIRST;
     }
 
-    public static final Set<Tokens> FIRSTofUMinus;
+    public static final Set<TokenType> FIRSTofUMinus;
     static{
-        Set<Tokens> FIRST = new HashSet<>();
+        Set<TokenType> FIRST = new HashSet<>();
         FIRST.add(MINUS);
         FIRSTofUMinus = FIRST;
     }
 
-    public static final Set<Tokens> FIRSTofMultop;
+    public static final Set<TokenType> FIRSTofMultop;
     static{
-        Set<Tokens> FIRST = new HashSet<>();
+        Set<TokenType> FIRST = new HashSet<>();
         FIRST.add(MULT);
         FIRST.add(DIV);
         FIRST.add(MOD);
@@ -101,9 +101,9 @@ public class FirstAndFollowSets {
         FIRSTofMultop = FIRST;
     }
 
-    public static final Set<Tokens> FIRSTofAddOp;
+    public static final Set<TokenType> FIRSTofAddOp;
     static{
-        Set<Tokens> FIRST = new HashSet<>();
+        Set<TokenType> FIRST = new HashSet<>();
         FIRST.add(PLUS);
         FIRST.add(MINUS);
         FIRST.add(OR);
@@ -111,9 +111,9 @@ public class FirstAndFollowSets {
         FIRSTofAddOp = FIRST;
     }
 
-    public static final Set<Tokens> FIRSTofRelop;
+    public static final Set<TokenType> FIRSTofRelop;
     static{
-        Set<Tokens> FIRST = new HashSet<>();
+        Set<TokenType> FIRST = new HashSet<>();
         FIRST.add(LTEQ);
         FIRST.add(LT);
         FIRST.add(GT);
@@ -123,33 +123,33 @@ public class FirstAndFollowSets {
         FIRSTofRelop = FIRST;
     }
 
-    public static final Set<Tokens> FIRSTofVar_tail;
+    public static final Set<TokenType> FIRSTofVar_tail;
     static{
-        Set<Tokens> FIRST = new HashSet<>();
+        Set<TokenType> FIRST = new HashSet<>();
         FIRST.add(LSQR);
         FIRSTofVar_tail = FIRST;
     }
 
-    public static final Set<Tokens> FIRSTofId_tail;
+    public static final Set<TokenType> FIRSTofId_tail;
     static{
-        Set<Tokens> FIRST = new HashSet<>();
+        Set<TokenType> FIRST = new HashSet<>();
         FIRST.addAll(FIRSTofVar_tail);
         //FIRST.addAll(FIRSTofCallTail);
         FIRSTofId_tail = FIRST;
     }
 
-    public static final Set<Tokens> FIRSTofId_factor;
+    public static final Set<TokenType> FIRSTofId_factor;
 
     static {
-        Set<Tokens> FIRST = new HashSet<>();
+        Set<TokenType> FIRST = new HashSet<>();
         FIRST.add(ID);
         FIRSTofId_factor = FIRST;
     }
 
-    public static final Set<Tokens> FIRSTofNid_factor;
+    public static final Set<TokenType> FIRSTofNid_factor;
 
     static {
-        Set<Tokens> FIRST = new HashSet<>();
+        Set<TokenType> FIRST = new HashSet<>();
         FIRST.add(NOT);
         FIRST.add(LPAREN);
         FIRST.add(NUM);
@@ -158,182 +158,182 @@ public class FirstAndFollowSets {
     }
 
 
-    public static final Set<Tokens> FIRSTofFactor;
+    public static final Set<TokenType> FIRSTofFactor;
 
     static {
-        Set<Tokens> FIRST = new HashSet<>();
+        Set<TokenType> FIRST = new HashSet<>();
         FIRST.addAll(FIRSTofNid_factor);
         FIRST.addAll(FIRSTofId_factor);
         FIRSTofFactor = FIRST;
     }
 
 
-    public static final Set<Tokens> FIRSTofTerm;
+    public static final Set<TokenType> FIRSTofTerm;
 
     static {
-        Set<Tokens> FIRST = new HashSet<>();
+        Set<TokenType> FIRST = new HashSet<>();
         FIRST.addAll(FIRSTofFactor);
         FIRSTofTerm = FIRST;
     }
 
 
 
-    public static final Set<Tokens> FIRSTofAdd_expr;
+    public static final Set<TokenType> FIRSTofAdd_expr;
 
     static {
-        Set<Tokens> FIRST = new HashSet<>();
+        Set<TokenType> FIRST = new HashSet<>();
         FIRST.add(MINUS);
         FIRST.addAll(FIRSTofTerm);
         FIRSTofAdd_expr = FIRST;
     }
-    public static final Set<Tokens> FIRSTofExpression;
+    public static final Set<TokenType> FIRSTofExpression;
 
     static {
-        Set<Tokens> FIRST = new HashSet<>();
+        Set<TokenType> FIRST = new HashSet<>();
         FIRST.addAll(FIRSTofAdd_expr);
         FIRSTofExpression = FIRST;
     }
 
-    public static final Set<Tokens> FIRSTofIf_stmt;
+    public static final Set<TokenType> FIRSTofIf_stmt;
 
     static {
-        Set<Tokens> FIRST = new HashSet<>();
+        Set<TokenType> FIRST = new HashSet<>();
         FIRST.add(IF);
         FIRSTofIf_stmt = FIRST;
     }
 
-    public static final Set<Tokens> FIRSTofCompound_stmt;
+    public static final Set<TokenType> FIRSTofCompound_stmt;
 
     static {
-        Set<Tokens> FIRST = new HashSet<>();
+        Set<TokenType> FIRST = new HashSet<>();
         FIRST.add(LCRLY);
         FIRSTofCompound_stmt = FIRST;
     }
 
-    public static final Set<Tokens> FIRSTofArguments;
+    public static final Set<TokenType> FIRSTofArguments;
 
     static {
-        Set<Tokens> FIRST = new HashSet<>();
+        Set<TokenType> FIRST = new HashSet<>();
         FIRST.addAll(FIRSTofExpression);
         FIRSTofArguments = FIRST;
     }
 
-    public static final Set<Tokens> FIRSTofCall_tail;
+    public static final Set<TokenType> FIRSTofCall_tail;
 
     static {
-        Set<Tokens> FIRST = new HashSet<>();
+        Set<TokenType> FIRST = new HashSet<>();
         FIRST.add(LPAREN);
         FIRSTofCall_tail = FIRST;
     }
 
-    public static final Set<Tokens> FIRSTofCall_stmt_tail;
+    public static final Set<TokenType> FIRSTofCall_stmt_tail;
 
     static {
-        Set<Tokens> FIRST = new HashSet<>();
+        Set<TokenType> FIRST = new HashSet<>();
         FIRST.addAll(FIRSTofCall_tail);
         FIRSTofCall_stmt_tail = FIRST;
     }
 
-    public static final Set<Tokens> FIRSTofAssign_stmt_tail;
+    public static final Set<TokenType> FIRSTofAssign_stmt_tail;
 
     static {
-        Set<Tokens> FIRST = new HashSet<>();
+        Set<TokenType> FIRST = new HashSet<>();
         FIRST.addAll(FIRSTofAdd_expr);
         FIRST.add(ASSIGN);
         FIRSTofAssign_stmt_tail = FIRST;
     }
 
-    public static final Set<Tokens> FIRSTofId_stmt_tail;
+    public static final Set<TokenType> FIRSTofId_stmt_tail;
 
     static {
-        Set<Tokens> FIRST = new HashSet<>();
+        Set<TokenType> FIRST = new HashSet<>();
         FIRST.addAll(FIRSTofAssign_stmt_tail);
         FIRST.addAll(FIRSTofCall_stmt_tail);
         FIRSTofId_stmt_tail = FIRST;
     }
 
-    public static final Set<Tokens> FIRSTofId_stmt;
+    public static final Set<TokenType> FIRSTofId_stmt;
 
     static {
-        Set<Tokens> FIRST = new HashSet<>();
+        Set<TokenType> FIRST = new HashSet<>();
         FIRST.add(ID);
         FIRSTofId_stmt = FIRST;
     }
 
-    public static final Set<Tokens> FIRSTofNonvoid_specifier;
+    public static final Set<TokenType> FIRSTofNonvoid_specifier;
 
     static {
-        Set<Tokens> FIRST = new HashSet<>();
+        Set<TokenType> FIRST = new HashSet<>();
         FIRST.add(INT);
         FIRST.add(BOOL);
         FIRSTofNonvoid_specifier = FIRST;
     }
 
-    public static final Set<Tokens> FIRSTofParam;
+    public static final Set<TokenType> FIRSTofParam;
 
     static {
-        Set<Tokens> FIRST = new HashSet<>();
+        Set<TokenType> FIRST = new HashSet<>();
         FIRST.addAll(FIRSTofNonvoid_specifier);
         FIRST.add(REF);
         FIRSTofParam = FIRST;
     }
 
-    public static final Set<Tokens> FIRSTofParams;
+    public static final Set<TokenType> FIRSTofParams;
 
     static {
-        Set<Tokens> FIRST = new HashSet<>();
+        Set<TokenType> FIRST = new HashSet<>();
         FIRST.addAll(FIRSTofParam);
         FIRSTofParams = FIRST;
     }
 
-    public static final Set<Tokens> FIRSTofVar_name;
+    public static final Set<TokenType> FIRSTofVar_name;
 
     static {
-        Set<Tokens> FIRST = new HashSet<>();
+        Set<TokenType> FIRST = new HashSet<>();
         FIRST.add(ID);
         FIRSTofVar_name = FIRST;
     }
 
-    public static final Set<Tokens> FIRSTofFun_dec_tail;
+    public static final Set<TokenType> FIRSTofFun_dec_tail;
 
     static {
-        Set<Tokens> FIRST = new HashSet<>();
+        Set<TokenType> FIRST = new HashSet<>();
         FIRST.add(LPAREN);
         FIRSTofFun_dec_tail = FIRST;
     }
 
-    public static final Set<Tokens> FIRSTofVar_dec_tail;
+    public static final Set<TokenType> FIRSTofVar_dec_tail;
 
     static {
-        Set<Tokens> FIRST = new HashSet<>();
-        FIRST.add(Tokens.LSQR);
-        FIRST.add(Tokens.COMMA);
-        FIRST.add(Tokens.SEMI);
+        Set<TokenType> FIRST = new HashSet<>();
+        FIRST.add(TokenType.LSQR);
+        FIRST.add(TokenType.COMMA);
+        FIRST.add(TokenType.SEMI);
         FIRSTofVar_dec_tail = FIRST;
     }
 
-    public static final Set<Tokens> FIRSTofDec_tail;
+    public static final Set<TokenType> FIRSTofDec_tail;
 
     static {
-        Set<Tokens> FIRST = new HashSet<>();
+        Set<TokenType> FIRST = new HashSet<>();
         FIRST.addAll(FIRSTofVar_dec_tail);
         FIRST.addAll(FIRSTofFun_dec_tail);
         FIRSTofDec_tail = FIRST;
     }
 
-    public static final Set<Tokens> FIRSTofDeclaration;
+    public static final Set<TokenType> FIRSTofDeclaration;
 
     static {
-        Set<Tokens> FIRST = new HashSet<>();
+        Set<TokenType> FIRST = new HashSet<>();
         FIRST.add(VOID);
         FIRST.addAll(FIRSTofNonvoid_specifier);
         FIRSTofDeclaration = FIRST;
     }
 
-    public static final Set<Tokens> FIRSTofProgram;
+    public static final Set<TokenType> FIRSTofProgram;
 
     static {
-        Set<Tokens> FIRST = new HashSet<>();
+        Set<TokenType> FIRST = new HashSet<>();
         FIRST.addAll(FIRSTofDeclaration);
         FIRSTofProgram = FIRST;
     }

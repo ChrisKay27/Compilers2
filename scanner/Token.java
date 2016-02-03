@@ -1,6 +1,6 @@
 package scanner;
 
-import parser.Tokens;
+import parser.TokenType;
 
 /**
  *
@@ -8,12 +8,16 @@ import parser.Tokens;
  */
 public class Token {
 
+    /**
+     * This token is here to represent a comment. It is returned from the state machine then thrown away by the Scanner.
+     * It is never actually passed to the scanner.
+     */
     public static final Token COMMENT_TOKEN = new Token(null, null);
 
-    public Tokens token;
+    public TokenType token;
     public Object attrValue;
 
-    public Token(Tokens token, Object attrValue) {
+    public Token(TokenType token, Object attrValue) {
         this.token = token;
         this.attrValue = attrValue;
     }
@@ -21,7 +25,7 @@ public class Token {
     @Override
     public String toString() {
         return token == null ? "Comment Token" : '(' + token.toString() + "," + attrValue + ')';
-        //return "new Token(Tokens."+this.token.toString()+","+this.attrValue +")";
+        //return "new Token(TokenType."+this.token.toString()+","+this.attrValue +")";
     }
 
     @Override

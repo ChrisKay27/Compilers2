@@ -1,6 +1,6 @@
 package scanner;
 
-import parser.Tokens;
+import parser.TokenType;
 import stateMachine.Lexicon;
 import stateMachine.State;
 
@@ -9,6 +9,7 @@ import java.util.function.Consumer;
 import static stateMachine.Lexicon.*;
 
 /**
+ *
  * Created by Chris on 1/9/2016.
  */
 public class ScannerStateMachine {
@@ -28,17 +29,16 @@ public class ScannerStateMachine {
 
             nextState = init;
             if (c == (char) -1) { //added end of file case in the state machine
-                return new Token(Tokens.ENDFILE, null);
+                return new Token(TokenType.ENDFILE, null);
             } else if (c <= 32) {
                 nextState = init;
             } else if (isDigit(c)) {
                 nextState = num;
-                nextState.getSb().replace(0, nextState.getSb().length(), "");
-                nextState.getSb().append(c);
+                nextState.clearAndAppend(c);
             } else if (isLetter(c)) {
                 nextState = id;
                 nextState.getSb().replace(0, nextState.getSb().length(), "");
-                nextState.getSb().append(c);
+                nextState.clearAndAppend(c);
             } else {
                 switch (c) {
                     case '=': nextState = equal; break;
@@ -68,71 +68,62 @@ public class ScannerStateMachine {
                         break;
                     case '*':
                         nextState = multiply;
-                        nextState.getSb().replace(0, nextState.getSb().length(), "");
-                        nextState.getSb().append(c);
+
+                        nextState.clearAndAppend(c);
                         break;
                     case '<':
                         nextState = lessThanOrEq;
-                        //Clears the string builder at the next state
-                        nextState.getSb().replace(0, nextState.getSb().length(), "");
-                        //Adds this character into that states string builder
-                        nextState.getSb().append(c);
+                        //Clears the string builder at the next state and adds
+                        //this character into that states string builder
+                        nextState.clearAndAppend(c);
                         break;
                     case ':':
                         nextState = colonEq;
                         //Clears the string builder at the next state
-                        nextState.getSb().replace(0, nextState.getSb().length(), "");
                         //Adds this character into that states string builder
-                        nextState.getSb().append(c);
+                        nextState.clearAndAppend(c);
                         break;
                     case '>':
                         nextState = greaterThanOrEq;
                         //Clears the string builder at the next state
-                        nextState.getSb().replace(0, nextState.getSb().length(), "");
                         //Adds this character into that states string builder
-                        nextState.getSb().append(c);
+                        nextState.clearAndAppend(c);
                         break;
                     case '|':
                         nextState = orElse;
                         //Clears the string builder at the next state
-                        nextState.getSb().replace(0, nextState.getSb().length(), "");
                         //Adds this character into that states string builder
-                        nextState.getSb().append(c);
+                        nextState.clearAndAppend(c);
                         break;
                     case '&':
                         nextState = andThen;
                         //Clears the string builder at the next state
-                        nextState.getSb().replace(0, nextState.getSb().length(), "");
                         //Adds this character into that states string builder
-                        nextState.getSb().append(c);
+                        nextState.clearAndAppend(c);
                         break;
                     case '/':
                         nextState = divOrComment;
                         //Clears the string builder at the next state
-                        nextState.getSb().replace(0, nextState.getSb().length(), "");
                         //Adds this character into that states string builder
-                        nextState.getSb().append(c);
+                        nextState.clearAndAppend(c);
                         break;
                     case ';':
                         nextState = semiColon;
                         //Clears the string builder at the next state
-                        nextState.getSb().replace(0, nextState.getSb().length(), "");
                         //Adds this character into that states string builder
-                        nextState.getSb().append(c);
+                        nextState.clearAndAppend(c);
                         break;
                     case ',':
                         nextState = comma;
                         //Clears the string builder at the next state
-                        nextState.getSb().replace(0, nextState.getSb().length(), "");
                         //Adds this character into that states string builder
-                        nextState.getSb().append(c);
+                        nextState.clearAndAppend(c);
                         break;
                     default: // report the following illegitimate characters: !"#$%\'.?@^_`
                         nextState = error;
                         //Clears the string builder at the next state
-                        nextState.getSb().replace(0, nextState.getSb().length(), "");
                         //Adds this character into that states string builder
-                        nextState.getSb().append(c);
+                        nextState.clearAndAppend(c);
                         //errorOutput.accept("Error - Illegitimate character " + c + " found.");
                 }
             }
@@ -152,7 +143,7 @@ public class ScannerStateMachine {
     final State error = new State() {
         public Token consume(char c) {
             String badChar = sb.toString();
-            return new Token(Tokens.ERROR, badChar);
+            return new Token(TokenType.ERROR, badChar);
         }
 
         public String toString() {
@@ -176,14 +167,14 @@ public class ScannerStateMachine {
             } else {
                 nextState = init;
                 String value = sb.toString();
-                sb.replace(0, sb.length(), "");
+                sb = new StringBuilder();
                 int number;
                 try{
                     number = Integer.parseInt(value);
                 } catch(java.lang.NumberFormatException e){
-                    return new Token(Tokens.ERROR, "Number format exception " + e.getMessage());
+                    return new Token(TokenType.ERROR, "Number format exception " + e.getMessage());
                 }
-                return new Token(Tokens.NUM, number);
+                return new Token(TokenType.NUM, number);
             }
 
         }
@@ -209,7 +200,7 @@ public class ScannerStateMachine {
             } else {
                 String value = sb.toString();
                 sb = new StringBuilder();
-                return new Token(Tokens.ID, value);
+                return new Token(TokenType.ID, value);
             }
         }
 
@@ -224,7 +215,7 @@ public class ScannerStateMachine {
      * Remains in this state and ignores consumed characters until the end of line character is reached
      * Returns a COMMENT token that will be ignored by the parser
      */
-    State lineComment = new State() {
+    final State lineComment = new State() {
         boolean newLineFound = false;
 
         public Token consume(char c) {
@@ -253,14 +244,14 @@ public class ScannerStateMachine {
      * If a '-' is received, go to the line comment state
      * Otherwise returns a MINUS token
      */
-    State minus = new State() {
+    final State minus = new State() {
         public Token consume(char c) {
             if (c == '-') {
                 //line comment
                 nextState = lineComment;
             } else {
                 // negation or subtraction
-                return new Token(Tokens.MINUS, null);
+                return new Token(TokenType.MINUS, null);
             }
             return null;
         }
@@ -270,10 +261,11 @@ public class ScannerStateMachine {
             return "minus state";
         }
     };
-    State multiply = new State() {
+
+    final State multiply = new State() {
 
         public Token consume(char c) {
-            return new Token(Tokens.MULT, null);
+            return new Token(TokenType.MULT, null);
         }
 
         @Override
@@ -288,7 +280,7 @@ public class ScannerStateMachine {
      *  If a '=' is received goes to the neq state
      *  Otherwise returns a DIV token
      */
-    State divOrComment = new State() {
+    final State divOrComment = new State() {
 
         public Token consume(char c) {
             if (sb.toString().equals("/") && c == '*') {
@@ -296,7 +288,7 @@ public class ScannerStateMachine {
                 nextState = blockComment;
                 blockComment.count = 1;
                 nextState.getSb().replace(0, nextState.getSb().length(), "");
-                nextState.getSb().append("/*");
+                nextState.clearAndAppend("/*");
             } else if (sb.toString().equals("/") && c == '=') {
                 sb = new StringBuilder();
                 nextState = neq;
@@ -304,7 +296,7 @@ public class ScannerStateMachine {
                 //nextState.getSb().append("/=");
             } else {
                 sb.replace(0, sb.length(), "");
-                return new Token(Tokens.DIV, null);
+                return new Token(TokenType.DIV, null);
             }
 
             return null;
@@ -322,7 +314,7 @@ public class ScannerStateMachine {
     State neq = new State() {
 
         public Token consume(char c) {
-            return new Token(Tokens.NEQ, null);
+            return new Token(TokenType.NEQ, null);
         }
 
         @Override
@@ -336,18 +328,18 @@ public class ScannerStateMachine {
      * if the string so far is '<=' return a LTEQ token
      * Otherwise return a LT token
      */
-    State lessThanOrEq = new State() {
+	final State lessThanOrEq = new State() {
 
         public Token consume(char c) {
             if( sb.toString().equals("<=") ){
-                return new Token(Tokens.LTEQ, null);
+                return new Token(TokenType.LTEQ, null);
             }
 
             if (c == '=') {
                 sb.append('=');
             } else {
                 sb.replace(0, sb.length(), "");
-                return new Token(Tokens.LT, null);
+                return new Token(TokenType.LT, null);
             }
             return null;
         }
@@ -369,14 +361,14 @@ public class ScannerStateMachine {
 
         public Token consume(char c) {
             if( sb.toString().equals(">=") ){
-                return new Token(Tokens.GTEQ, null);
+                return new Token(TokenType.GTEQ, null);
             }
 
             if (c == '=') {
                 sb.append('=');
             } else {
                 sb.replace(0, sb.length(), "");
-                return new Token(Tokens.GT, null);
+                return new Token(TokenType.GT, null);
             }
             return null;
         }
@@ -393,19 +385,19 @@ public class ScannerStateMachine {
      * if the string so far is '||' return a ORLESE token
      * Otherwise return an ERROR token
      */
-    State orElse = new State() {
+	final State orElse = new State() {
 
         public Token consume(char c) {
             if (sb.toString().equals("||")) {
                 sb = new StringBuilder();
-                return new Token(Tokens.ORELSE,null);
+                return new Token(TokenType.ORELSE,null);
             }
             if (c == '|') {
                 sb.append('|');
             } else if (sb.toString().equals("|")) {
                 String err = sb.toString();
                 sb = new StringBuilder();
-                return new Token(Tokens.ERROR, err);
+                return new Token(TokenType.ERROR, err);
             }
 
             return null;
@@ -428,17 +420,17 @@ public class ScannerStateMachine {
      * if the string so far is ':=' return a ASSIGN token
      * Otherwise return an ERROR token
      */
-    State colonEq = new State() {
+	final State colonEq = new State() {
         public Token consume(char c) {
             if (sb.toString().equals(":=")) {
                 sb.replace(0, sb.length(), "");
-                return new Token(Tokens.ASSIGN, null);
+                return new Token(TokenType.ASSIGN, null);
             }
             if (c == '=') {
                 sb.append('=');
             } else {
                 sb = new StringBuilder();
-                return new Token(Tokens.COLON, null);
+                return new Token(TokenType.COLON, null);
             }
             return null;
         }
@@ -455,12 +447,12 @@ public class ScannerStateMachine {
      * if the string so far is '&&' return a ANDTHEN token
      * Otherwise return an ERROR token
      */
-    State andThen = new State() {
+	final State andThen = new State() {
         public Token consume(char c) {
             //If this state has the string && built up then we clear its string and return the ANDTHEN token
             if (sb.toString().equals("&&")) {
                 sb = new StringBuilder();
-                return new Token(Tokens.ANDTHEN, null);
+                return new Token(TokenType.ANDTHEN, null);
             }
             //else it should only have the string &, we then append the next & symbol to it.
             if (c == '&') {
@@ -468,7 +460,7 @@ public class ScannerStateMachine {
             } else {
                 String err = sb.toString();
                 sb = new StringBuilder();
-                return new Token(Tokens.ERROR, err);
+                return new Token(TokenType.ERROR, err);
             }
             return null;
         }
@@ -598,9 +590,9 @@ public class ScannerStateMachine {
      * Reached from init after recieving '{'
      * Returns a LCRLY token.
      */
-    State leftBrace = new State() {
+	final State leftBrace = new State() {
         public Token consume(char c) {
-            return new Token(Tokens.LCRLY, null);
+            return new Token(TokenType.LCRLY, null);
         }
 
         @Override
@@ -613,9 +605,9 @@ public class ScannerStateMachine {
      * Reached from init after recieving '}'
      * Returns a RCRLY token.
      */
-    State rightBrace = new State() {
+	final State rightBrace = new State() {
         public Token consume(char c) {
-            return new Token(Tokens.RCRLY, null);
+            return new Token(TokenType.RCRLY, null);
         }
 
         @Override
@@ -628,9 +620,9 @@ public class ScannerStateMachine {
      * Reached from init after receiving '('
      * Returns a LPAREN token.
      */
-    State leftParen = new State() {
+	final State leftParen = new State() {
         public Token consume(char c) {
-            return new Token(Tokens.LPAREN, null);
+            return new Token(TokenType.LPAREN, null);
         }
 
         public String toString() {
@@ -642,9 +634,9 @@ public class ScannerStateMachine {
      * Reached from init after receiving ')'
      * Returns a RPAREN token.
      */
-    State rightParen = new State() {
+	final State rightParen = new State() {
         public Token consume(char c) {
-            return new Token(Tokens.RPAREN, null);
+            return new Token(TokenType.RPAREN, null);
         }
 
         @Override
@@ -657,9 +649,9 @@ public class ScannerStateMachine {
      * Reached from init after receiving '['
      * Returns a LSQR token.
      */
-    State leftSquare = new State() {
+	final State leftSquare = new State() {
         public Token consume(char c) {
-            return new Token(Tokens.LSQR, null);
+            return new Token(TokenType.LSQR, null);
         }
 
         public String toString() {
@@ -671,9 +663,9 @@ public class ScannerStateMachine {
      * Reached from init after receiving ']'
      * Returns a RSQR token.
      */
-    State rightSquare = new State() {
+	final State rightSquare = new State() {
         public Token consume(char c) {
-            return new Token(Tokens.RSQR, null);
+            return new Token(TokenType.RSQR, null);
         }
 
         @Override
@@ -681,13 +673,14 @@ public class ScannerStateMachine {
             return "] state";
         }
     };
+
     /**
      * Reached from init after receiving '+'
      * Returns a PLUS token.
      */
-    State plus = new State() {
+	final State plus = new State() {
         public Token consume(char c) {
-            return new Token(Tokens.PLUS, null);
+            return new Token(TokenType.PLUS, null);
         }
 
         @Override
@@ -695,40 +688,42 @@ public class ScannerStateMachine {
             return "+ state";
         }
     };
+
     /**
      * Reached from init after receiving '='
      * Returns a EQ token.
      */
-    State equal = new State() {
+	final State equal = new State() {
         public Token consume(char c) {
-            return new Token(Tokens.EQ, null);
+            return new Token(TokenType.EQ, null);
         }
 
         public String toString() {
             return "= equal";
         }
     };
+
     /**
      * Reached from init after receiving ';'
      * Returns a SEMI token.
      */
-    State semiColon = new State() {
-                public Token consume(char c) {
-                    return new Token(Tokens.SEMI, null);
-                }
+	final State semiColon = new State() {
+        public Token consume(char c) {
+            return new Token(TokenType.SEMI, null);
+        }
 
-                public String toString() {
-                    return "; state";
-                }
-            };
+        public String toString() {
+            return "; state";
+        }
+    };
 
     /**
      * Reached from init after receiving ','
      * Returns a COMMA token.
      */
-    State comma = new State() {
+	final State comma = new State() {
         public Token consume(char c) {
-            return new Token(Tokens.COMMA, null);
+            return new Token(TokenType.COMMA, null);
         }
 
         @Override

@@ -15,7 +15,7 @@ y := 21;
         Here is main
     */
 */
-public static void main(int[] args){
+void main(int[] args){
 
     sout(x + y);
     sout(x[] + y);
