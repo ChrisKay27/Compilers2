@@ -1,5 +1,7 @@
 package parser.grammar;
 
+import parser.grammar.declarations.Declaration;
+
 /**
  *
  * Created by Chris on 2/2/2016.

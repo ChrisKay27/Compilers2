@@ -1,6 +1,7 @@
-package parser.grammar;
+package parser.grammar.declarations;
 
 import parser.Type;
+import parser.grammar.ASTNode;
 import scanner.Token;
 
 /**

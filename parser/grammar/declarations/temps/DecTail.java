@@ -1,4 +1,4 @@
-package parser.grammar;
+package parser.grammar.declarations.temps;
 
 /**
  * Created by Chris on 2/12/2016.
