@@ -3,7 +3,7 @@ package parser.grammar;
 /**
  * Created by Chris on 1/30/2016.
  */
-public class ReturnStatement extends AST {
+public class ReturnStatement extends ASTNode {
     private final Expression returnValue;
 
     public ReturnStatement(Expression returnValue) {

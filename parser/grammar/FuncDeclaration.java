@@ -18,14 +18,6 @@ public class FuncDeclaration extends Declaration {
         this.body = body;
     }
 
-    public Type getType() {
-        return type;
-    }
-
-    public Token getID() {
-        return ID;
-    }
-
     public Declaration getParams() {
         return params;
     }

@@ -6,7 +6,7 @@ import scanner.Token;
 /**
  * Created by Chris on 1/30/2016.
  */
-public class Declaration extends AST {
+public class Declaration extends ASTNode {
 
     protected final Type type;
     protected final Token ID;

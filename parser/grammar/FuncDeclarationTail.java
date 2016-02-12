@@ -3,7 +3,7 @@ package parser.grammar;
 /**
  * Created by Chris on 1/30/2016.
  */
-public class FuncDeclarationTail extends AST {
+public class FuncDeclarationTail extends DecTail {
 
     protected final Declaration params;
     protected final CompoundStatement funcBody;

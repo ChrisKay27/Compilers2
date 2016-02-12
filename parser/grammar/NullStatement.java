@@ -3,5 +3,5 @@ package parser.grammar;
 /**
  * Created by Chris on 1/30/2016.
  */
-public class NullStatement extends AST {
+public class NullStatement extends ASTNode {
 }

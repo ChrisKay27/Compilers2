@@ -3,17 +3,17 @@ package parser.grammar;
 /**
  * Created by Chris on 1/30/2016.
  */
-public class AST {
+public class ASTNode {
 
-    protected AST nextNode;
+    protected ASTNode nextNode;
 
 
 
-    public AST getNextNode() {
+    public ASTNode getNextNode() {
         return nextNode;
     }
 
-    public void setNextNode(AST nextNode) {
+    public void setNextNode(ASTNode nextNode) {
         this.nextNode = nextNode;
     }
 }

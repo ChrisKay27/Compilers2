@@ -5,20 +5,20 @@ import parser.TokenType;
 /**
  * Created by Chris on 1/30/2016.
  */
-public class Expression extends AST {
-    private final AddExpression addExpression;
+public class Expression extends ASTNode {
+    private final AddExpression addExp;
     private final TokenType relop;
     private final AddExpression addExp2;
 
 
     public Expression(AddExpression addExpression, TokenType relop, AddExpression addExp2) {
-        this.addExpression = addExpression;
+        this.addExp = addExpression;
         this.relop = relop;
         this.addExp2 = addExp2;
     }
 
-    public AddExpression getAddExpression() {
-        return addExpression;
+    public AddExpression getAddExp() {
+        return addExp;
     }
 
     public TokenType getRelop() {
