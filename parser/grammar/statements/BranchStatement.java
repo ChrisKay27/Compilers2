@@ -1,6 +1,7 @@
-package parser.grammar;
+package parser.grammar.statements;
 
 import parser.grammar.expressions.AddExpression;
+
 
 /**
  * Created by Chris on 1/30/2016.
@@ -14,7 +15,6 @@ public class BranchStatement extends Statement {
         this.addexp = addexp;
         this.caseStmt = caseStmt;
     }
-
 
     public AddExpression getAddexp() {
         return addexp;

@@ -1,8 +1,7 @@
 package parser.grammar.declarations;
 
 import parser.Type;
-import parser.grammar.CompoundStatement;
-import parser.grammar.declarations.Declaration;
+import parser.grammar.statements.CompoundStatement;
 import scanner.Token;
 
 /**
@@ -11,7 +10,7 @@ import scanner.Token;
  */
 public class FuncDeclaration extends Declaration {
 
-    private final Declaration params;
+    private final ParamDeclaration params;
     private final CompoundStatement body;
 
     public FuncDeclaration(Type type, Token ID, ParamDeclaration params, CompoundStatement body) {
@@ -20,7 +19,7 @@ public class FuncDeclaration extends Declaration {
         this.body = body;
     }
 
-    public Declaration getParams() {
+    public ParamDeclaration getParams() {
         return params;
     }
 

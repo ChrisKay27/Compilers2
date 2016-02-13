@@ -1,4 +1,5 @@
-package parser.grammar;
+package parser.grammar.statements;
+
 
 import parser.grammar.expressions.Expression;
 

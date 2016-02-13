@@ -1,4 +1,4 @@
-package parser.grammar;
+package parser.grammar.declarations.temps;
 
 import parser.grammar.expressions.AddExpression;
 import scanner.Token;
@@ -14,4 +14,9 @@ public class VarName {
         ID = id;
         this.add_exp = add_exp;
     }
+
+    public Token getId(){
+        return ID;
+    }
+    public AddExpression getAddExpression(){return add_exp;}
 }

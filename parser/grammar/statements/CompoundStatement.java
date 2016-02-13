@@ -1,4 +1,4 @@
-package parser.grammar;
+package parser.grammar.statements;
 
 import parser.grammar.declarations.Declaration;
 
@@ -6,7 +6,7 @@ import parser.grammar.declarations.Declaration;
  *
  * Created by Chris on 2/2/2016.
  */
-public class CompoundStatement extends Statement{
+public class CompoundStatement extends Statement {
     private final Declaration declarations;
     private final Statement statements;
 

@@ -1,7 +1,5 @@
 package parser.grammar.statements;
 
-import parser.grammar.ASTNode;
-import parser.grammar.Statement;
 import scanner.Token;
 
 /**
