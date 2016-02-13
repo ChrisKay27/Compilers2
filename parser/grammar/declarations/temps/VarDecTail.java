@@ -1,8 +1,7 @@
 package parser.grammar.declarations.temps;
 
-import parser.grammar.AddExpression;
+import parser.grammar.expressions.AddExpression;
 import parser.grammar.VarName;
-import parser.grammar.declarations.temps.DecTail;
 
 import java.util.List;
 

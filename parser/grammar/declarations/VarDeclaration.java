@@ -1,7 +1,7 @@
 package parser.grammar.declarations;
 
 import parser.Type;
-import parser.grammar.AddExpression;
+import parser.grammar.expressions.AddExpression;
 import scanner.Token;
 
 /**

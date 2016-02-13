@@ -1,4 +1,4 @@
-package parser.grammar;
+package parser.grammar.expressions;
 
 import parser.TokenType;
 

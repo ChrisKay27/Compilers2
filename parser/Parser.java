@@ -8,6 +8,11 @@ import parser.grammar.declarations.VarDeclaration;
 import parser.grammar.declarations.temps.DecTail;
 import parser.grammar.declarations.temps.FuncDeclarationTail;
 import parser.grammar.declarations.temps.VarDecTail;
+import parser.grammar.expressions.*;
+import parser.grammar.statements.AssignStatementTail;
+import parser.grammar.statements.CallStatementTail;
+import parser.grammar.statements.IdStatement;
+import parser.grammar.statements.StatementTail;
 import scanner.Scanner;
 import scanner.Token;
 
@@ -129,19 +134,24 @@ public class Parser {
 
     private ASTNode program(Set<TokenType> synch) {
         if(traceEnabled) lineTraceOutput.accept("\t\tEntering program");
+
+        ASTNode first = null;
         ASTNode current = null;
         do {
             ASTNode temp = declaration(synch);
             if( current != null )
                 current.setNextNode(temp);
+            if( first == null )
+                first = temp;
             current = temp;
 
         } while (FIRSTofDeclaration.contains(lookahead));
+
         if (traceEnabled) lineTraceOutput.accept("\t\tLeaving program");
-        return null;
+        return first;
     }
 
-    private ASTNode if_stmt(Set<TokenType> synch) {
+    private IfStatement if_stmt(Set<TokenType> synch) {
 
         if (traceEnabled) lineTraceOutput.accept("\t\tEntering if-stmt");
         match(IF, synch);
@@ -318,95 +328,117 @@ public class Parser {
 
     private Statement statement(Set<TokenType> synch) {
         if (traceEnabled) lineTraceOutput.accept("\t\tEntering statement");
+
+        Statement s = null;
         if (FIRSTofId_stmt.contains(lookahead)) {
-            id_stmt(synch);
+            s = id_stmt(synch);
         } else if (FIRSTofCompound_stmt.contains(lookahead)) {
-            compound_stmt(synch);
+            s = compound_stmt(synch);
         } else if (FIRSTofIf_stmt.contains(lookahead)) {
-            if_stmt(synch);
+            s = if_stmt(synch);
         } else if (FIRSTofLoop_stmt.contains(lookahead)) {
-            loop_stmt(synch);
+            s = loop_stmt(synch);
         } else if (FIRSTofExit_stmt.contains(lookahead)) {
-            exit_stmt(synch);
+            s = exit_stmt(synch);
         } else if (FIRSTofContinue_stmt.contains(lookahead)) {
-            continue_stmt(synch);
+            s = continue_stmt(synch);
         } else if (FIRSTofReturn_stmt.contains(lookahead)) {
-            return_stmt(synch);
+            s = return_stmt(synch);
         } else if (FIRSTofNull_stmt.contains(lookahead)) {
-            null_stmt(synch);
+            s = null_stmt(synch);
         } else if (FIRSTofBranch_stmt.contains(lookahead)) {
-            branch_stmt(synch);
+            s = branch_stmt(synch);
         } else {
+            errorOutput.accept("\t\tExpecting statement!");
             //error
         }
         if (traceEnabled) lineTraceOutput.accept("\t\tLeaving statement");
-        return null;
+        return s;
     }
 
-    private ASTNode id_stmt(Set<TokenType> synch) {
+    private IdStatement id_stmt(Set<TokenType> synch) {
         if(traceEnabled) lineTraceOutput.accept("\t\tEntering id-stmt");
+
+        Token idToken = lookaheadToken;
         match(ID, synch);
-        id_stmt_tail(synch);
+
+        StatementTail id_stmt_tail = id_stmt_tail(synch);
+
         if (traceEnabled) lineTraceOutput.accept("\t\tLeaving id-stmt");
-        return null;
+        return new IdStatement(idToken,id_stmt_tail);
     }
 
-    private ASTNode id_stmt_tail(Set<TokenType> synch) {
+    private StatementTail id_stmt_tail(Set<TokenType> synch) {
         if(traceEnabled) lineTraceOutput.accept("\t\tEntering id-stmt-tail");
-        if (FIRSTofAssign_stmt_tail.contains(lookahead)) assign_stmt_tail(synch);
-        else if (FIRSTofCall_stmt_tail.contains(lookahead)) call_stmt_tail(synch);
-        else ; //error
+
+        StatementTail statementTail;
+        if (FIRSTofAssign_stmt_tail.contains(lookahead))
+            statementTail = assign_stmt_tail(synch);
+        else
+            statementTail = call_stmt_tail(synch);
+
 
         if (traceEnabled) lineTraceOutput.accept("\t\tLeaving id-stmt-tail");
-        return null;
+        return statementTail;
     }
 
-    private ASTNode assign_stmt_tail(Set<TokenType> synch) {
-
+    private StatementTail assign_stmt_tail(Set<TokenType> synch) {
         if (traceEnabled) lineTraceOutput.accept("\t\tEntering assign-stmt-tail");
+
+        AddExpression addExpression = null;
+
         if (lookahead == LSQR) {
             match(LSQR, synch);
-            add_exp(synch);
+            addExpression = add_exp(synch);
             match(RSQR, synch);
         }
 
         match(ASSIGN, synch);
-        expression(synch);
+        Expression exp = expression(synch);
         match(SEMI, synch);
 
         if (traceEnabled) lineTraceOutput.accept("\t\tLeaving assign-stmt-tail");
-        return new NullStatement();
+        return new AssignStatementTail(addExpression,exp);
     }
 
-    private ASTNode call_stmt_tail(Set<TokenType> synch) {
+    private CallStatementTail call_stmt_tail(Set<TokenType> synch) {
         if(traceEnabled) lineTraceOutput.accept("\t\tEntering call-stmt-tail");
-        call_tail(synch);
+
+        ASTNode call_tail = call_tail(synch);
         match(SEMI, synch);
+
         if (traceEnabled) lineTraceOutput.accept("\t\tLeaving call-stmt-tail");
-        return null;
+        return new CallStatementTail(call_tail);
     }
 
     private ASTNode call_tail(Set<TokenType> synch) {
-
         if (traceEnabled) lineTraceOutput.accept("\t\tEntering call-tail");
+
+        ASTNode args = null;
         match(LPAREN, synch);
-        if (FIRSTofArguments.contains(lookahead)) arguments(synch);
+        if (FIRSTofArguments.contains(lookahead))
+            args = arguments(synch);
         match(RPAREN, synch);
+
         if (traceEnabled) lineTraceOutput.accept("\t\tLeaving call-tail");
-        return null;
+        return args;
     }
 
     private ASTNode arguments(Set<TokenType> synch) {
         if(traceEnabled) lineTraceOutput.accept("\t\tEntering argument");
 
-        expression(synch);
+        Expression exp = expression(synch);
+
+        Expression tmp = exp;
         while (lookahead == COMMA) {
             match(COMMA, synch);
-            expression(synch);
+            Expression tmp2 = expression(synch);
+            tmp.setNextNode(tmp2);
+            tmp = tmp2;
         }
         if (traceEnabled) lineTraceOutput.accept("\t\tLeaving argument");
 
-        return null;
+        return exp;
     }
 
 
@@ -475,7 +507,7 @@ public class Parser {
         return new ExitStatement();
     }
 
-    private ASTNode continue_stmt(Set<TokenType> synch) {
+    private ContinueStatement continue_stmt(Set<TokenType> synch) {
 
         if (traceEnabled) lineTraceOutput.accept("\t\tEntering continue-stmt");
         match(CONTINUE, synch);
@@ -485,7 +517,7 @@ public class Parser {
         return new ContinueStatement();
     }
 
-    private ASTNode return_stmt(Set<TokenType> synch) {
+    private ReturnStatement return_stmt(Set<TokenType> synch) {
 
         if (traceEnabled) lineTraceOutput.accept("\t\tEntering return-stmt");
         match(RETURN, synch);
@@ -499,7 +531,7 @@ public class Parser {
     }
 
 
-    private ASTNode null_stmt(Set<TokenType> synch) {
+    private Statement null_stmt(Set<TokenType> synch) {
         if(traceEnabled) lineTraceOutput.accept("\t\tEntering null-stmt");
         match(SEMI, synch);
 
@@ -507,7 +539,7 @@ public class Parser {
         return null;
     }
 
-    private ASTNode branch_stmt(Set<TokenType> synch) {
+    private BranchStatement branch_stmt(Set<TokenType> synch) {
         if(traceEnabled) lineTraceOutput.accept("\t\tEntering branch-stmt");
         match(BRANCH, synch);
         match(LPAREN, synch);
@@ -594,10 +626,10 @@ public class Parser {
     private Term term(Set<TokenType> synch) {
         if(traceEnabled) lineTraceOutput.accept("\t\tEntering term");
 
-        Factor factor = factor(synch);
+        ASTNode factor = factor(synch);
 
         TokenType multop = null;
-        Factor factor2 = null;
+        ASTNode factor2 = null;
 
 
         if (FIRSTofMultop.contains(lookahead)) {
@@ -608,10 +640,10 @@ public class Parser {
         return new Term(factor, multop, factor2);
     }
 
-    private Factor factor(Set<TokenType> synch) {
+    private ASTNode factor(Set<TokenType> synch) {
         if(traceEnabled) lineTraceOutput.accept("\t\tEntering factor");
 
-        Factor factor;
+        ASTNode factor;
         if (FIRSTofNid_factor.contains(lookahead)) {
             factor = nid_factor(synch);
         } else {
@@ -619,64 +651,75 @@ public class Parser {
         }
 
         if(traceEnabled) lineTraceOutput.accept("\t\tLeaving factor");
-        return null;
+        return factor;
     }
 
-    private Factor nid_factor(Set<TokenType> synch) {
+    private ASTNode nid_factor(Set<TokenType> synch) {
         if(traceEnabled) lineTraceOutput.accept("\t\tEntering nid-factor");
 
-        NidFactor nidFactor = null;
+        ASTNode nidFactor = null;
         switch (lookahead) {
             case NOT:
                 match(NOT, synch);
-                factor(synch);
+                nidFactor = new NotNidFactor(factor(synch));
                 break;
             case LPAREN:
                 match(LPAREN, synch);
-                expression(synch);
+                nidFactor = expression(synch);
                 match(RPAREN, synch);
                 break;
             case NUM:
+                Token numToken = lookaheadToken;
                 match(NUM, synch);
+                nidFactor = new NUM_NidFactor((Integer) numToken.attrValue);
                 break;
             case BLIT:
+                Token blitToken = lookaheadToken;
                 match(BLIT, synch);
+                nidFactor = new BLIT_NidFactor((Integer) blitToken.attrValue);
                 break;
         }
 
-        if (traceEnabled) lineTraceOutput.accept("\t\tLeaving nid-factor");
-        return null;
+        if(traceEnabled) lineTraceOutput.accept("\t\tLeaving nid-factor");
+        return nidFactor;
     }
 
     private Factor id_factor(Set<TokenType> synch) {
         if(traceEnabled) lineTraceOutput.accept("\t\tEntering id-factor");
+
+        Token IDToken = lookaheadToken;
         match(ID, synch);
-        id_tail(synch);
-        if (traceEnabled) lineTraceOutput.accept("\t\tLeaving id-factor");
-        return null;
+        ASTNode idTail = id_tail(synch);
+
+        if(traceEnabled) lineTraceOutput.accept("\t\tLeaving id-factor");
+        return new IdFactor(IDToken,idTail);
     }
 
     private ASTNode id_tail(Set<TokenType> synch) {
         if(traceEnabled) lineTraceOutput.accept("\t\tEntering id-tail");
-        if (FIRSTofVar_tail.contains(lookahead)) {
-            var_tail(synch);
-        } else {
-            call_tail(synch);
 
+        ASTNode idTail;
+        if (FIRSTofCall_tail.contains(lookahead)) {
+            idTail = call_tail(synch);
+        } else {
+            idTail = var_tail(synch);
         }
 
         if (traceEnabled) lineTraceOutput.accept("\t\tLeaving id-tail");
-        return null;
+        return idTail;
     }
 
 
     private ASTNode var_tail(Set<TokenType> synch) {
         if(traceEnabled) lineTraceOutput.accept("\t\tEntering var-tail");
-        match(LSQR, synch);
-        add_exp(synch);
-        match(RSQR, synch);
+        AddExpression add_exp = null;
+        if( lookahead == LSQR ) {
+            match(LSQR, synch);
+            add_exp = add_exp(synch);
+            match(RSQR, synch);
+        }
         if (traceEnabled) lineTraceOutput.accept("\t\tLeaving var-tail");
-        return null;
+        return add_exp;
     }
 
     private TokenType relop(Set<TokenType> synch) {
@@ -733,6 +776,7 @@ public class Parser {
     private TokenType multop(Set<TokenType> synch) {
         if(traceEnabled) lineTraceOutput.accept("\t\tEntering multop");
 
+        TokenType multop = lookahead;
         switch (lookahead) {
             case MULT:
                 match(MULT, synch);
@@ -752,7 +796,7 @@ public class Parser {
         }
 
         if (traceEnabled) lineTraceOutput.accept("\t\tLeaving multop");
-        return null;
+        return multop;
     }
 
     private MinusExpression uminus(Set<TokenType> synch) {

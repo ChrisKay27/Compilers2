@@ -1,5 +1,7 @@
 package parser.grammar;
 
+import parser.grammar.expressions.Expression;
+
 /**
  * Created by Chris on 1/30/2016.
  */
