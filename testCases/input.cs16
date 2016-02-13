@@ -6,9 +6,6 @@
 
 int x;
 int y;
-x := 13;
-y := 21;
-
 
 /*
     /*
@@ -17,8 +14,8 @@ y := 21;
 */
 void main(int[] args){
 
-    sout(x + y);
-    sout(x[] + y);
+    sout();
+    sout();
 
     if( true ){
         --test
