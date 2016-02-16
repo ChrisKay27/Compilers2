@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 /**
  * Created by Chris on 1/9/2016.
@@ -43,7 +44,7 @@ public class Scanner {
     }
 
 
-    private Reader reader;
+    private Supplier<Integer> reader;
     private final Consumer<String> lineTraceOutput;
     private final Consumer<String> errorOutput;
     private final List<Token> tokensOnCurrentLine = new ArrayList<>();
@@ -60,7 +61,7 @@ public class Scanner {
     private boolean traceEnabled;
 
 
-    public Scanner(Reader reader, Consumer<String> lineTraceOutput, Consumer<String> errorOutput) throws IOException {
+    public Scanner(Supplier<Integer> reader, Consumer<String> lineTraceOutput, Consumer<String> errorOutput) throws IOException {
         this.reader = reader;
 
         this.lineTraceOutput = lineTraceOutput;
@@ -69,9 +70,9 @@ public class Scanner {
         ssm = new ScannerStateMachine(errorOutput);
     }
 
-    public Reader redirectReader(Reader input) {
+    public Supplier<Integer> redirectReader(Supplier<Integer> input) {
 
-        Reader temp = this.reader;
+        Supplier<Integer> temp = this.reader;
         this.reader = input;
         this.initNextChar = true;
         this.lineCount = 1;
@@ -118,13 +119,13 @@ public class Scanner {
                 if (traceEnabled) {
                     //Line Trace Output
                     //if (!tokensOnCurrentLine.isEmpty()) {
-                    lineTraceOutput.accept(lineCount + ":" + currentLine.toString().trim());
-                    for (Token token : tokensOnCurrentLine)
-                        lineTraceOutput.accept(lineCount + ":" + "\t\t" + token);
-                    tokensOnCurrentLine.clear();
-                    //} else
-                    //   lineTraceOutput.accept(lineCount + ":");
-
+                        lineTraceOutput.accept(lineCount + ":" + currentLine.toString().trim());
+                        for (Token token : tokensOnCurrentLine)
+                            lineTraceOutput.accept(lineCount + ":" + "\t\t" + token);
+                        tokensOnCurrentLine.clear();
+                        //} else
+                        //   lineTraceOutput.accept(lineCount + ":");
+                    //}
                     currentLine.replace(0, currentLine.length(), "");
                 }
 
@@ -208,13 +209,8 @@ public class Scanner {
     private boolean EOFFound = false;
     private int nextChar() {
         int r;
-        try {
-            if ((r = reader.read()) != -1)
-                return r;
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        }
+        if ((r = reader.get()) != -1)
+            return r;
         if (EOFFound)
             return -1;
         EOFFound = true;

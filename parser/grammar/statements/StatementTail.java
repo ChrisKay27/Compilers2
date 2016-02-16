@@ -5,4 +5,11 @@ package parser.grammar.statements;
  */
 public abstract class StatementTail {
     public abstract void appendContents(StringBuilder sb, int tabs);
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        appendContents(sb,0);
+        return sb.toString();
+    }
 }

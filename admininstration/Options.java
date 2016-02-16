@@ -15,9 +15,10 @@ public class Options {
     public final String outputFilePath;
     public final String errorFilePath;
     public String inputFilePath;
+    public final boolean printAST;
 
 
-    public Options(boolean quiet, boolean verbose, boolean tuplePhase, boolean parserPhase, boolean fullCompile, boolean lexicalPhase, boolean semanticPhase, String outputFilePath, String errorFilePath, String inputFilePath) {
+    public Options(boolean quiet, boolean verbose, boolean tuplePhase, boolean parserPhase, boolean fullCompile, boolean lexicalPhase, boolean semanticPhase, String outputFilePath, String errorFilePath, String inputFilePath, boolean printAST) {
         this.quiet = quiet;
         this.verbose = verbose;
         this.tuplePhase = tuplePhase;
@@ -28,5 +29,6 @@ public class Options {
         this.outputFilePath = outputFilePath;
         this.errorFilePath = errorFilePath;
         this.inputFilePath = inputFilePath;
+        this.printAST = printAST;
     }
 }

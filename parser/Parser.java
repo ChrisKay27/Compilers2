@@ -19,6 +19,7 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import static parser.TokenType.*;
 import static parser.grammar.FirstAndFollowSets.*;
@@ -72,7 +73,6 @@ public class Parser {
         }catch(Exception e){
             return null;
         }
-        lineTraceOutput.accept(astNode.toString());
 
         return astNode;
     }
@@ -103,7 +103,6 @@ public class Parser {
      * @throws java.io.IOException
      */
     public ASTNode parse() throws java.io.IOException {
-        boolean pass = true;
 
         lookaheadToken = scanner.nextToken();
         lookahead = lookaheadToken.token;
@@ -111,6 +110,8 @@ public class Parser {
         return program(new HashSet<>(Arrays.asList(new TokenType[]{ENDFILE})));
     }
 
+
+    String currentLine;
     /**
      * Redirects the scanner's Reader to a StringReader for the line given,
      * then parses the line, once the scanner finishes with that line,
@@ -121,16 +122,22 @@ public class Parser {
      * @throws java.io.IOException
      */
     public void parseLine(String line) throws java.io.IOException {
-        Reader fileReader = this.scanner.redirectReader(new StringReader(line));
+        java.util.Scanner supplier = new java.util.Scanner(line);
+        currentLine = supplier.nextLine();
+        Supplier<Integer> fileReader = this.scanner.redirectReader(()->{
+            if (currentLine.length() == 0 )
+                return -1;
+            int c = currentLine.charAt(0);
+            currentLine = currentLine.substring(1,currentLine.length());
+            return c;
+        });
 
         parse();
-//        //debug
-//        System.out.println(tokens.size());
-//        tokens.forEach(System.out::println);
-//        //debug
+
         this.tokens.remove(this.tokens.size() - 1); //remove endfile token
         this.scanner.redirectReader(fileReader);
     }
+
 
     private ASTNode program(Set<TokenType> synch) {
         if(traceEnabled) lineTraceOutput.accept("\t\tEntering program");
@@ -408,17 +415,17 @@ public class Parser {
     private CallStatementTail call_stmt_tail(Set<TokenType> synch) {
         if(traceEnabled) lineTraceOutput.accept("\t\tEntering call-stmt-tail");
 
-        ASTNode call_tail = call_tail(synch);
+        Expression call_tail = call_tail(synch);
         match(SEMI, synch);
 
         if (traceEnabled) lineTraceOutput.accept("\t\tLeaving call-stmt-tail");
         return new CallStatementTail(call_tail);
     }
 
-    private ASTNode call_tail(Set<TokenType> synch) {
+    private Expression call_tail(Set<TokenType> synch) {
         if (traceEnabled) lineTraceOutput.accept("\t\tEntering call-tail");
 
-        ASTNode args = null;
+        Expression args = null;
         match(LPAREN, synch);
         if (FIRSTofArguments.contains(lookahead))
             args = arguments(synch);
@@ -428,7 +435,7 @@ public class Parser {
         return args;
     }
 
-    private ASTNode arguments(Set<TokenType> synch) {
+    private Expression arguments(Set<TokenType> synch) {
         if (traceEnabled) lineTraceOutput.accept("\t\tEntering argument");
 
         Expression exp = expression(synch);

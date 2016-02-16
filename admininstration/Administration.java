@@ -1,16 +1,20 @@
 package admininstration;
 
-import com.sun.org.apache.xerces.internal.xni.grammars.Grammar;
 import parser.Parser;
 import parser.grammar.ASTNode;
 import scanner.Scanner;
 
 import java.io.*;
 import java.nio.charset.Charset;
+import java.util.function.Supplier;
 
 public class Administration implements Administrator {
     // development
-    private static final boolean debug = false;
+    private static final boolean debug = true;
+
+    private Supplier<Integer> fileInput;
+    private java.util.Scanner fileScanner;
+
     public static boolean debug() {
         return debug;
     }
@@ -18,11 +22,12 @@ public class Administration implements Administrator {
 
     private BufferedWriter errorWriter, outputWriter;
     private final Options options;
-    protected ErrorReporter errorReporter = new ErrorReporter(System.err::println);
-    protected Reader buffer;
+    protected OutputHandler errorReporter = new OutputHandler(System.err::println);
+
     protected Scanner scanner;
     protected Parser parser;
 
+    private String currentLine;
 
     public Administration(Options options) throws IOException, UnrecognizedSourceCodeException {
 
@@ -35,7 +40,7 @@ public class Administration implements Administrator {
         if( options.outputFilePath != null )
             initOutputFileWriter(options.outputFilePath);
 
-        this.scanner = new Scanner(buffer,this::printLineTrace,this::printErrorMessage);
+        this.scanner = new Scanner(fileInput,this::printLineTrace,this::printErrorMessage);
         scanner.setTraceEnabled(options.verbose);
         this.parser = new Parser(this.scanner,this::printLineTrace,this::printErrorMessage);
         parser.setTraceEnabled(options.verbose);
@@ -54,6 +59,10 @@ public class Administration implements Administrator {
                 System.out.println("Compile Successful");
             else
                 System.out.println("Compile Failed");
+        if( tree != null && options.printAST ){
+            printLineTrace("---- Abstract Syntax Tree ----");
+            printLineTrace(tree.toString());
+        }
     }
 
     /**
@@ -62,7 +71,7 @@ public class Administration implements Administrator {
      * @throws IOException
      */
     public void close() throws IOException {
-        buffer.close();
+        fileScanner.close();
         if( errorWriter != null ) {
             //System.out.println("Closing error writer");
             errorWriter.flush();
@@ -107,7 +116,24 @@ public class Administration implements Administrator {
             try {
                 InputStream in = new FileInputStream(input);
                 Reader reader = new InputStreamReader(in, encoding);
-                this.buffer = new BufferedReader(reader);
+                fileScanner = new java.util.Scanner(reader);
+
+                currentLine = fileScanner.nextLine();
+                fileInput = () -> {
+                    if (currentLine.length() == 0 ) {
+                        if(fileScanner.hasNextLine()) {
+                            currentLine = fileScanner.nextLine();
+                            int newline = '\n';
+                            return newline;
+                        }else
+                            return -1;
+                    }
+                    int c = currentLine.charAt(0);
+                    currentLine = currentLine.substring(1,currentLine.length());
+                    return c;
+                };
+
+//                new java.util.Scanner(reader).nextLine()
             } catch (IOException e) {
                 e.printStackTrace();
             }

@@ -26,6 +26,7 @@ public class Main {
     public static final String OUTPUT = "-o", OUTPUT2 = "-out";
     public static final String ERROR = "-e", ERROR2 = "-err";
     public static final String UNITTEST = "-unittest";
+    public static final String PRINT_AST = "-ast";
 
     public static void main(String[] args) {
 
@@ -38,13 +39,14 @@ public class Main {
             return;
         }
 
-        String srcFilePath = null;
-        String errorLogFilePath = null;
-        String outputFilePath = null;
-        boolean quietEnabled = false;
-        boolean verboseEnabled = false;
+        String srcFilePath;
+        String errorLogFilePath;
+        String outputFilePath;
+        boolean quietEnabled;
+        boolean verboseEnabled;
         boolean help;
-        boolean tuplePhase = false, lexicalPhase = false, semanticPhase = false, parsePhase = false, compilePhase = false;
+        boolean tuplePhase, lexicalPhase, semanticPhase, parsePhase, compilePhase;
+        boolean printAST;
 
         try {
             help = hasOption(args, HELP_MENU) || hasOption(args, HELP_MENU2);
@@ -63,12 +65,15 @@ public class Main {
             semanticPhase = hasOption(args, SEMANTIC_PHASE, SEMANTIC_PHASE2);
             tuplePhase = hasOption(args, TUPLE_PHASE, TUPLE_PHASE2);
             compilePhase = hasOption(args, COMPILE_PHASE, COMPILE_PHASE2);
+            printAST = hasOption(args, PRINT_AST);
         } catch (Exception e) {
             System.err.println("Error parsing parameters, try -t Path/To/File.cs16 -e Path/To/FileLogFile.txt");
             System.exit(2);
+            return;
         }
 
-        Options options = new Options(quietEnabled, verboseEnabled, tuplePhase, parsePhase, compilePhase, lexicalPhase, semanticPhase, outputFilePath, errorLogFilePath, srcFilePath);
+        Options options = new Options(quietEnabled, verboseEnabled, tuplePhase, parsePhase, compilePhase, lexicalPhase,
+                semanticPhase, outputFilePath, errorLogFilePath, srcFilePath, printAST);
 
         Administration admin;
         try {

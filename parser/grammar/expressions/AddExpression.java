@@ -52,8 +52,8 @@ public class AddExpression extends ASTNode {
         term.appendContents(sb, tabs + 1);
 
         if( addop != null) {
-            sb.append(tabsSB.toString());
-            sb.append('\n').append(addop);
+            sb.append('\n').append(tabsSB.toString());
+            sb.append(addop);
             term2.appendContents(sb, tabs + 1);
         }
 
