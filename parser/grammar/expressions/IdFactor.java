@@ -8,7 +8,6 @@ import scanner.Token;
  */
 public class IdFactor extends Factor {
 
-
     private final Token idToken;
     private final ASTNode idTail;
 
@@ -24,5 +23,20 @@ public class IdFactor extends Factor {
 
     public ASTNode getIdTail() {
         return idTail;
+    }
+
+    @Override
+    public void appendContents(StringBuilder sb , int tabs) {
+        sb.append('\n');
+        for (int i = 0; i < tabs; i++)
+            sb.append('\t');
+        sb.append(getClass().getSimpleName());
+
+        sb.append(idToken);
+        if( idTail != null )
+            idTail.appendContents(sb,tabs+1);
+
+        if( nextNode != null )
+            nextNode.appendContents(sb,tabs);
     }
 }

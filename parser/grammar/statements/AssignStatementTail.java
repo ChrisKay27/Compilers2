@@ -15,4 +15,16 @@ public class AssignStatementTail extends StatementTail {
         this.addExpression = addExpression;
         this.exp = exp;
     }
+
+    @Override
+    public void appendContents(StringBuilder sb , int tabs) {
+        sb.append('\n');
+        for (int i = 0; i < tabs; i++)
+            sb.append('\t');
+        sb.append(getClass().getSimpleName());
+        sb.append(' ');
+
+        addExpression.appendContents(sb, tabs);
+        exp.appendContents(sb,tabs);
+    }
 }

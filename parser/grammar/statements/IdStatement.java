@@ -22,4 +22,20 @@ public class IdStatement extends Statement {
     public StatementTail getId_stmt_tail() {
         return id_stmt_tail;
     }
+
+    @Override
+    public void appendContents(StringBuilder sb , int tabs) {
+        sb.append('\n');
+        for (int i = 0; i < tabs; i++)
+            sb.append('\t');
+        sb.append(getClass().getSimpleName());
+        sb.append(' ');
+
+        sb.append(idToken);
+        sb.append(' ');
+        sb.append(id_stmt_tail);
+
+        if( nextNode != null )
+            nextNode.appendContents(sb,tabs);
+    }
 }

@@ -12,7 +12,7 @@ int y;
         Here is main
     */
 */
-void main(int[] args){
+void main(int args[]){
 
     sout();
     sout();
@@ -25,7 +25,7 @@ void main(int[] args){
 
         --\n new line
 
-        if( x < y && y < x || x >= y || y >= x )
+        if( x < y )
             loop{
                 x := x - 1;
                 if( x < 0 )
@@ -34,7 +34,6 @@ void main(int[] args){
                     continue;
             }
             end
-
 
     }
     SystemExit(0);

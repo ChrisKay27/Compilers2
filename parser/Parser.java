@@ -17,10 +17,7 @@ import scanner.Token;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Consumer;
 
 import static parser.TokenType.*;
@@ -67,12 +64,17 @@ public class Parser {
      * at this stage it returns the string of tokens received from the scanner
      * @throws IOException
      */
-    public boolean startParsing() throws IOException {
+    public ASTNode startParsing() throws IOException {
         //injectLibraries();
+        ASTNode astNode;
+        try{
+            astNode = parse();
+        }catch(Exception e){
+            return null;
+        }
+        lineTraceOutput.accept(astNode.toString());
 
-        ASTNode astNode = parse();
-
-        return true;
+        return astNode;
     }
 
     /**
@@ -106,7 +108,7 @@ public class Parser {
         lookaheadToken = scanner.nextToken();
         lookahead = lookaheadToken.token;
 
-        return program(new HashSet<>());
+        return program(new HashSet<>(Arrays.asList(new TokenType[]{ENDFILE})));
     }
 
     /**
@@ -150,8 +152,8 @@ public class Parser {
     }
 
     private IfStatement if_stmt(Set<TokenType> synch) {
-
         if (traceEnabled) lineTraceOutput.accept("\t\tEntering if-stmt");
+
         match(IF, synch);
         match(LPAREN, synch);
         Expression e = expression(synch);
@@ -449,9 +451,9 @@ public class Parser {
 
         match(LCRLY, synch);
 
-        Declaration declaration = null;
-
-        if (FIRSTofNonvoid_specifier.contains(lookahead)) {
+        Declaration firstDec = null;
+        Declaration tempDec = null;
+        while (FIRSTofNonvoid_specifier.contains(lookahead)) {
 
             Type decType = nonvoid_specifier(synch);
             Token IDToken = lookaheadToken;
@@ -459,24 +461,34 @@ public class Parser {
 
             var_dec_tail(synch);
 
-            declaration = new Declaration(decType, IDToken);
+            Declaration tempDec2 = new Declaration(decType, IDToken);
+            if( firstDec == null ) {
+                firstDec = tempDec2;
+                tempDec = tempDec2;
+            }else {
+                tempDec.setNextNode(tempDec2);
+                tempDec = tempDec2;
+            }
         }
 
         Statement first = null;
-
+        Statement tempStmt = null;
         do {
             Statement temp = statement(synch);
 
-            if (first == null)
+            if (first == null) {
                 first = temp;
-            else
-                first.setNextNode(temp);
+                tempStmt = temp;
+            }else {
+                tempStmt.setNextNode(temp);
+                tempStmt = temp;
+            }
         } while (FIRSTofStatement.contains(lookahead));
 
         match(RCRLY, synch);
 
         if (traceEnabled) lineTraceOutput.accept("\t\tLeaving compound-stmt");
-        return new CompoundStatement(declaration, first);
+        return new CompoundStatement(firstDec, first);
     }
 
     private Statement loop_stmt(Set<TokenType> synch) {
@@ -506,7 +518,7 @@ public class Parser {
         match(SEMI, synch);
 
         if (traceEnabled) lineTraceOutput.accept("\t\tLeaving exit-stmt");
-        return Statement.exitStatement;
+        return new ExitStatement();
     }
 
     private Statement continue_stmt(Set<TokenType> synch) {
@@ -516,7 +528,7 @@ public class Parser {
         match(SEMI, synch);
 
         if (traceEnabled) lineTraceOutput.accept("\t\tLeaving continue-stmt");
-        return Statement.continueStatement;
+        return new ContinueStatement();
     }
 
     private ReturnStatement return_stmt(Set<TokenType> synch) {
@@ -538,11 +550,12 @@ public class Parser {
         match(SEMI, synch);
 
         if (traceEnabled) lineTraceOutput.accept("\t\tLeaving null-stmt");
-        return Statement.nullStatement;
+        return new NullStatement();
     }
 
     private BranchStatement branch_stmt(Set<TokenType> synch) {
         if(traceEnabled) lineTraceOutput.accept("\t\tEntering branch-stmt");
+
         match(BRANCH, synch);
         match(LPAREN, synch);
 
@@ -568,6 +581,7 @@ public class Parser {
 
     private CaseStatement case_stmt(Set<TokenType> synch) {
         if (traceEnabled) lineTraceOutput.accept("\t\tEntering case-stmt");
+
         Statement statement;
         Token t = null;
         if (lookahead == CASE) {
@@ -581,8 +595,8 @@ public class Parser {
             match(COLON, synch);
             statement = statement(synch);
         }
-        if (traceEnabled) lineTraceOutput.accept("\t\tLeaving case-stmt");
 
+        if (traceEnabled) lineTraceOutput.accept("\t\tLeaving case-stmt");
         return new CaseStatement(t, statement);
     }
 
@@ -598,6 +612,7 @@ public class Parser {
 
             return new Expression(addExpression, relop, addExp2);
         }
+
         if (traceEnabled) lineTraceOutput.accept("\t\tLeaving expression");
         return new Expression(addExpression, null, null);
     }
@@ -638,6 +653,7 @@ public class Parser {
             multop = multop(synch);
             factor2 = factor(synch);
         }
+
         if (traceEnabled) lineTraceOutput.accept("\t\tLeaving term");
         return new Term(factor, multop, factor2);
     }
@@ -714,12 +730,14 @@ public class Parser {
 
     private ASTNode var_tail(Set<TokenType> synch) {
         if(traceEnabled) lineTraceOutput.accept("\t\tEntering var-tail");
+
         AddExpression add_exp = null;
         if( lookahead == LSQR ) {
             match(LSQR, synch);
             add_exp = add_exp(synch);
             match(RSQR, synch);
         }
+
         if (traceEnabled) lineTraceOutput.accept("\t\tLeaving var-tail");
         return add_exp;
     }
@@ -727,29 +745,30 @@ public class Parser {
     private TokenType relop(Set<TokenType> synch) {
         if (traceEnabled) lineTraceOutput.accept("\t\tEntering relop");
 
+        TokenType tt = lookahead;
         switch (lookahead) {
             case LTEQ:
                 match(LTEQ, synch);
-                return LTEQ;
+                break;
             case LT:
                 match(LT, synch);
-                return LT;
+                break;
             case GT:
                 match(GT, synch);
-                return GT;
+                break;
             case GTEQ:
                 match(GTEQ, synch);
-                return GTEQ;
+                break;
             case EQ:
                 match(EQ, synch);
-                return EQ;
+                break;
             case NEQ:
                 match(NEQ, synch);
-                return NEQ;
+                break;
         }
-        if (traceEnabled) lineTraceOutput.accept("\t\tLeaving relop");
 
-        return null;
+        if (traceEnabled) lineTraceOutput.accept("\t\tLeaving relop");
+        return tt;
     }
 
     private TokenType addop(Set<TokenType> synch) {
@@ -803,7 +822,9 @@ public class Parser {
 
     private MinusExpression uminus(Set<TokenType> synch) {
         if (traceEnabled) lineTraceOutput.accept("\t\tEntering unimus");
+
         match(MINUS, synch);
+
         if (traceEnabled) lineTraceOutput.accept("\t\tLeaving unimus");
         return new MinusExpression();
     }
@@ -811,7 +832,9 @@ public class Parser {
     private void match(TokenType expected, Set<TokenType> synch) {
         if (lookahead == expected) {
             if (traceEnabled) lineTraceOutput.accept("\t\tMatched " + expected.toString());
+
             lookaheadToken = scanner.nextToken();
+
             this.tokens.add(lookaheadToken);
             lookahead = lookaheadToken.token;
         } else
@@ -825,7 +848,7 @@ public class Parser {
 
     private void syntaxError(Set<TokenType> synch) {
         errorOutput.accept("\t\tSyntax Error");
-        //throw new SyntaxError();
+        throw new SyntaxError();
     }
 
 

@@ -238,7 +238,7 @@ public class FirstAndFollowSets {
 
     static {
         Set<TokenType> FIRST = new HashSet<>();
-        FIRST.addAll(FIRSTofAdd_expr);
+        FIRST.add(LSQR);
         FIRST.add(ASSIGN);
         FIRSTofAssign_stmt_tail = FIRST;
     }

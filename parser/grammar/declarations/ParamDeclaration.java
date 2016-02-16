@@ -9,7 +9,7 @@ import scanner.Token;
 public class ParamDeclaration extends VarDeclaration {
     //static instances
     public static ParamDeclaration voidParam = new ParamDeclaration();
-    //memebers
+    //members
     protected boolean isReference;
     protected boolean isArray;
 
@@ -23,5 +23,24 @@ public class ParamDeclaration extends VarDeclaration {
         super(type, ID);
         this.isReference = isReference;
         this.isArray = isArray;
+    }
+
+    @Override
+    public void appendContents(StringBuilder sb , int tabs) {
+        sb.append('\n');
+        for (int i = 0; i < tabs; i++)
+            sb.append('\t');
+        sb.append(getClass().getSimpleName());
+        sb.append(' ');
+        if( isReference )
+            sb.append(" ref ");
+
+        sb.append(getType());
+
+        if( isArray )
+            sb.append(" array ");
+
+        if( nextNode != null )
+            nextNode.appendContents(sb,tabs);
     }
 }

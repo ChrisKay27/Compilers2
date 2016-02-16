@@ -26,4 +26,21 @@ public class FuncDeclaration extends Declaration {
     public CompoundStatement getBody() {
         return body;
     }
+
+    @Override
+    public void appendContents(StringBuilder sb , int tabs) {
+        sb.append('\n');
+        for (int i = 0; i < tabs; i++)
+            sb.append('\t');
+        sb.append(getClass().getSimpleName());
+
+        if( params != null )
+            params.appendContents(sb,tabs+1);
+
+        if( body != null )
+            body.appendContents(sb,tabs+1);
+
+        if( nextNode != null )
+            nextNode.appendContents(sb,tabs);
+    }
 }

@@ -15,4 +15,21 @@ public class Term extends ASTNode {
         this.multop = multop;
         this.factor2 = factor2;
     }
+
+    @Override
+    public void appendContents(StringBuilder sb , int tabs) {
+        sb.append('\n');
+        for (int i = 0; i < tabs; i++)
+            sb.append('\t');
+        sb.append(getClass().getSimpleName());
+
+        factor.appendContents(sb, tabs + 1);
+        if( multop != null) {
+            sb.append(multop);
+            factor2.appendContents(sb, tabs + 1);
+        }
+
+        if( nextNode != null )
+            nextNode.appendContents(sb, tabs);
+    }
 }

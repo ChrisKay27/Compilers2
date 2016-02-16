@@ -30,4 +30,21 @@ public class Expression extends ASTNode {
     public AddExpression getAddExp2() {
         return addExp2;
     }
+
+    @Override
+    public void appendContents(StringBuilder sb , int tabs) {
+        sb.append('\n');
+        for (int i = 0; i < tabs; i++)
+            sb.append('\t');
+        sb.append(getClass().getSimpleName());
+
+        addExp.appendContents(sb,tabs+1);
+        if( relop != null ) {
+            sb.append(relop);
+            addExp2.appendContents(sb, tabs + 1);
+        }
+        if( nextNode != null )
+            nextNode.appendContents(sb,tabs);
+    }
+
 }

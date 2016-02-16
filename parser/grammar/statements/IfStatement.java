@@ -29,4 +29,21 @@ public class IfStatement extends Statement {
     public Statement getElseStatement() {
         return elseStatement;
     }
+
+    @Override
+    public void appendContents(StringBuilder sb , int tabs) {
+        sb.append('\n');
+        for (int i = 0; i < tabs; i++)
+            sb.append('\t');
+        sb.append(getClass().getSimpleName());
+
+        expression.appendContents(sb, tabs + 1);
+        statement.appendContents(sb,tabs+1);
+
+        if( elseStatement != null )
+            elseStatement.appendContents(sb,tabs+1);
+
+        if( nextNode != null )
+            nextNode.appendContents(sb, tabs);
+    }
 }

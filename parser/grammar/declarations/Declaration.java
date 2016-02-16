@@ -24,4 +24,15 @@ public class Declaration extends ASTNode {
     public Token getID() {
         return ID;
     }
+
+    @Override
+    public void appendContents(StringBuilder sb , int tabs) {
+        sb.append('\n');
+        for (int i = 0; i < tabs; i++)
+            sb.append('\t');
+
+        sb.append(getClass().getSimpleName()).append(' ').append(type).append(' ').append(ID);
+        if( nextNode != null )
+            nextNode.appendContents(sb, tabs);
+    }
 }

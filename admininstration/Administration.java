@@ -2,6 +2,7 @@ package admininstration;
 
 import com.sun.org.apache.xerces.internal.xni.grammars.Grammar;
 import parser.Parser;
+import parser.grammar.ASTNode;
 import scanner.Scanner;
 
 import java.io.*;
@@ -17,7 +18,7 @@ public class Administration implements Administrator {
 
     private BufferedWriter errorWriter, outputWriter;
     private final Options options;
-    protected ErrorReporter errorReporter = new ErrorReporter(System.out::println);
+    protected ErrorReporter errorReporter = new ErrorReporter(System.err::println);
     protected Reader buffer;
     protected Scanner scanner;
     protected Parser parser;
@@ -47,9 +48,9 @@ public class Administration implements Administrator {
      * @throws IOException
      */
     public void compile() throws IOException {
-        boolean success = parser.startParsing();
+        ASTNode tree = parser.startParsing();
         if( options.verbose )
-            if(success)
+            if(tree != null)
                 System.out.println("Compile Successful");
             else
                 System.out.println("Compile Failed");

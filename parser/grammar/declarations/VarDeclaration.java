@@ -21,4 +21,17 @@ public class VarDeclaration extends Declaration {
         this.arrayIndex = arrayIndex;
     }
 
+    @Override
+    public void appendContents(StringBuilder sb , int tabs) {
+        sb.append('\n');
+        for (int i = 0; i < tabs; i++)
+            sb.append('\t');
+        sb.append(getClass().getSimpleName());
+
+        if( arrayIndex != null )
+            arrayIndex.appendContents(sb,tabs+1);
+
+        if( nextNode != null )
+            nextNode.appendContents(sb,tabs);
+    }
 }
