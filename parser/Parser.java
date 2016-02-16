@@ -151,6 +151,17 @@ public class Parser {
         return first;
     }
 
+    /**
+     * THE DISAMBIGUATION RULE:
+     * The if-stmt production rule (20) causes the `dangling else' ambiguity in the specified
+     * grammar. This is intentional, as it makes the grammar simpler. The disambiguation rule is that
+     * each else matches the closest preceding if at the same level of the nesting of braces. For in-
+     * stance, if (E1) if (E2) C1 else C2 means the same as if (E1) {if (E2) C1 else C2}.
+     * We must write if (E1) {if (E2) C1} else C2 if we wish the else to match the first if.
+     *
+     * @param synch
+     * @return
+     */
     private IfStatement if_stmt(Set<TokenType> synch) {
         if (traceEnabled) lineTraceOutput.accept("\t\tEntering if-stmt");
 
@@ -158,6 +169,7 @@ public class Parser {
         match(LPAREN, synch);
         Expression e = expression(synch);
         match(RPAREN, synch);
+
         Statement s = statement(synch);
 
         Statement elseStatement = null;
