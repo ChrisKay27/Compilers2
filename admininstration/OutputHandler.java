@@ -65,11 +65,16 @@ public class OutputHandler {
         out.accept("\n\n------ Parser Output -------\n\n");
         parserReadLines.forEach(s -> {
             out.accept(s + '\n');
-            out.accept(parseOutput.get(s)+'\n');
+            out.accept(parseOutput.get(s) + '\n');
         });
     }
 
-
+    public void printOutputs(Consumer<String> out) {
+        scannerReadLines.forEach(s -> {
+            out.accept(s);
+            out.accept(scannerOutput.get(s));
+        });
+    }
 
 
 //    public void addScannerOutput

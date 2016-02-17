@@ -13,7 +13,7 @@ public class Statement extends ASTNode {
     public void appendContents(StringBuilder sb , int tabs) {
         sb.append('\n');
         for (int i = 0; i < tabs; i++)
-            sb.append('\t');
+            sb.append("    ");
         sb.append(getClass().getSimpleName());
 
         if( nextNode != null )

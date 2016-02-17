@@ -27,7 +27,7 @@ public abstract class ASTNode {
     public static String getTabs(int tabs){
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < tabs; i++)
-            sb.append('\t');
+            sb.append("    ");
         return sb.toString();
     }
 }

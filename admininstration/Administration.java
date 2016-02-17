@@ -60,13 +60,9 @@ public class Administration implements Administrator {
     public void compile() throws IOException {
 
         ASTNode tree = parser.startParsing();
-        if( options.verbose )
-            if(tree != null)
-                System.out.println("Compile Successful");
-            else
-                System.out.println("Compile Failed");
 
         if( options.verbose ){
+//            outputHandler.printOutputs(this::printLineTrace);
             outputHandler.printScannerOutput(this::printLineTrace);
             outputHandler.printParserOutput(this::printLineTrace);
         }
@@ -75,6 +71,13 @@ public class Administration implements Administrator {
             printLineTrace("\n\n---- Abstract Syntax Tree ----\n\n");
             printLineTrace(tree.toString());
         }
+
+
+        if(tree != null)
+            System.out.println("\n\tCompile Successful");
+        else
+            System.out.println("\n\tCompile Failed");
+
     }
 
     public void printTokensOnCurrentLine(List<Token> tokens) {
