@@ -20,8 +20,8 @@ void main(int args[]){
     if( true ){
         --test
         sout( x - y );
-        sout( x / y ); --hello
-        sout( x * y ); --moto
+        sout( x / y );
+        sout( x * y );
 
         --\n new line
 
@@ -33,10 +33,10 @@ void main(int args[]){
                 else
                     continue;
             }
-            end
+            end;
 
     }
     SystemExit(0);
 
 
-}--
+}
