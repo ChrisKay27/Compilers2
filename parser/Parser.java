@@ -515,7 +515,6 @@ public class Parser {
 
         match(LOOP, synch);
 
-
         Statement first = statement(synch);
         Statement temp = first;
         while (FIRSTofStatement.contains(lookahead)) {
@@ -524,7 +523,7 @@ public class Parser {
             temp = temp2;
         }
         match(END, synch);
-
+        match(SEMI, synch);
 
         if (traceEnabled) lineTraceOutput.accept("\t\tLeaving loop-stmt");
         return new LoopStatement(first);

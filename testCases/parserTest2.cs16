@@ -17,18 +17,18 @@ void main(void){
     branch (x)
         case 0:
             a := true;
-        case 1:
+        case 1: {
             bool isFalse;
             isFalse := false;
+        }
         case 2:
-            if (b) null;
-            else null;
+            if (b);
+            else;
         case 3:
             loop
-                if(c) continue;
-                else break;
-                if(foo() > 100)
-                    c := false;
+                if (c) continue;
+                else exit;
+                if(foo() > 100) c := false;
             end;
         case 4:
             exit;
@@ -37,6 +37,6 @@ void main(void){
         case 6:
             return 0;
         default:
-            z := foo() * x + y - 9;
+            return;
     end;
 }
