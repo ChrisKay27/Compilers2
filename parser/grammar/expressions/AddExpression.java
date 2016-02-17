@@ -40,10 +40,8 @@ public class AddExpression extends ASTNode {
     @Override
     public void appendContents(StringBuilder sb , int tabs) {
         sb.append('\n');
-        StringBuilder tabsSB = new StringBuilder();
-        for (int i = 0; i < tabs; i++)
-            tabsSB.append('\t');
-        sb.append(tabsSB.toString());
+        String tabsStr = getTabs(tabs);
+        sb.append(tabsStr);
         sb.append(getClass().getSimpleName());
 
         if(uminus)
@@ -52,7 +50,7 @@ public class AddExpression extends ASTNode {
         term.appendContents(sb, tabs + 1);
 
         if( addop != null) {
-            sb.append('\n').append(tabsSB.toString());
+            sb.append('\n').append(tabsStr);
             sb.append(addop);
             term2.appendContents(sb, tabs + 1);
         }

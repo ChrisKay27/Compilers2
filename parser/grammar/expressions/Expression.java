@@ -40,7 +40,7 @@ public class Expression extends ASTNode {
 
         addExp.appendContents(sb,tabs+1);
         if( relop != null ) {
-            sb.append(relop);
+            sb.append('\n').append(getTabs(tabs)).append(relop);
             addExp2.appendContents(sb, tabs + 1);
         }
         if( nextNode != null )

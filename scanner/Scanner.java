@@ -45,6 +45,7 @@ public class Scanner {
 
 
     private Supplier<Integer> reader;
+    private final Consumer<List<Token>> tokensOnLineConsumer;
     private final Consumer<String> lineTraceOutput;
     private final Consumer<String> errorOutput;
     private final List<Token> tokensOnCurrentLine = new ArrayList<>();
@@ -61,8 +62,9 @@ public class Scanner {
     private boolean traceEnabled;
 
 
-    public Scanner(Supplier<Integer> reader, Consumer<String> lineTraceOutput, Consumer<String> errorOutput) throws IOException {
+    public Scanner(Supplier<Integer> reader, Consumer<List<Token>> tokensOnLineConsumer, Consumer<String> lineTraceOutput, Consumer<String> errorOutput) throws IOException {
         this.reader = reader;
+        this.tokensOnLineConsumer = tokensOnLineConsumer;
 
         this.lineTraceOutput = lineTraceOutput;
 
@@ -113,28 +115,16 @@ public class Scanner {
         //Consume characters until we produce a token.
         while (t == null) {
 
-            //Keeping track of the line number
-            if (nextChar == '\n') {
-
-                if (traceEnabled) {
-                    //Line Trace Output
-                    //if (!tokensOnCurrentLine.isEmpty()) {
-                        lineTraceOutput.accept(lineCount + ":" + currentLine.toString().trim());
-                        for (Token token : tokensOnCurrentLine)
-                            lineTraceOutput.accept(lineCount + ":" + "\t\t" + token);
-                        tokensOnCurrentLine.clear();
-                        //} else
-                        //   lineTraceOutput.accept(lineCount + ":");
-                    //}
-                    currentLine.replace(0, currentLine.length(), "");
-                }
-
-                lineCount++;
-                colCount = 0;
-            }
-
             if (Administration.debug())
                 System.out.println("looking at char: " + (char) nextChar + "[" + nextChar + "]");
+
+            //Keeping track of the line number
+//            if (nextChar == '\n') {
+//                tokensOnLineConsumer.accept(new ArrayList<>(tokensOnCurrentLine));
+//                tokensOnCurrentLine.clear();
+//                lineCount++;
+//                colCount = 0;
+//            }
 
             //let the current state consume the next character
             t = state.consume((char) nextChar);
@@ -164,6 +154,7 @@ public class Scanner {
                 //keep track of what column we are on
                 colCount++;
 
+
                 if (traceEnabled)
                     //Add the character to the current line to be output during the line traceEnabled
                     currentLine.append((char) nextChar);
@@ -171,6 +162,7 @@ public class Scanner {
             } else if (t == Token.COMMENT_TOKEN) {//If its a comment token we ignore it, resetting the state back to the init state
                 t = null;
                 state = ssm.init;
+
             }
         }
 
@@ -197,11 +189,18 @@ public class Scanner {
         //So we don't append this character here because if we are returning a token we haven't consumed this character
         //so it should not be added to the current line yet
 
-        if (traceEnabled) {
-            if (currentLine.length() > 0) currentLine.deleteCharAt(currentLine.length() - 1);
+        //if (traceEnabled) {
+        //    if (currentLine.length() > 0) currentLine.deleteCharAt(currentLine.length() - 1);
             tokensOnCurrentLine.add(t);
-        }
+       // }
 
+
+        if (nextChar == '\n') {
+            tokensOnLineConsumer.accept(new ArrayList<>(tokensOnCurrentLine));
+            tokensOnCurrentLine.clear();
+            lineCount++;
+            colCount = 0;
+        }
         return t;
     }
 

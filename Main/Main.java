@@ -30,9 +30,9 @@ public class Main {
 
     public static void main(String[] args) {
 
-        System.out.println("DEBUG FIRST AND FOLLOW SETS");
-        FirstAndFollowSets.FIRSTofVar_dec_tail.forEach(System.out::println);
-        System.out.println("END DEBUG");
+//        System.out.println("DEBUG FIRST AND FOLLOW SETS");
+//        FirstAndFollowSets.FIRSTofVar_dec_tail.forEach(System.out::println);
+//        System.out.println("END DEBUG");
 
         if (hasOption(args, UNITTEST)) {
             Test.main(args);

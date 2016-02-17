@@ -21,7 +21,7 @@ public class CallStatementTail extends StatementTail {
     public void appendContents(StringBuilder sb, int tabs) {
         if( call_tail == null )
             return;
-        sb.append("Params: ");
+        sb.append("Arguments: ");
         call_tail.appendContents(sb,tabs+1);
     }
 }

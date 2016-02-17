@@ -24,7 +24,8 @@ public class AssignStatementTail extends StatementTail {
         sb.append(getClass().getSimpleName());
         sb.append(' ');
 
-        addExpression.appendContents(sb, tabs);
-        exp.appendContents(sb,tabs);
+        if( addExpression != null )
+            addExpression.appendContents(sb, tabs+1);
+        exp.appendContents(sb,tabs+1);
     }
 }

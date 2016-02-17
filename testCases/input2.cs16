@@ -1,0 +1,37 @@
+/*
+    This test attempts at testing a wide range of inputs
+    Author: Chris Kaebe
+    Date: Jan 12, 2016
+*/
+
+bool equals(int x, int y){
+    return x = y;
+}
+
+void main(int args[]){
+    bool five,seven;
+    five := false;
+    seven := false;
+
+    int temp = readInt();
+
+    if( temp = 5 ){
+        five := true;
+    }
+    else
+    {
+        if( temp = 7 )
+            seven = true;
+        else
+            ;
+
+    }
+    if( five )
+        writeint(five);
+    else if(seven)
+        writeint(seven);
+    else
+        writebool(equals(temp,10));
+
+
+}

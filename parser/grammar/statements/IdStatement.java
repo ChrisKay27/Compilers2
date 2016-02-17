@@ -33,7 +33,7 @@ public class IdStatement extends Statement {
 
         sb.append(idToken);
         sb.append(' ');
-        id_stmt_tail.appendContents(sb,tabs);
+        id_stmt_tail.appendContents(sb,tabs+1);
 
         if( nextNode != null )
             nextNode.appendContents(sb,tabs);

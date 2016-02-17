@@ -26,7 +26,7 @@ public class VarDeclaration extends Declaration {
         sb.append('\n');
         for (int i = 0; i < tabs; i++)
             sb.append('\t');
-        sb.append(getClass().getSimpleName());
+        sb.append(getClass().getSimpleName()).append(' ').append(getType()).append(' ').append(getID());
 
         if( arrayIndex != null )
             arrayIndex.appendContents(sb,tabs+1);

@@ -25,7 +25,7 @@ public class Term extends ASTNode {
 
         factor.appendContents(sb, tabs + 1);
         if( multop != null) {
-            sb.append(multop);
+            sb.append('\n').append(getTabs(tabs)).append(multop);
             factor2.appendContents(sb, tabs + 1);
         }
 
