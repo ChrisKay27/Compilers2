@@ -2,10 +2,12 @@ package parser.grammar;
 
 import parser.TokenType;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
 import static parser.TokenType.*;
+import static parser.grammar.FirstSets.*;
 
 /**
  * Created by Chris on 1/30/2016.
@@ -31,55 +33,49 @@ public class FollowSets {
 
     static {
         Set<TokenType> FOLLOW = new HashSet<>();
-        FOLLOW.add(LOOP);
+        FOLLOW.addAll(Arrays.asList(LCRLY,IF,LOOP,EXIT,CONTINUE,RETURN,SEMI,ID,RCRLY,ELSE,END,BRANCH,CASE,DEFAULT));
         FOLLOWofLoop_stmt = FOLLOW;
     }
 
     public static final Set<TokenType> FOLLOWofExit_stmt;
 
     static {
-        Set<TokenType> FOLLOW = new HashSet<>();
-        FOLLOW.add(EXIT);
+        Set<TokenType> FOLLOW = FOLLOWofLoop_stmt;
         FOLLOWofExit_stmt = FOLLOW;
     }
 
     public static final Set<TokenType> FOLLOWofContinue_stmt;
 
     static {
-        Set<TokenType> FOLLOW = new HashSet<>();
-        FOLLOW.add(CONTINUE);
+        Set<TokenType> FOLLOW = FOLLOWofLoop_stmt;
         FOLLOWofContinue_stmt = FOLLOW;
     }
 
     public static final Set<TokenType> FOLLOWofReturn_stmt;
 
     static {
-        Set<TokenType> FOLLOW = new HashSet<>();
-        FOLLOW.add(RETURN);
+        Set<TokenType> FOLLOW = FOLLOWofLoop_stmt;
         FOLLOWofReturn_stmt = FOLLOW;
     }
 
     public static final Set<TokenType> FOLLOWofNull_stmt;
 
     static {
-        Set<TokenType> FOLLOW = new HashSet<>();
-        FOLLOW.add(SEMI);
+        Set<TokenType> FOLLOW = FOLLOWofLoop_stmt;
         FOLLOWofNull_stmt = FOLLOW;
     }
 
     public static final Set<TokenType> FOLLOWofBranch_stmt;
 
     static {
-        Set<TokenType> FOLLOW = new HashSet<>();
-        FOLLOW.add(BRANCH);
+        Set<TokenType> FOLLOW = FOLLOWofLoop_stmt;
         FOLLOWofBranch_stmt = FOLLOW;
     }
 
     public static final Set<TokenType> FOLLOWofCase_stmt;
 
     static {
-        Set<TokenType> FOLLOW = new HashSet<>();
-
+        Set<TokenType> FOLLOW = FOLLOWofLoop_stmt;
         FOLLOWofCase_stmt = FOLLOW;
     }
 
@@ -126,70 +122,35 @@ public class FollowSets {
     public static final Set<TokenType> FOLLOWofVar_tail;
     static{
         Set<TokenType> FOLLOW = new HashSet<>();
-        FOLLOW.addAll(FOLLOWofRelop);
-        FOLLOW.addAll(FOLLOWofAddOp);
-        FOLLOW.addAll(FOLLOWofMultop);
-        FOLLOW.add(RPAREN);
-        FOLLOW.add(RSQR);
-        FOLLOW.add(SEMI);
-        FOLLOW.add(COMMA);
+        FOLLOW.addAll(FIRSTofRelop);
+        FOLLOW.addAll(FIRSTofAddOp);
+        FOLLOW.addAll(FIRSTofMultop);
+        FOLLOW.addAll(Arrays.asList(RPAREN,RSQR,SEMI,COMMA));
         FOLLOWofVar_tail = FOLLOW;
     }
 
     public static final Set<TokenType> FOLLOWofId_tail;
     static{
-        Set<TokenType> FOLLOW = new HashSet<>();
-        FOLLOW.addAll(FOLLOWofRelop);
-        FOLLOW.addAll(FOLLOWofAddOp);
-        FOLLOW.addAll(FOLLOWofMultop);
-        FOLLOW.add(RPAREN);
-        FOLLOW.add(RSQR);
-        FOLLOW.add(SEMI);
-        FOLLOW.add(COMMA);
-        FOLLOWofId_tail = FOLLOW;
+        FOLLOWofId_tail = FOLLOWofVar_tail;
     }
 
     public static final Set<TokenType> FOLLOWofId_factor;
 
     static {
-        Set<TokenType> FOLLOW = new HashSet<>();
-        FOLLOW.addAll(FOLLOWofRelop);
-        FOLLOW.addAll(FOLLOWofAddOp);
-        FOLLOW.addAll(FOLLOWofMultop);
-        FOLLOW.add(RPAREN);
-        FOLLOW.add(RSQR);
-        FOLLOW.add(SEMI);
-        FOLLOW.add(COMMA);
-        FOLLOWofId_factor = FOLLOW;
+        FOLLOWofId_factor = FOLLOWofVar_tail;
     }
 
     public static final Set<TokenType> FOLLOWofNid_factor;
 
     static {
-        Set<TokenType> FOLLOW = new HashSet<>();
-        FOLLOW.addAll(FOLLOWofRelop);
-        FOLLOW.addAll(FOLLOWofAddOp);
-        FOLLOW.addAll(FOLLOWofMultop);
-        FOLLOW.add(RPAREN);
-        FOLLOW.add(RSQR);
-        FOLLOW.add(SEMI);
-        FOLLOW.add(COMMA);
-        FOLLOWofNid_factor = FOLLOW;
+        FOLLOWofNid_factor = FOLLOWofVar_tail;
     }
 
 
     public static final Set<TokenType> FOLLOWofFactor;
 
     static {
-        Set<TokenType> FOLLOW = new HashSet<>();
-        FOLLOW.addAll(FOLLOWofRelop);
-        FOLLOW.addAll(FOLLOWofAddOp);
-        FOLLOW.addAll(FOLLOWofMultop);
-        FOLLOW.add(RPAREN);
-        FOLLOW.add(RSQR);
-        FOLLOW.add(SEMI);
-        FOLLOW.add(COMMA);
-        FOLLOWofFactor = FOLLOW;
+        FOLLOWofFactor = FOLLOWofVar_tail;
     }
 
 
@@ -197,28 +158,21 @@ public class FollowSets {
 
     static {
         Set<TokenType> FOLLOW = new HashSet<>();
-        FOLLOW.addAll(FOLLOWofRelop);
-        FOLLOW.addAll(FOLLOWofAddOp);
-        FOLLOW.add(RPAREN);
-        FOLLOW.add(RSQR);
-        FOLLOW.add(SEMI);
-        FOLLOW.add(COMMA);
+        FOLLOW.addAll(FIRSTofAddOp);
+        FOLLOW.addAll(FIRSTofRelop);
+        FOLLOW.addAll(Arrays.asList(RPAREN,RSQR,SEMI,COMMA));
         FOLLOWofTerm = FOLLOW;
     }
-
-
 
     public static final Set<TokenType> FOLLOWofAdd_expr;
 
     static {
         Set<TokenType> FOLLOW = new HashSet<>();
-        FOLLOW.addAll(FOLLOWofRelop);
-        FOLLOW.add(RPAREN);
-        FOLLOW.add(RSQR);
-        FOLLOW.add(SEMI);
-        FOLLOW.add(COMMA);
+        FOLLOW.addAll(FIRSTofRelop);
+        FOLLOW.addAll(Arrays.asList(RPAREN,RSQR,SEMI,COMMA));
         FOLLOWofAdd_expr = FOLLOW;
     }
+
     public static final Set<TokenType> FOLLOWofExpression;
 
     static {
@@ -232,8 +186,7 @@ public class FollowSets {
     public static final Set<TokenType> FOLLOWofIf_stmt;
 
     static {
-        Set<TokenType> FOLLOW = new HashSet<>();
-        FOLLOW.add(IF);
+        Set<TokenType> FOLLOW = FOLLOWofVar_tail;
         FOLLOWofIf_stmt = FOLLOW;
     }
 
@@ -241,7 +194,8 @@ public class FollowSets {
 
     static {
         Set<TokenType> FOLLOW = new HashSet<>();
-        FOLLOW.add(LCRLY);
+        FOLLOW.addAll(FOLLOWofVar_tail);
+        FOLLOW.addAll(Arrays.asList(INT,BOOL,VOID,ENDFILE));
         FOLLOWofCompound_stmt = FOLLOW;
     }
 
@@ -270,26 +224,21 @@ public class FollowSets {
     public static final Set<TokenType> FOLLOWofCall_stmt_tail;
 
     static {
-        Set<TokenType> FOLLOW = new HashSet<>();
-        FOLLOW.addAll(FOLLOWofCall_tail);
+        Set<TokenType> FOLLOW = FOLLOWofLoop_stmt;
         FOLLOWofCall_stmt_tail = FOLLOW;
     }
 
     public static final Set<TokenType> FOLLOWofAssign_stmt_tail;
 
     static {
-        Set<TokenType> FOLLOW = new HashSet<>();
-        FOLLOW.add(LSQR);
-        FOLLOW.add(ASSIGN);
+        Set<TokenType> FOLLOW = FOLLOWofLoop_stmt;
         FOLLOWofAssign_stmt_tail = FOLLOW;
     }
 
     public static final Set<TokenType> FOLLOWofId_stmt_tail;
 
     static {
-        Set<TokenType> FOLLOW = new HashSet<>();
-        FOLLOW.addAll(FOLLOWofAssign_stmt_tail);
-        FOLLOW.addAll(FOLLOWofCall_stmt_tail);
+        Set<TokenType> FOLLOW = FOLLOWofLoop_stmt;
         FOLLOWofId_stmt_tail = FOLLOW;
     }
 
@@ -331,7 +280,8 @@ public class FollowSets {
 
     static {
         Set<TokenType> FOLLOW = new HashSet<>();
-        FOLLOW.add(ID);
+        FOLLOW.add(COMMA);
+        FOLLOW.add(SEMI);
         FOLLOWofVar_name = FOLLOW;
     }
 
@@ -339,7 +289,7 @@ public class FollowSets {
 
     static {
         Set<TokenType> FOLLOW = new HashSet<>();
-        FOLLOW.add(LPAREN);
+        FOLLOW.addAll(Arrays.asList(INT,BOOL,VOID,ENDFILE));
         FOLLOWofFun_dec_tail = FOLLOW;
     }
 
@@ -347,9 +297,7 @@ public class FollowSets {
 
     static {
         Set<TokenType> FOLLOW = new HashSet<>();
-        FOLLOW.add(TokenType.LSQR);
-        FOLLOW.add(TokenType.COMMA);
-        FOLLOW.add(TokenType.SEMI);
+        FOLLOW.addAll(Arrays.asList(INT,BOOL,VOID,ENDFILE,LCRLY,IF,LOOP,EXIT,CONTINUE, RETURN,SEMI,ID,BRANCH));
         FOLLOWofVar_dec_tail = FOLLOW;
     }
 
@@ -357,8 +305,7 @@ public class FollowSets {
 
     static {
         Set<TokenType> FOLLOW = new HashSet<>();
-        FOLLOW.addAll(FOLLOWofVar_dec_tail);
-        FOLLOW.addAll(FOLLOWofFun_dec_tail);
+        FOLLOW.addAll(Arrays.asList(INT,BOOL,VOID,ENDFILE));
         FOLLOWofDec_tail = FOLLOW;
     }
 
@@ -366,8 +313,7 @@ public class FollowSets {
 
     static {
         Set<TokenType> FOLLOW = new HashSet<>();
-        FOLLOW.add(VOID);
-        FOLLOW.addAll(FOLLOWofNonvoid_specifier);
+        FOLLOW.addAll(Arrays.asList(INT,BOOL,VOID,ENDFILE));
         FOLLOWofDeclaration = FOLLOW;
     }
 
@@ -375,7 +321,7 @@ public class FollowSets {
 
     static {
         Set<TokenType> FOLLOW = new HashSet<>();
-        FOLLOW.addAll(FOLLOWofDeclaration);
+        FOLLOW.add(ENDFILE);
         FOLLOWofProgram = FOLLOW;
     }
 }

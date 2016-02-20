@@ -96,20 +96,6 @@ public class Parser {
         scanner.setTraceEnabled(temp);
     }
 
-    /**
-     * Drives the scanner to produce new tokens until the scanner reaches the end of it's input.
-     *
-     * @return - true when there were no error tokens produced, otherwise false
-     * @throws java.io.IOException
-     */
-    public ASTNode parse() throws java.io.IOException {
-
-        lookaheadToken = scanner.nextToken();
-        lookahead = lookaheadToken.token;
-
-        return program(new HashSet<>(Arrays.asList(new TokenType[]{ENDFILE})));
-    }
-
 
     String currentLine;
     /**
@@ -138,6 +124,20 @@ public class Parser {
         this.scanner.redirectReader(fileReader);
     }
 
+    /**
+     * Drives the scanner to produce new tokens until the scanner reaches the end of it's input.
+     *
+     * @return - true when there were no error tokens produced, otherwise false
+     * @throws java.io.IOException
+     */
+    public ASTNode parse() throws java.io.IOException {
+
+        lookaheadToken = scanner.nextToken();
+        lookahead = lookaheadToken.token;
+
+        return program(new HashSet<>(Arrays.asList(new TokenType[]{ENDFILE})));
+    }
+
 
     private ASTNode program(Set<TokenType> synch) {
         if(traceEnabled) lineTraceOutput.accept("\t\tEntering program");
@@ -145,7 +145,7 @@ public class Parser {
         ASTNode first = null;
         ASTNode current = null;
         do {
-            ASTNode temp = declaration(synch);
+            ASTNode temp = declaration(union(synch,FIRSTofDeclaration));
             if (current != null)
                 current.setNextNode(temp);
             if( first == null )
@@ -157,6 +157,7 @@ public class Parser {
         if (traceEnabled) lineTraceOutput.accept("\t\tLeaving program");
         return first;
     }
+
 
     /**
      * THE DISAMBIGUATION RULE:
@@ -856,19 +857,29 @@ public class Parser {
             this.tokens.add(lookaheadToken);
             lookahead = lookaheadToken.token;
         } else
-            syntaxError(synch);
+            syntaxError(expected, synch);
         syntaxCheck(synch);
     }
 
     private void syntaxCheck(Set<TokenType> synch) {
+        if(!synch.contains(lookahead)) {
+            errorOutput.accept("\t\tSyntax Error, token:" + lookahead + " is not expected here.");
+            syntaxError(synch);
+        }
+    }
 
+    private void syntaxError(TokenType expected, Set<TokenType> synch) {
+        errorOutput.accept("\t\tSyntax Error, expecting " + expected + " but received " + lookahead);
+        syntaxError(synch);
     }
 
     private void syntaxError(Set<TokenType> synch) {
-        errorOutput.accept("\t\tSyntax Error");
-        throw new SyntaxError();
+        while(!synch.contains(lookahead)){
+            lookaheadToken = scanner.nextToken();
+            this.tokens.add(lookaheadToken);
+            lookahead = lookaheadToken.token;
+        }
     }
-
 
     public void setTraceEnabled(boolean traceEnabled) {
         this.traceEnabled = traceEnabled;
@@ -877,4 +888,12 @@ public class Parser {
     public boolean isTraceEnabled() {
         return traceEnabled;
     }
+
+    private Set<TokenType> union(Set<TokenType> synch, Set<TokenType> firstSet) {
+        Set<TokenType> newSynch = new HashSet<>(synch);
+        newSynch.addAll(firstSet);
+        return newSynch;
+    }
+
+
 }
