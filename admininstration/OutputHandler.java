@@ -34,7 +34,7 @@ public class OutputHandler {
         out.accept(msg + "\n");
     }
     public void printErrorMessage(String msg) {
-        System.err.println(msg);
+        System.out.println(msg);
     }
 
     public void addScannerOutput(String currentLine, String output) {

@@ -63,8 +63,8 @@ public class Administration implements Administrator {
 
         if( options.verbose ){
 //            outputHandler.printOutputs(this::printLineTrace);
-            outputHandler.printScannerOutput(this::printLineTrace);
-            outputHandler.printParserOutput(this::printLineTrace);
+            //outputHandler.printScannerOutput(this::printLineTrace);
+            //outputHandler.printParserOutput(this::printLineTrace);
         }
 
         if( tree != null && options.printAST ){
@@ -92,6 +92,10 @@ public class Administration implements Administrator {
 
     public void printParserLineTrace(String trace){
         outputHandler.addParseOutput(lineNumber+": "+currentLine.trim(),lineNumber+": "+trace);
+
+        if(options.verbose){
+            System.out.println(trace+'\n');
+        }
     }
 
     public void printLineTrace(String line){
@@ -137,8 +141,13 @@ public class Administration implements Administrator {
                 fileInput = () -> {
                     if (currentLineFeed.length() == 0 ) {
                          if(fileScanner.hasNextLine()) {
-                             currentLineFeed = fileScanner.nextLine() + '\n';
+                             String curLine = fileScanner.nextLine();
+                             currentLineFeed = curLine + '\n';
                              currentLine = currentLineFeed;
+
+                             if(options.verbose)
+                                 System.out.println(lineNumber+": " + curLine);
+
                              lineNumber++;
                         }else
                             return -1;

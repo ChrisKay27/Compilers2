@@ -2,7 +2,6 @@ package Main;
 
 import admininstration.Administration;
 import admininstration.Options;
-import parser.grammar.FirstAndFollowSets;
 import testCases.Test;
 
 import static java.lang.System.out;

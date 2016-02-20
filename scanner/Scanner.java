@@ -13,6 +13,8 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import static java.lang.System.out;
+
 /**
  * Created by Chris on 1/9/2016.
  */
@@ -107,7 +109,7 @@ public class Scanner {
         if (nextChar == -1)
             return new Token(TokenType.ENDFILE, null);
 
-        if (Administration.debug()) System.out.println("Starting in init state");
+        if (Administration.debug()) out.println("Starting in init state");
 
         //Always starts in the start state
         State state = ssm.init;
@@ -116,7 +118,7 @@ public class Scanner {
         while (t == null) {
 
             if (Administration.debug())
-                System.out.println("looking at char: " + (char) nextChar + "[" + nextChar + "]");
+                out.println("looking at char: " + (char) nextChar + "[" + nextChar + "]");
 
             //Keeping track of the line number
 //            if (nextChar == '\n') {
@@ -131,7 +133,7 @@ public class Scanner {
             //get the next state that we must transition to
             state = state.nextState();
 
-            if (Administration.debug()) System.out.println("went to " + state + " after char: " + (char) nextChar);
+            if (Administration.debug()) out.println("went to " + state + " after char: " + (char) nextChar);
 
 
             //If the current state did not produce a token
@@ -148,7 +150,7 @@ public class Scanner {
                     }
                 }
 
-                if (Administration.debug()) System.out.println("Going to state:" + state);
+                if (Administration.debug()) out.println("Going to state:" + state);
                 //get the next character from the input
                 nextChar = nextChar();
                 //keep track of what column we are on
@@ -184,7 +186,7 @@ public class Scanner {
             t.attrValue = t.attrValue + " at line:" + lineCount + " col:" + colCount;
         }
 
-        if (Administration.debug()) System.out.println("Found Token:" + t);
+        if (Administration.debug()) out.println("Found Token:" + t);
 
         //So we don't append this character here because if we are returning a token we haven't consumed this character
         //so it should not be added to the current line yet
@@ -194,6 +196,7 @@ public class Scanner {
             tokensOnCurrentLine.add(t);
        // }
 
+        lineTraceOutput.accept("\t\t"+ t + '\n');
 
         if (nextChar == '\n') {
             tokensOnLineConsumer.accept(new ArrayList<>(tokensOnCurrentLine));
@@ -201,6 +204,7 @@ public class Scanner {
             lineCount++;
             colCount = 0;
         }
+
         return t;
     }
 
