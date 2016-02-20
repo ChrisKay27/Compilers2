@@ -174,8 +174,8 @@ public class Parser {
         if (traceEnabled) lineTraceOutput.accept("\t\tEntering if-stmt");
 
         match(IF, synch);
-        match(LPAREN, synch);
-        Expression e = expression(synch);
+        match(LPAREN, union(FIRSTofExpression, synch));
+        Expression e = expression(union(synch));
         match(RPAREN, synch);
 
         Statement s = statement(synch);
@@ -319,7 +319,7 @@ public class Parser {
                 current = temp;
             }
             if (traceEnabled) lineTraceOutput.accept("\t\tLeaving params");
-            return head;//possible bug, returning here when there could have been an error
+            return head; //possible bug, returning here when there could have been an error
         }
         // if (traceEnabled) lineTraceOutput.accept("\t\tLeaving params");
         // return null;
@@ -892,6 +892,11 @@ public class Parser {
     private Set<TokenType> union(Set<TokenType> synch, Set<TokenType> firstSet) {
         Set<TokenType> newSynch = new HashSet<>(synch);
         newSynch.addAll(firstSet);
+        return newSynch;
+    }
+    private Set<TokenType> union(TokenType token, Set<TokenType> synch){
+        Set<TokenType> newSynch = new HashSet<>(synch);
+        newSynch.add(token);
         return newSynch;
     }
 
