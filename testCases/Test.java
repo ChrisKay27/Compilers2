@@ -331,6 +331,7 @@ public class Test {
         boolean verboseEnabled = false;
 
         boolean tuplePhase = false, lexicalPhase = false, semanticPhase = false, parsePhase = false, compilePhase = false;
+        boolean printAST;
 
         try {
             errorLogFilePath = getTrailingFilePath(args, ERROR, ERROR2);
@@ -343,12 +344,15 @@ public class Test {
             semanticPhase = hasOption(args, SEMANTIC_PHASE, SEMANTIC_PHASE2);
             tuplePhase = hasOption(args, TUPLE_PHASE, TUPLE_PHASE2);
             compilePhase = hasOption(args, COMPILE_PHASE, COMPILE_PHASE2);
+            printAST = hasOption(args, PRINT_AST);
         } catch (Exception e) {
             System.err.println("Error parsing parameters, try -t Path/To/File.cs16 -e Path/To/FileLogFile.txt");
             System.exit(2);
+            return;
         }
 
-        Options options = new Options(quietEnabled, verboseEnabled, tuplePhase, parsePhase, compilePhase, lexicalPhase, semanticPhase, outputFilePath, errorLogFilePath, srcFilePath);
+        Options options = new Options(quietEnabled, verboseEnabled, tuplePhase, parsePhase, compilePhase, lexicalPhase,
+                semanticPhase, outputFilePath, errorLogFilePath, srcFilePath, printAST);
 
 
 //        TestAdmin admin;

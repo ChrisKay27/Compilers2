@@ -16,15 +16,21 @@ public class Token {
 
     public TokenType token;
     public Object attrValue;
+    public String name;
 
+    public Token(TokenType token, String attrValue) {
+        this.token = token;
+        this.attrValue = attrValue;
+        this.name = attrValue;
+    }
     public Token(TokenType token, Object attrValue) {
         this.token = token;
         this.attrValue = attrValue;
     }
-
     @Override
     public String toString() {
-        return token == null ? "Comment Token" : '(' + token.toString() + "," + attrValue + ')';
+        return token == null ? "Comment Token" : '(' + token.toString() + "," + attrValue + ")"
+                + (name != null?" => " + name:"");
         //return "new Token(TokenType."+this.token.toString()+","+this.attrValue +")";
     }
 

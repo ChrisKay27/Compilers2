@@ -1,0 +1,42 @@
+/*  Parser test covering usage of all statements
+ *  Carston Schilds, February 16th, 2016
+ */
+int fooCounter;
+
+int foo(void){
+    fooCounter := fooCounter + 1;
+    return fooCounter;
+}
+
+void main(void){
+    int x, y, z;
+    bool a, b, c;
+    x := 14;
+    b := true;
+    c := true;
+    branch (x)
+        case 0:
+            a := true;
+        case 1: {
+            bool isFalse;
+            isFalse := false;
+        }
+        case 2:
+            if (b);
+            else;
+        case 3:
+            loop
+                if (c) continue;
+                else exit;
+                if(foo() > 100) c := false;
+            end;
+        case 4:
+            exit;
+        case 5:
+            continue;
+        case 6:
+            return 0;
+        default:
+            return;
+    end;
+}

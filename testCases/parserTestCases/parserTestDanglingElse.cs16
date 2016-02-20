@@ -1,0 +1,12 @@
+/*  Dangling Else Test
+ *  Carston Schilds, February 16th, 2016
+ */
+
+void main(void) {
+
+if (e1) if (e2) ; else ;
+
+if (e1) {if (e2) ; else ;}
+
+if (e1) {if (e2) ;} else ;
+}

@@ -80,6 +80,7 @@ public class FirstSets {
     static {
         Set<TokenType> FIRST = new HashSet<>();
         FIRST.add(CASE);
+        FIRST.add(DEFAULT);
         FIRSTofCase_stmt = FIRST;
     }
 

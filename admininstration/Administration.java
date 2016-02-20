@@ -1,27 +1,38 @@
 package admininstration;
 
-import com.sun.org.apache.xerces.internal.xni.grammars.Grammar;
 import parser.Parser;
+import parser.grammar.ASTNode;
 import scanner.Scanner;
+import scanner.Token;
 
 import java.io.*;
 import java.nio.charset.Charset;
+import java.util.List;
+import java.util.function.Supplier;
 
 public class Administration implements Administrator {
     // development
     private static final boolean debug = false;
+
+
     public static boolean debug() {
         return debug;
     }
     // end development
 
+    private Supplier<Integer> fileInput;
+    private java.util.Scanner fileScanner;
+
     private BufferedWriter errorWriter, outputWriter;
     private final Options options;
-    protected ErrorReporter errorReporter = new ErrorReporter(System.out::println);
-    protected Reader buffer;
+    protected OutputHandler outputHandler = new OutputHandler(System.err::println);
+
     protected Scanner scanner;
     protected Parser parser;
 
+    private String currentLine;
+    private String currentLineFeed;
+    private String lastLine;
 
     public Administration(Options options) throws IOException, UnrecognizedSourceCodeException {
 
@@ -34,9 +45,9 @@ public class Administration implements Administrator {
         if( options.outputFilePath != null )
             initOutputFileWriter(options.outputFilePath);
 
-        this.scanner = new Scanner(buffer,this::printLineTrace,this::printErrorMessage);
+        this.scanner = new Scanner(fileInput,this::printTokensOnCurrentLine,this::printLineTrace,this::printErrorMessage);
         scanner.setTraceEnabled(options.verbose);
-        this.parser = new Parser(this.scanner,this::printLineTrace,this::printErrorMessage);
+        this.parser = new Parser(this.scanner,this::printParserLineTrace,this::printErrorMessage);
         parser.setTraceEnabled(options.verbose);
 
     }
@@ -47,49 +58,60 @@ public class Administration implements Administrator {
      * @throws IOException
      */
     public void compile() throws IOException {
-        boolean success = parser.startParsing();
-        if( options.verbose )
-            if(success)
-                System.out.println("Compile Successful");
-            else
-                System.out.println("Compile Failed");
+
+        ASTNode tree = parser.startParsing();
+
+        if( options.verbose ){
+//            outputHandler.printOutputs(this::printLineTrace);
+            outputHandler.printScannerOutput(this::printLineTrace);
+            outputHandler.printParserOutput(this::printLineTrace);
+        }
+
+        if( tree != null && options.printAST ){
+            printLineTrace("\n\n---- Abstract Syntax Tree ----\n\n");
+            printLineTrace(tree.toString());
+        }
+
+
+        if(tree != null)
+            System.out.println("\n\tCompile Successful");
+        else
+            System.out.println("\n\tCompile Failed");
+
     }
 
-    /**
-     * closes the buffered reader
-     *
-     * @throws IOException
-     */
-    public void close() throws IOException {
-        buffer.close();
-        if( errorWriter != null ) {
-            //System.out.println("Closing error writer");
-            errorWriter.flush();
-            errorWriter.close();
+    public void printTokensOnCurrentLine(List<Token> tokens) {
+
+        if (!tokens.isEmpty() && options.verbose) {
+            StringBuilder sb = new StringBuilder();
+            tokens.forEach(t -> sb.append('\n').append(lineNumber).append(":\t\t").append(t));
+
+            outputHandler.addScannerOutput(lineNumber + ": " + currentLine.trim(), sb.toString()+"\n\n");
         }
-        if( outputWriter != null ) {
-            //System.out.println("Closing output writer");
-            outputWriter.flush();
-            outputWriter.close();
-        }
+    }
+
+    public void printParserLineTrace(String trace){
+        outputHandler.addParseOutput(lineNumber+": "+currentLine.trim(),lineNumber+": "+trace);
     }
 
     public void printLineTrace(String line){
         if( outputWriter != null ){
             try {
-                outputWriter.write(line + "\r\n");
+                outputWriter.write(line);
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
         else
-            System.out.println(line);
+            System.out.print(line);
     }
 
     public void printErrorMessage(String msg){
-        errorReporter.print(msg);
+        outputHandler.printErrorMessage(msg);
     }
 
+
+    private int lineNumber = 0;
     /**
      * initializes the buffered reader to the source code file
      * if the file does not have the .cs16 file extension then this method throws an UnrecognizedSourceCodeException
@@ -106,7 +128,27 @@ public class Administration implements Administrator {
             try {
                 InputStream in = new FileInputStream(input);
                 Reader reader = new InputStreamReader(in, encoding);
-                this.buffer = new BufferedReader(reader);
+                fileScanner = new java.util.Scanner(reader);
+
+                currentLineFeed = fileScanner.nextLine()+'\n';
+                currentLine = currentLineFeed;
+                lineNumber = 1;
+
+                fileInput = () -> {
+                    if (currentLineFeed.length() == 0 ) {
+                         if(fileScanner.hasNextLine()) {
+                             currentLineFeed = fileScanner.nextLine() + '\n';
+                             currentLine = currentLineFeed;
+                             lineNumber++;
+                        }else
+                            return -1;
+                    }
+                    int c = currentLineFeed.charAt(0);
+                    currentLineFeed = currentLineFeed.substring(1, currentLineFeed.length());
+                    return c;
+                };
+
+//                new java.util.Scanner(reader).nextLine()
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -125,7 +167,8 @@ public class Administration implements Administrator {
             OutputStream in = new FileOutputStream(input);
             Writer writer = new PrintWriter(in);
             errorWriter = new BufferedWriter(writer);
-            errorReporter.setOutput((str) -> {
+            outputHandler.setErrorOutput((str) -> {
+                System.err.println("Error on line: " +lineNumber + " - " + str);
                 try {
                     errorWriter.write(str);
                 } catch (IOException e) {
@@ -158,4 +201,24 @@ public class Administration implements Administrator {
         return path.substring(path.length() - 5, path.length()).equals(".cs16");
     }
 
+    /**
+     * closes the buffered reader
+     *
+     * @throws IOException
+     */
+    public void close() throws IOException {
+        if( fileScanner != null )
+            fileScanner.close();
+
+        if( errorWriter != null ) {
+            //System.out.println("Closing error writer");
+            errorWriter.flush();
+            errorWriter.close();
+        }
+        if( outputWriter != null ) {
+            //System.out.println("Closing output writer");
+            outputWriter.flush();
+            outputWriter.close();
+        }
+    }
 }
