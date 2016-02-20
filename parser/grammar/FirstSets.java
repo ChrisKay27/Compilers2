@@ -10,7 +10,7 @@ import static parser.TokenType.*;
 /**
  * Created by Chris on 1/30/2016.
  */
-public class FirstAndFollowSets {
+public class FirstSets {
     public static final Set<TokenType> FIRSTofStatement;
 
     static {
@@ -134,7 +134,8 @@ public class FirstAndFollowSets {
     static{
         Set<TokenType> FIRST = new HashSet<>();
         FIRST.addAll(FIRSTofVar_tail);
-        //FIRST.addAll(FIRSTofCallTail);
+        FIRST.add(LPAREN);
+//        FIRST.addAll(FIRSTofCall_tail);
         FIRSTofId_tail = FIRST;
     }
 
@@ -238,7 +239,7 @@ public class FirstAndFollowSets {
 
     static {
         Set<TokenType> FIRST = new HashSet<>();
-        FIRST.addAll(FIRSTofAdd_expr);
+        FIRST.add(LSQR);
         FIRST.add(ASSIGN);
         FIRSTofAssign_stmt_tail = FIRST;
     }
@@ -283,6 +284,7 @@ public class FirstAndFollowSets {
     static {
         Set<TokenType> FIRST = new HashSet<>();
         FIRST.addAll(FIRSTofParam);
+        FIRST.add(VOID);
         FIRSTofParams = FIRST;
     }
 

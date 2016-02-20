@@ -14,7 +14,7 @@ import java.util.Set;
 import java.util.function.Consumer;
 
 import static parser.TokenType.*;
-import static parser.grammar.FirstAndFollowSets.*;
+import static parser.grammar.FirstSets.*;
 
 /**
  *
@@ -718,6 +718,7 @@ public class Parser {
     private void match(TokenType expected, Set<TokenType> synch) {
         if (lookahead == expected) {
             if(traceEnabled) lineTraceOutput.accept("\t\tMatched " + expected.toString());
+
             lookaheadToken = scanner.nextToken();
             this.tokens.add(lookaheadToken);
             lookahead = lookaheadToken.token;
@@ -727,11 +728,18 @@ public class Parser {
     }
 
     private void syntaxCheck(Set<TokenType> synch) {
-
+        if(!synch.contains(lookahead))
+            syntaxError(synch);
     }
 
     private void syntaxError(Set<TokenType> synch) {
         errorOutput.accept("\t\tSyntax Error");
+
+        while (!synch.contains(lookahead) ) {
+            lookaheadToken = scanner.nextToken();
+            this.tokens.add(lookaheadToken);
+            lookahead = lookaheadToken.token;
+        }
         //throw new SyntaxError();
     }
 
