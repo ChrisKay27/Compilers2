@@ -22,7 +22,7 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import static parser.TokenType.*;
-import static parser.grammar.FirstAndFollowSets.*;
+import static parser.grammar.FirstSets.*;
 
 /**
  * Created by Chris on 1/9/2016.
