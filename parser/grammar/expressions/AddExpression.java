@@ -2,7 +2,6 @@ package parser.grammar.expressions;
 
 import parser.TokenType;
 import parser.grammar.ASTNode;
-import parser.grammar.Term;
 
 /**
  * Created by Chris on 1/30/2016.
@@ -20,6 +19,8 @@ public class AddExpression extends ASTNode {
         this.addop = addop;
         this.term2 = term2;
     }
+
+    public AddExpression(boolean minusExpr, Term term) {this(minusExpr, term, null, null);}
 
     public boolean isUminus() {
         return uminus;

@@ -1,6 +1,7 @@
-package parser.grammar;
+package parser.grammar.expressions;
 
 import parser.TokenType;
+import parser.grammar.ASTNode;
 
 /**
  * Created by Chris on 2/12/2016.
@@ -14,6 +15,9 @@ public class Term extends ASTNode {
         this.factor = factor;
         this.multop = multop;
         this.factor2 = factor2;
+    }
+    public Term(ASTNode factor) {
+        this(factor, null, null);
     }
 
     @Override

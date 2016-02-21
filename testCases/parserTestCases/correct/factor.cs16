@@ -1,0 +1,15 @@
+-- Carston Schilds, Feb 21st 2016
+
+void main(void){
+    x := not b;
+    x := (y);
+    x := 7;
+    x := false;
+    x := true;
+
+    x := not foo();
+    x := (foo());
+
+    x := not not not not not not not not not not y;
+    x := not( not (not (not (not (not (not (not (not (not y)))))))));
+}

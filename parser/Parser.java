@@ -2,7 +2,7 @@ package parser;
 
 import parser.grammar.ASTNode;
 import parser.grammar.BLIT_NidFactor;
-import parser.grammar.Term;
+import parser.grammar.expressions.Term;
 import parser.grammar.declarations.Declaration;
 import parser.grammar.declarations.FuncDeclaration;
 import parser.grammar.declarations.ParamDeclaration;
@@ -645,47 +645,59 @@ public class Parser {
         if (traceEnabled) lineTraceOutput.accept("\t\tEntering add-exp");
 
         boolean minusExpr = false;
-
         if (FIRSTofUMinus.contains(lookahead)) {
             uminus(union(synch,FIRSTofTerm));
             minusExpr = true;
         }
 
         Term term = term(union(synch,FIRSTofAddOp));
-        TokenType addop = null;
-        Term term2 = null;
-        if (FIRSTofAddOp.contains(lookahead)) {
-            addop = addop(union(synch,FIRSTofTerm));
-            term2 = term(union(synch,FIRSTofAddOp));
+
+        AddExpression result = new AddExpression(minusExpr, term);
+        TokenType termpAddOp;
+        Term tempTerm;
+        ASTNode current = result;
+        AddOpTerm next;
+
+        while (FIRSTofAddOp.contains(lookahead)) {
+            termpAddOp = addop(union(synch, FIRSTofTerm));
+            tempTerm = term(union(synch, FIRSTofAddOp));
+            next = new AddOpTerm(termpAddOp, tempTerm);
+            current.setNextNode(next);
+            current = next;
         }
 
         if (traceEnabled) lineTraceOutput.accept("\t\tLeaving add-exp");
-        return new AddExpression(minusExpr, term, addop, term2);
+        return result;
     }
 
     private Term term(Set<TokenType> synch) {
         if (traceEnabled) lineTraceOutput.accept("\t\tEntering term");
 
         ASTNode factor = factor(union(synch,FIRSTofMultop));
+        Term result = new Term (factor);
+        TokenType tempMultOp = null;
+        Factor tempFactor = null;
+        ASTNode current = result;
+        MultOpFactor next;
 
-        TokenType multop = null;
-        ASTNode factor2 = null;
-
-        if (FIRSTofMultop.contains(lookahead)) {
-            multop = multop(union(synch,FIRSTofFactor));
-            factor2 = factor(synch);
+        while (FIRSTofMultop.contains(lookahead)) {
+            tempMultOp = multop(union(synch,FIRSTofFactor));
+            tempFactor = factor(synch);
+            next = new MultOpFactor(tempMultOp, tempFactor);
+            current.setNextNode(next);
+            current = next;
         }
 
         if (traceEnabled) lineTraceOutput.accept("\t\tLeaving term");
-        return new Term(factor, multop, factor2);
+        return result;
     }
 
-    private ASTNode factor(Set<TokenType> synch) {
+    private Factor factor(Set<TokenType> synch) {
         if (traceEnabled) lineTraceOutput.accept("\t\tEntering factor");
 
-        ASTNode factor;
+        Factor factor;
         if (FIRSTofNid_factor.contains(lookahead)) {
-            factor = nid_factor(synch);
+            factor = (Factor)nid_factor(synch);
         } else {
             factor = id_factor(synch);
         }

@@ -1,0 +1,5 @@
+-- Carston Schilds, Feb 21st 2016
+
+bool foo2(void){;}
+int foo(void){;}
+void main(void){;}
