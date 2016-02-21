@@ -90,7 +90,7 @@ public class OutputHandler {
      * @param out used to change where the error output is going to
      */
     public void printErrorOutputs(Consumer<String> out){
-        if (errorLog.size()>10)
+        if (errorLog.size() > 10)
             errorLog = errorLog.subList(0,9);
         errorLog.forEach(out::accept);
     }

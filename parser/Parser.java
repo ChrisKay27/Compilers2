@@ -196,13 +196,15 @@ public class Parser {
     private Declaration declaration(Set<TokenType> synch) {
         if (traceEnabled) lineTraceOutput.accept("\t\tEntering declaration");
         //
-        if (lookahead == VOID) {//function declaration
+        if (lookahead == VOID) {
+            //void function declaration
             match(VOID, union(ID, synch));
             Token token = lookaheadToken;
             match(ID, union(FIRSTofFun_dec_tail, synch));
             FuncDeclarationTail funcDecTail = fun_dec_tail(synch);
             return new FuncDeclaration(Type.VOID, token, funcDecTail.getParams(), funcDecTail.getFuncBody());
-        } else if (FIRSTofNonvoid_specifier.contains(lookahead)) {//variable declaration or function declaration
+        } else if (FIRSTofNonvoid_specifier.contains(lookahead)) {
+            //variable declaration or nonvoid function declaration
             Type type = nonvoid_specifier(union(ID, synch));
             Token token = lookaheadToken;
             match(ID, union(FIRSTofDec_tail, synch));
@@ -900,6 +902,7 @@ public class Parser {
         newSynch.add(token);
         return newSynch;
     }
+
     private Set<TokenType> union(Set<TokenType> synch, TokenType tt) {
         Set<TokenType> newSynch = new HashSet<>(synch);
         newSynch.add(tt);
