@@ -5,5 +5,7 @@
 */
 
 void main(int args[]){
-    sout(; 
+    sout(;
+
+    sout);
 }

@@ -78,8 +78,8 @@ public class Administration implements Administrator {
         if(tree != null)
             out.println("\n\tCompile Successful");
         else {
-            out.println("\n\n-------------------------------------\n\n");
-            out.println("\n\tCompile Failed\n");
+            out.println("\n-------------------------------------\n");
+            out.println("\tCompile Failed\n");
 
             outputHandler.printErrorOutputs(out::println);
         }
@@ -170,8 +170,9 @@ public class Administration implements Administrator {
                 };
 
 //                new java.util.Scanner(reader).nextLine()
-            } catch (IOException e) {
-                e.printStackTrace();
+            } catch (Exception e) {
+                outputHandler.printErrorMessage(e.getMessage());
+//                System.out.println(e);
             }
         } else throw new UnrecognizedSourceCodeException("The file located at" + path + "is not a .cs16 file");
     }

@@ -38,7 +38,8 @@ public class OutputHandler {
     }
 
     public void printErrorMessage(String msg) {
-        errorOut.accept(msg);
+        if( errorOut != null )
+            errorOut.accept(msg);
         errorLog.add(msg);
     }
 
