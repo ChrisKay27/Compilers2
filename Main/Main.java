@@ -3,6 +3,7 @@ package Main;
 import admininstration.Administration;
 import admininstration.Options;
 import testCases.Test;
+import testCases.TestScanner;
 
 import static java.lang.System.out;
 

@@ -31,11 +31,14 @@ public class OutputHandler {
         errorOut = out;
     }
 
+
+
     public void print(String msg) {
         out.accept(msg + "\n");
     }
+
     public void printErrorMessage(String msg) {
-        System.out.println(msg);
+        errorOut.accept(msg);
         errorLog.add(msg);
     }
 
@@ -78,10 +81,22 @@ public class OutputHandler {
         });
     }
 
+
     public void printErrorOutputs(){
+        printErrorOutputs(errorOut);
+    }
+
+    /**
+     * @param out used to change where the error output is going to
+     */
+    public void printErrorOutputs(Consumer<String> out){
         if (errorLog.size()>10)
-            errorLog.subList(0,9);
-        errorLog.forEach(System.out::println);
+            errorLog = errorLog.subList(0,9);
+        errorLog.forEach(out::accept);
+    }
+
+    public List<String> getErrorLog() {
+        return errorLog;
     }
 
 

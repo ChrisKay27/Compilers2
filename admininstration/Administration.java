@@ -10,6 +10,8 @@ import java.nio.charset.Charset;
 import java.util.List;
 import java.util.function.Supplier;
 
+import static java.lang.System.*;
+
 public class Administration implements Administrator {
     // development
     private static final boolean debug = false;
@@ -25,7 +27,7 @@ public class Administration implements Administrator {
 
     private BufferedWriter errorWriter, outputWriter;
     private final Options options;
-    protected OutputHandler outputHandler = new OutputHandler(System.err::println);
+    protected OutputHandler outputHandler = new OutputHandler(err::println);
 
     protected Scanner scanner;
     protected Parser parser;
@@ -74,12 +76,14 @@ public class Administration implements Administrator {
 
 
         if(tree != null)
-            System.out.println("\n\tCompile Successful");
+            out.println("\n\tCompile Successful");
         else {
-            System.out.println("\n\n-------------------------------------\n\n");
-            System.out.println("\n\tCompile Failed\n");
-            outputHandler.printErrorOutputs();
+            out.println("\n\n-------------------------------------\n\n");
+            out.println("\n\tCompile Failed\n");
+
+            outputHandler.printErrorOutputs(out::println);
         }
+
 
     }
 
@@ -93,14 +97,6 @@ public class Administration implements Administrator {
         }
     }
 
-    public void printParserLineTrace(String trace){
-        outputHandler.addParseOutput(lineNumber+": "+currentLine.trim(),lineNumber+": "+trace);
-
-        if(options.verbose){
-            System.out.println(trace);
-        }
-    }
-
     public void printLineTrace(String line){
         if( outputWriter != null ){
             try {
@@ -109,12 +105,21 @@ public class Administration implements Administrator {
                 e.printStackTrace();
             }
         }
-        else
-            System.out.print(line);
+        else if (options.verbose)
+            out.print(line);
+    }
+
+
+    public void printParserLineTrace(String trace){
+        outputHandler.addParseOutput(lineNumber+": "+currentLine.trim(),lineNumber+": "+trace);
+
+        if(options.verbose){
+            out.println(trace);
+        }
     }
 
     public void printErrorMessage(String msg){
-        outputHandler.printErrorMessage(lineNumber + ":" + currentLine + lineNumber + ":" +msg);
+        outputHandler.printErrorMessage((lineNumber) + ":" + currentLine + (lineNumber) + ":" +msg);
     }
 
 
@@ -137,21 +142,25 @@ public class Administration implements Administrator {
                 Reader reader = new InputStreamReader(in, encoding);
                 fileScanner = new java.util.Scanner(reader);
 
-                currentLineFeed = fileScanner.nextLine()+'\n';
+                String curLine = fileScanner.nextLine();
+                currentLineFeed = curLine + '\n';
                 currentLine = currentLineFeed;
                 lineNumber = 1;
+
+                if(options.verbose && !curLine.trim().isEmpty() )
+                    out.println("\n" + lineNumber+": " + curLine);
 
                 fileInput = () -> {
                     if (currentLineFeed.length() == 0 ) {
                          if(fileScanner.hasNextLine()) {
-                             String curLine = fileScanner.nextLine();
-                             currentLineFeed = curLine + '\n';
+                             String currLine = fileScanner.nextLine();
+                             currentLineFeed = currLine + '\n';
                              currentLine = currentLineFeed;
-
-                             if(options.verbose && !curLine.trim().isEmpty() )
-                                 System.out.println("\n" + lineNumber+": " + curLine);
-
                              lineNumber++;
+                             if(options.verbose && !currLine.trim().isEmpty() )
+                                 out.println("\n" + lineNumber+": " + currLine);
+
+
                         }else
                             return -1;
                     }
@@ -180,7 +189,7 @@ public class Administration implements Administrator {
             Writer writer = new PrintWriter(in);
             errorWriter = new BufferedWriter(writer);
             outputHandler.setErrorOutput((str) -> {
-                System.err.println("Error on line: " +lineNumber + " - " + str);
+                err.println("Error on line: " +lineNumber + " - " + str);
                 try {
                     errorWriter.write(str);
                 } catch (IOException e) {
@@ -232,5 +241,9 @@ public class Administration implements Administrator {
             outputWriter.flush();
             outputWriter.close();
         }
+    }
+
+    public OutputHandler getOutputHandler() {
+        return outputHandler;
     }
 }

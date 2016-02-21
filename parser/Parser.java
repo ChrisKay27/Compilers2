@@ -219,25 +219,23 @@ public class Parser {
         } else {
             //error
         }
-        //
+
         if (traceEnabled) lineTraceOutput.accept("\t\tLeaving declaration");
         return null;
     }
 
     private Type nonvoid_specifier(Set<TokenType> synch) {
         if (traceEnabled) lineTraceOutput.accept("\t\tEntering nonvoid-specifier");
+
         if (lookahead == INT) {
             match(INT, synch);
-            lineTraceOutput.accept("\t\tLeaving nonvoid-specifier");
+            if (traceEnabled) lineTraceOutput.accept("\t\tLeaving nonvoid-specifier");
             return Type.INT;
         }
-        if (lookahead == BOOL) {
-            match(BOOL, synch);
-            if (traceEnabled) lineTraceOutput.accept("\t\tLeaving nonvoid-specifier");
-            return Type.BOOL;
-        }
-        if (traceEnabled) throw new RuntimeException("probly remove this");
-        return null;
+
+        match(BOOL, synch);
+        if (traceEnabled) lineTraceOutput.accept("\t\tLeaving nonvoid-specifier");
+        return Type.BOOL;
     }
 
     private DecTail dec_tail(Set<TokenType> synch) {
@@ -879,6 +877,7 @@ public class Parser {
     private void syntaxError(Set<TokenType> synch) {
         syntaxError = true;
         while (!synch.contains(lookahead)) {
+            errorOutput.accept("\t\tConsuming " + lookahead + " because it is not expected.");
             lookaheadToken = scanner.nextToken();
             this.tokens.add(lookaheadToken);
             lookahead = lookaheadToken.token;
