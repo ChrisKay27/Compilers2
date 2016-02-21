@@ -46,6 +46,8 @@ public class Administration implements Administrator {
             initErrorFile(options.errorFilePath);
         if( options.outputFilePath != null )
             initOutputFileWriter(options.outputFilePath);
+        else
+            outputHandler.setErrorOutput(System.out::println);
 
         this.scanner = new Scanner(fileInput,this::printTokensOnCurrentLine,this::printLineTrace,this::printErrorMessage);
         scanner.setTraceEnabled(options.verbose);

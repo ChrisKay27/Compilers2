@@ -37,5 +37,63 @@ void main(int x){
     {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{;
     }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
 
+    loop
+        if( 1 = 2 )
+            exit;
+        continue;
+        {int shoes,kitties;
+            y := y - 1;
+            if( shoes = kitties )
+                exit;
+            else if ( y = -999999999)
+                continue;
+        }
+    end;
+
+
+    branch(y)
+    case 5
+
+
+    : branch(y)
+      case 5:;
+      end;
+    default:
+        loop
+            loop
+                loop
+                    loop
+                        loop
+                            loop
+                                loop
+                                    loop
+                                        loop
+                                            loop
+                                                loop
+                                                   exit;
+                                                end;
+                                                exit;
+                                            end;
+                                            exit;
+                                        end;
+                                        exit;
+                                    end;
+                                    exit;
+                                end;
+                                exit;
+                            end;
+                            exit;
+                        end;
+                        exit;
+                    end;
+                    exit;
+                end;
+                exit;
+            end;
+            exit;
+        end;
+    end;
+
+
 
 }
