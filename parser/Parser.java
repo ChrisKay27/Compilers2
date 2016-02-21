@@ -886,9 +886,6 @@ public class Parser {
         this.traceEnabled = traceEnabled;
     }
 
-    public boolean isTraceEnabled() {
-        return traceEnabled;
-    }
 
     private Set<TokenType> union(Set<TokenType> synch, Set<TokenType> firstSet) {
         Set<TokenType> newSynch = new HashSet<>(synch);
