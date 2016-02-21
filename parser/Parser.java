@@ -45,6 +45,7 @@ public class Parser {
     private Token lookaheadToken;
     private TokenType lookahead;
     private boolean traceEnabled;
+    private boolean syntaxError;
 
 
     public Parser(Scanner scanner, Consumer<String> lineTraceOutput, Consumer<String> errorOutput) {
@@ -73,8 +74,9 @@ public class Parser {
         } catch (Exception e) {
             return null;
         }
-
-        return astNode;
+        if (!syntaxError)
+            return astNode;
+        return null;
     }
 
     /**
@@ -439,7 +441,7 @@ public class Parser {
         if (traceEnabled) lineTraceOutput.accept("\t\tEntering call-tail");
 
         Expression args = null;
-        match(LPAREN, union(FIRSTofArguments, synch));
+        match(LPAREN, union(union(FIRSTofArguments, synch),RPAREN));
         if (FIRSTofArguments.contains(lookahead))
             args = arguments(union(RPAREN, synch));
         match(RPAREN, synch);
@@ -875,6 +877,7 @@ public class Parser {
     }
 
     private void syntaxError(Set<TokenType> synch) {
+        syntaxError = true;
         while (!synch.contains(lookahead)) {
             lookaheadToken = scanner.nextToken();
             this.tokens.add(lookaheadToken);

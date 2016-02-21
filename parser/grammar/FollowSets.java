@@ -17,15 +17,7 @@ public class FollowSets {
 
     static {
         Set<TokenType> FOLLOW = new HashSet<>();
-        FOLLOW.add(ID);
-        FOLLOW.add(LPAREN);
-        FOLLOW.add(IF);
-        FOLLOW.add(LOOP);
-        FOLLOW.add(EXIT);
-        FOLLOW.add(CONTINUE);
-        FOLLOW.add(RETURN);
-        FOLLOW.add(SEMI);
-        FOLLOW.add(BRANCH);
+        FOLLOW.addAll(Arrays.asList(LCRLY,IF,LOOP,EXIT,CONTINUE,RETURN,SEMI,ID,RCRLY,ELSE,END,BRANCH,CASE,DEFAULT));
         FOLLOWofStatement = FOLLOW;
     }
 

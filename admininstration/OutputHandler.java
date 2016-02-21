@@ -15,6 +15,7 @@ public class OutputHandler {
     private Map<String,String> scannerOutput = new HashMap<>();
     private Map<String,String> parseOutput = new HashMap<>();
 
+    private List<String> errorLog = new ArrayList<>();
 
     private Consumer<String> out;
     private Consumer<String> errorOut;
@@ -35,6 +36,7 @@ public class OutputHandler {
     }
     public void printErrorMessage(String msg) {
         System.out.println(msg);
+        errorLog.add(msg);
     }
 
     public void addScannerOutput(String currentLine, String output) {
@@ -74,6 +76,10 @@ public class OutputHandler {
             out.accept(s);
             out.accept(scannerOutput.get(s));
         });
+    }
+
+    public void printErrorOutputs(){
+        errorLog.forEach(System.out::println);
     }
 
 

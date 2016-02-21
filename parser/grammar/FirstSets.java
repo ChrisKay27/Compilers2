@@ -15,8 +15,8 @@ public class FirstSets {
 
     static {
         Set<TokenType> FIRST = new HashSet<>();
+        FIRST.add(LCRLY);
         FIRST.add(ID);
-        FIRST.add(LPAREN);
         FIRST.add(IF);
         FIRST.add(LOOP);
         FIRST.add(EXIT);

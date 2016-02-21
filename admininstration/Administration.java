@@ -75,8 +75,11 @@ public class Administration implements Administrator {
 
         if(tree != null)
             System.out.println("\n\tCompile Successful");
-        else
-            System.out.println("\n\tCompile Failed");
+        else {
+            System.out.println("\n\n-------------------------------------\n\n");
+            System.out.println("\n\tCompile Failed\n");
+            outputHandler.printErrorOutputs();
+        }
 
     }
 
@@ -94,7 +97,7 @@ public class Administration implements Administrator {
         outputHandler.addParseOutput(lineNumber+": "+currentLine.trim(),lineNumber+": "+trace);
 
         if(options.verbose){
-            System.out.println(trace+'\n');
+            System.out.println(trace);
         }
     }
 
@@ -111,7 +114,7 @@ public class Administration implements Administrator {
     }
 
     public void printErrorMessage(String msg){
-        outputHandler.printErrorMessage(msg);
+        outputHandler.printErrorMessage(lineNumber + ":" + currentLine + lineNumber + ":" +msg);
     }
 
 
@@ -145,8 +148,8 @@ public class Administration implements Administrator {
                              currentLineFeed = curLine + '\n';
                              currentLine = currentLineFeed;
 
-                             if(options.verbose)
-                                 System.out.println(lineNumber+": " + curLine);
+                             if(options.verbose && !curLine.trim().isEmpty() )
+                                 System.out.println("\n" + lineNumber+": " + curLine);
 
                              lineNumber++;
                         }else
