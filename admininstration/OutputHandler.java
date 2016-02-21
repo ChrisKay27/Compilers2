@@ -79,6 +79,8 @@ public class OutputHandler {
     }
 
     public void printErrorOutputs(){
+        if (errorLog.size()>10)
+            errorLog.subList(0,9);
         errorLog.forEach(System.out::println);
     }
 
