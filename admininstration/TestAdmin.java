@@ -19,6 +19,7 @@ public class TestAdmin extends Administration {
     public TestAdmin(Options options) throws IOException, UnrecognizedSourceCodeException {
         super(options);
         this.options = options;
+        this.getOutputHandler().setMaxErrors(Integer.MAX_VALUE);//show all error messages that are generated during testing
     }
 
     public boolean validateParse(List<Token> expectedTokens) {

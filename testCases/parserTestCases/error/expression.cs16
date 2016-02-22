@@ -1,8 +1,35 @@
 -- Carston Schilds, Feb 21st 2016
 
 void main(void){
+
+    -- omitting op
     x := -a;
     x := b;
-    x := p || q;
-    x := p or q or q or q or q;
+    x := p  q;
+
+    -- extra op
+    x := -a;
+    x := b;
+    x := p < q< q;
+    x := p <= q<= q;
+    x := p > q> q;
+    x := p >= q>= q;
+    x := p = q= q;
+    x := p /= q/= q;
+
+    -- omitting arg
+    x := -;
+    x := ;
+    x := p < ;
+    x := p <= ;
+    x := p > ;
+    x := p >= ;
+    x := p = ;
+    x := p /= ;
+    x := < q;
+    x := <= q;
+    x := > q;
+    x := >= q;
+    x := = q;
+    x := /= q;
 }

@@ -3,6 +3,10 @@
 void main(void){
     x := -a;
     x := b;
-    x := p || q;
-    x := p or q or q or q or q;
+    x := p < q;
+    x := p <= q;
+    x := p > q;
+    x := p >= q;
+    x := p = q;
+    x := p /= q;
 }

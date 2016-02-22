@@ -1,6 +1,16 @@
 -- Carston Schilds, Feb 21st 2016
 
-void foo(void){;}
-int foo2(void){;}
-bool foo3(void){;}
-void main(void){;}
+-- missing type
+foo1(void){;}
+foo2(void){;}
+foo3(void){;}
+
+-- missing id
+void (void){;}
+int (void){;}
+bool (void){;}
+
+-- missing tail
+void foo1
+int foo2
+bool foo3

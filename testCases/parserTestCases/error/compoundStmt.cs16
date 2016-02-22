@@ -1,5 +1,35 @@
 -- Carston Schilds, Feb 21st 2016
 void main(void){
+    -- omitting statement
+    int x,y,z;
+    bool a,b,c;
+    int p,q[-y],r;
+    {
+    int x,y,z;
+    bool a,b,c;
+    int p,q,r[a];
+        {
+        int x,y,z;
+        bool a,b,c;
+        int p[7],q,r;
+        }
+    }
+    --omitting left brace
+    int x,y,z;
+    bool a,b,c;
+    int p,q[-y],r;
+    {
+    int x,y,z;
+    bool a,b,c;
+    int p,q,r[a];
+
+        int x,y,z;
+        bool a,b,c;
+        int p[7],q,r;
+        ;
+        }
+    }
+    --omitting right brace
     int x,y,z;
     bool a,b,c;
     int p,q[-y],r;
@@ -12,6 +42,6 @@ void main(void){
         bool a,b,c;
         int p[7],q,r;
         ;
-        }
+
     }
 }

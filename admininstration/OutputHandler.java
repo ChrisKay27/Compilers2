@@ -10,6 +10,8 @@ import java.util.function.Consumer;
  * Created by Chris on 1/14/2016.
  */
 public class OutputHandler {
+    private int MAX_ERRORS;
+
     private List<String> scannerReadLines = new ArrayList<>();
     private List<String> parserReadLines = new ArrayList<>();
     private Map<String,String> scannerOutput = new HashMap<>();
@@ -21,6 +23,7 @@ public class OutputHandler {
     private Consumer<String> errorOut;
 
     public OutputHandler(Consumer<String> out) {
+        this.setMaxErrors(10);
         this.out = out;
     }
 
@@ -31,7 +34,9 @@ public class OutputHandler {
         errorOut = out;
     }
 
-
+    public void setMaxErrors(int max){
+        this.MAX_ERRORS = max;
+    }
 
     public void print(String msg) {
         out.accept(msg + "\n");
@@ -91,7 +96,7 @@ public class OutputHandler {
      * @param out used to change where the error output is going to
      */
     public void printErrorOutputs(Consumer<String> out){
-        if (errorLog.size() > 10)
+        if (errorLog.size() > MAX_ERRORS)
             errorLog = errorLog.subList(0,9);
         errorLog.forEach(out::accept);
     }
