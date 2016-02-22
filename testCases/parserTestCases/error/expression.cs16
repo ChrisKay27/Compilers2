@@ -1,0 +1,8 @@
+-- Carston Schilds, Feb 21st 2016
+
+void main(void){
+    x := -a;
+    x := b;
+    x := p || q;
+    x := p or q or q or q or q;
+}

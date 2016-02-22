@@ -1,0 +1,17 @@
+-- Carston Schilds, Feb 21st 2016
+void main(void){
+    int x,y,z;
+    bool a,b,c;
+    int p,q[-y],r;
+    {
+    int x,y,z;
+    bool a,b,c;
+    int p,q,r[a];
+        {
+        int x,y,z;
+        bool a,b,c;
+        int p[7],q,r;
+        ;
+        }
+    }
+}

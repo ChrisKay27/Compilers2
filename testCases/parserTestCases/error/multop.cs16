@@ -1,1 +1,53 @@
-arguments.cs16
+/*
+
+    Author: Chris Kaebe
+    Date: Feb 21, 2016
+*/
+
+int x;
+
+int main(bool isWoman){
+    int x,z;
+    bool y;
+    
+    x := x * x / x and y && x / x;
+    x := x / 2;
+    
+    if( x * 2 = 5)
+        if(x / 2 = 5)
+            if( y and y and y and y and y and y and y and y and y and y and y and y and y and y and y and y and y and y and y and y and 
+            y and y and y and y and y and y and y and y and y and y and y and y and y and y and y and y and y and y and y and y and y and 
+            y and y and y and y and y and y and y and y and y and y and y and y and y and y and y and y and y and y and y and y and 
+            y and y and y and y and y and y and y and y and y and y and y and y and y and y and y and y and y and y and y and y and 
+            not y)
+                ;
+    if( y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && 
+        y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && 
+        y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && 
+        y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && 
+        y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && 
+        y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && 
+        y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && 
+        y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && 
+        y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && 
+        y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && 
+        y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && 
+        y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && 
+        y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && 
+        y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && 
+        y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && 
+        y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && 
+        y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && 
+        y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && 
+        y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && 
+        y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && 
+        y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && 
+        y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && 
+        y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y )
+        return true;
+        
+    z := z * z * z * z * z * z * z * z * z * z * z * z * z * z * z * z * z * z * z * z * z * z * z * z * z * z;
+    z := z / z / z / z / z / z / z / z / z / z / z / z / z / z / z / z / z / z / z / z / z / z / z / z / z / z;
+    
+    return false;
+}

@@ -1,0 +1,18 @@
+/*
+    Single declaration program 8-D
+    Author: Chris Kaebe
+    Date: Feb 21, 2016
+*/
+
+int x;
+
+int main(void){
+    return 2;
+}
+
+void f(int x[], ref bool six, int num, ref int integer){;
+}
+
+void g(int x[]){;}
+void h(int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[]){;}
+void i(ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x){;}
