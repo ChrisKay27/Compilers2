@@ -12,7 +12,7 @@ void main(int x){
         loop ; end;
     }
     {;}
-    end;
+    end
 
     loop
         if( 1 = 2 )
@@ -25,7 +25,7 @@ void main(int x){
             else if ( y = -999999999)
                 continue;
         }
-    end;
+    ;
 
 
     loop
@@ -46,7 +46,7 @@ void main(int x){
                                             end;
                                             exit;
                                         end;
-                                        exit;
+                                        ;
                                     end;
                                     exit;
                                 end;

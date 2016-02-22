@@ -4,20 +4,20 @@
     Date: Feb 21, 2016
 */
 
-int x;
-bool isWoman,isMan;
+int x
+bool ,isMan;
 
 
-int main(bool isWoman){
+int (bool isWoman){
     return isFat(isWoman);
 }
 
-bool isFat(bool isWoman){
-    int height;
+bool isFat(bool){
+    int +height;
 
     {
-        bool isPregnant;
-        int age;
+        bool -isPregnant;
+        int not age;
 
         if( isWoman )
             return true;

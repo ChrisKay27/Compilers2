@@ -9,9 +9,9 @@ void main(int x){
     bool b;
     x:=1;
     y:=2;b:=y<x;
-    b:=y<=x;
-    b:=y>=x;
-    b:=y=x;
-    b:=y/=x;
-    b:=y>x;
+    b:=y<=;
+    b:=>=x;
+    b:=y<x;
+    b:=y/=+x;
+    b:=y>;x;
 }

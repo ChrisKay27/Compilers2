@@ -1,0 +1,86 @@
+4:bool foo2 void){;}
+4:		Syntax Error, expecting LPAREN but received VOID
+5:int foo void){;}
+5:		Syntax Error, expecting LPAREN but received VOID
+8:bool foo2(void {;}
+8:		Syntax Error, token:LCRLY is not expected here.
+8:bool foo2(void {;}
+8:		Consuming LCRLY because it is not expected.
+8:bool foo2(void {;}
+8:		Consuming SEMI because it is not expected.
+8:bool foo2(void {;}
+8:		Consuming RCRLY because it is not expected.
+9:int foo(void {;}
+9:		Syntax Error, expecting RPAREN but received INT
+9:int foo(void {;}
+9:		Syntax Error, expecting LCRLY but received INT
+9:int foo(void {;}
+9:		Syntax Error, token:LPAREN is not expected here.
+9:int foo(void {;}
+9:		Consuming LPAREN because it is not expected.
+9:int foo(void {;}
+9:		Syntax Error, expecting SEMI but received VOID
+9:int foo(void {;}
+9:		Expecting statement!
+9:int foo(void {;}
+9:		Syntax Error, expecting RCRLY but received VOID
+9:int foo(void {;}
+9:		Syntax Error, token:LCRLY is not expected here.
+9:int foo(void {;}
+9:		Consuming LCRLY because it is not expected.
+9:int foo(void {;}
+9:		Consuming SEMI because it is not expected.
+9:int foo(void {;}
+9:		Consuming RCRLY because it is not expected.
+12:bool foo2(void)
+12:		Syntax Error, expecting ID but received BOOL
+12:bool foo2(void)
+12:		Syntax Error, expecting LPAREN but received BOOL
+12:bool foo2(void)
+12:		Syntax Error, token:LPAREN is not expected here.
+12:bool foo2(void)
+12:		Consuming LPAREN because it is not expected.
+12:bool foo2(void)
+12:		Syntax Error, expecting RPAREN but received VOID
+12:bool foo2(void)
+12:		Syntax Error, expecting LCRLY but received VOID
+12:bool foo2(void)
+12:		Expecting statement!
+12:bool foo2(void)
+12:		Syntax Error, expecting RCRLY but received VOID
+12:bool foo2(void)
+12:		Syntax Error, token:RPAREN is not expected here.
+12:bool foo2(void)
+12:		Consuming RPAREN because it is not expected.
+13:int foo(void)
+13:		Syntax Error, expecting ID but received INT
+13:int foo(void)
+13:		Syntax Error, expecting LPAREN but received INT
+13:int foo(void)
+13:		Syntax Error, token:LPAREN is not expected here.
+13:int foo(void)
+13:		Consuming LPAREN because it is not expected.
+13:int foo(void)
+13:		Syntax Error, expecting RPAREN but received VOID
+13:int foo(void)
+13:		Syntax Error, expecting LCRLY but received VOID
+13:int foo(void)
+13:		Expecting statement!
+13:int foo(void)
+13:		Syntax Error, expecting RCRLY but received VOID
+13:int foo(void)
+13:		Syntax Error, token:RPAREN is not expected here.
+13:int foo(void)
+13:		Consuming RPAREN because it is not expected.
+13:int foo(void)
+13:		Syntax Error, expecting ID but received ENDFILE
+13:int foo(void)
+13:		Syntax Error, expecting LPAREN but received ENDFILE
+13:int foo(void)
+13:		Syntax Error, expecting RPAREN but received ENDFILE
+13:int foo(void)
+13:		Syntax Error, expecting LCRLY but received ENDFILE
+13:int foo(void)
+13:		Expecting statement!
+13:int foo(void)
+13:		Syntax Error, expecting RCRLY but received ENDFILE

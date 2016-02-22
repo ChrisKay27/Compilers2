@@ -97,7 +97,7 @@ public class OutputHandler {
      */
     public void printErrorOutputs(Consumer<String> out){
         if (errorLog.size() > MAX_ERRORS)
-            errorLog = errorLog.subList(0,9);
+            errorLog = errorLog.subList(0,MAX_ERRORS);
         errorLog.forEach(out::accept);
     }
 

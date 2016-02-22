@@ -11,13 +11,14 @@ bool isWoman,isMan;
 int main(bool isWoman){
     int x;
 
-    x := - not x;
-    x := not x;
+    x := - not (x;
+    x := not +x;
     x := not (-x);
     x := not 1;
-    x := not true;
-    x := not false;
-    x := false;
+    x := not ((((((((()))))))false;
+    x := not (((((((((false)))))));
+    x := not (false);
+    x := not x;
     x := true;
     x := not not not not not not not not not not not not not not not not not not not not not not not not not not not not
     not not not not not not not not not not not not not not not not not not not not not not not not not not not not not
@@ -38,5 +39,6 @@ int main(bool isWoman){
            not not not not not not not not not not not not not not not not not not not not not not not not not not not
             not not not not not not not not not not not not not not not not not not not not not not not not not not not
             not not not not not not not not not not not not false;
+
    return -1;
 }

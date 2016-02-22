@@ -2,10 +2,10 @@
 
 void main(void) {
 
-if (e1) if (e2) ; else ;
+if (e1 if () ; else ;
 
-if (e1) {if (e2) ; else ;}
+if (e1) {if (e2) ;  ;}
 
-if (e1) {if (e2) ;} else ;
+if (e1) {if (e2) } else
 
 }

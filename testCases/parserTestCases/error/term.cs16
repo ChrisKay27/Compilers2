@@ -9,16 +9,16 @@ void main(int x){
     bool y;
 
     x := x * x;
-    x := x mod x;
-    x := x / x;
+    x := x mod ;
+    x := x / x
 
-    x := x * x / x;
-    x := x mod x * x;
-    x := x / x * x / 2 * 3 / 5 * x;
+    x := x * x // x;
+    x := x mod mod mod mod x * x;
+    x := x / x ** x / 2 * 3 /+ 5 * x;
 
-    y := true and false && true ;
+    y := true and; false && true ;
     y := true;
-    y := true and false;
+    y := true and && and false;
     y := true && true;
 
 }

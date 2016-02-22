@@ -7,15 +7,17 @@
 void main(int x){
     int y;
 
-    y := 5;
+    y = 5;
+    y := ;
+    y := 5
 
-    if( y = 5 ){
+    if y = 5 ){
         int t;
         t:=-1;
         y := t*y;
     }
 
-    if( y > 0 ){
+    if( y > 0 {
         int t;
         t:=-1;
         y := t*y;
@@ -23,18 +25,18 @@ void main(int x){
     else
         y := 10;
 
-    {;}
+    {}
 
-    {int one; one := 2;;}
+    {int one; one := 2;;
 
     loop{
         bool doop;
-        loop ; end;
+        loop  end;
     }
     {;}
     end;
 
-    {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{;
+    {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{;
     }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
 
     loop
@@ -48,17 +50,36 @@ void main(int x){
             else if ( y = -999999999)
                 continue;
         }
-    end;
+    end
 
 
     branch(y)
         case 5: ;
     end;
 
+    branch()
+        case 5: ;
+    end;
+
+    branch()
+        case 5 ;
+    end;
+
+    branch()
+        case : ;
+    end;
+
+    branch()
+        default:;
+    end;
+
+    branch()
+        default 5:;
+    end;
 
     branch
 
-    (
+
 
     y
 
@@ -76,7 +97,7 @@ void main(int x){
         ;
 
 
-    branch(y)
+    branch(y
         case 5:;
         default:
             loop
@@ -91,6 +112,7 @@ void main(int x){
                                                 loop
                                                     loop
                                                        exit;
+
                                                     end;
                                                     exit;
                                                 end;

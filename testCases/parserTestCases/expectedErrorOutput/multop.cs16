@@ -1,0 +1,28 @@
+13:    x := x * x // x and y &&& x / x;
+13:		Syntax Error, token:DIV is not expected here.
+13:    x := x * x // x and y &&& x / x;
+13:		Consuming DIV because it is not expected.
+13:    x := x * x // x and y &&& x / x;
+13:		Syntax Error, token:ERROR is not expected here.
+13:    x := x * x // x and y &&& x / x;
+13:		Consuming ERROR because it is not expected.
+16:    if( x ** 2 = 5)
+16:		Syntax Error, token:MULT is not expected here.
+16:    if( x ** 2 = 5)
+16:		Consuming MULT because it is not expected.
+40:        y && y && y && y && y && y && y && y && y && y && y && y && y && y y && y && y && y && y && y && y && y &&
+40:		Syntax Error, expecting RPAREN but received ID
+40:        y && y && y && y && y && y && y && y && y && y && y && y && y && y y && y && y && y && y && y && y && y &&
+40:		Syntax Error, token:ANDTHEN is not expected here.
+40:        y && y && y && y && y && y && y && y && y && y && y && y && y && y y && y && y && y && y && y && y && y &&
+40:		Consuming ANDTHEN because it is not expected.
+40:        y && y && y && y && y && y && y && y && y && y && y && y && y && y y && y && y && y && y && y && y && y &&
+40:		Syntax Error, expecting LPAREN but received ID
+47:        return true;
+47:		Syntax Error, expecting SEMI but received RETURN
+49:    z := z * z * z * z * z * z * z * z * z * z * z * z * z * z * z * z * z * z * z * z * z * z * z * z * z * ;
+49:		Syntax Error, expecting ID but received SEMI
+50:    z :=  / z / z / z / z / z / z / z / z / z / z / z / z / z / z / z / z / z / z / z / z / z / z / z / z / z;
+50:		Syntax Error, token:DIV is not expected here.
+50:    z :=  / z / z / z / z / z / z / z / z / z / z / z / z / z / z / z / z / z / z / z / z / z / z / z / z / z;
+50:		Consuming DIV because it is not expected.

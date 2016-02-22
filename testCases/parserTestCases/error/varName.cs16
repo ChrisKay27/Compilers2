@@ -5,6 +5,6 @@
 */
 
 void main(int x){
-    int x, y, z[5],a[x];
+    int x, y, z[5,ax],x[],[];
     ;
 }

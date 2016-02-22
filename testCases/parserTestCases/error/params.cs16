@@ -6,13 +6,13 @@
 
 int x;
 
-int main(void){
+int main(){
     return 2;
 }
 
-void f(int x[], bool six, int num, int integer){;
+void f(int[] n, bool six int num, int integer){;
 }
 
-void f(int x[]){;}
-void h(int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[]){;}
-void g(ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x){;}
+void f(int x[){;}
+void h int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[]){;}
+void g(ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x{;}
