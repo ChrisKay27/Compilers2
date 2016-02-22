@@ -1,0 +1,74 @@
+9:int main(){
+9:		Syntax Error, token:RPAREN is not expected here.
+9:int main(){
+9:		Consuming RPAREN because it is not expected.
+9:int main(){
+9:		Consuming LCRLY because it is not expected.
+10:    return 2;
+10:		Consuming RETURN because it is not expected.
+10:    return 2;
+10:		Consuming NUM because it is not expected.
+10:    return 2;
+10:		Consuming SEMI because it is not expected.
+11:}
+11:		Consuming RCRLY because it is not expected.
+13:void f(int[] n, bool six int num, int integer){;
+13:		Syntax Error, token:ID is not expected here.
+13:void f(int[] n, bool six int num, int integer){;
+13:		Consuming ID because it is not expected.
+13:void f(int[] n, bool six int num, int integer){;
+13:		Consuming LPAREN because it is not expected.
+13:void f(int[] n, bool six int num, int integer){;
+13:		Syntax Error, expecting RPAREN but received INT
+13:void f(int[] n, bool six int num, int integer){;
+13:		Syntax Error, expecting LCRLY but received INT
+13:void f(int[] n, bool six int num, int integer){;
+13:		Syntax Error, token:LSQR is not expected here.
+13:void f(int[] n, bool six int num, int integer){;
+13:		Consuming LSQR because it is not expected.
+13:void f(int[] n, bool six int num, int integer){;
+13:		Consuming RSQR because it is not expected.
+13:void f(int[] n, bool six int num, int integer){;
+13:		Syntax Error, expecting ID but received BOOL
+13:void f(int[] n, bool six int num, int integer){;
+13:		Syntax Error, expecting SEMI but received BOOL
+13:void f(int[] n, bool six int num, int integer){;
+13:		Syntax Error, expecting SEMI but received INT
+13:void f(int[] n, bool six int num, int integer){;
+13:		Syntax Error, expecting ID but received INT
+13:void f(int[] n, bool six int num, int integer){;
+13:		Syntax Error, expecting SEMI but received INT
+13:void f(int[] n, bool six int num, int integer){;
+13:		Syntax Error, token:RPAREN is not expected here.
+13:void f(int[] n, bool six int num, int integer){;
+13:		Consuming RPAREN because it is not expected.
+13:void f(int[] n, bool six int num, int integer){;
+13:		Consuming LCRLY because it is not expected.
+14:}
+14:		Syntax Error, token:RCRLY is not expected here.
+14:}
+14:		Consuming RCRLY because it is not expected.
+16:void f(int x[){;}
+16:		Expecting statement!
+16:void f(int x[){;}
+16:		Syntax Error, expecting RCRLY but received VOID
+16:void f(int x[){;}
+16:		Syntax Error, expecting RSQR but received RPAREN
+17:void h int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[],int x[]){;}
+17:		Syntax Error, expecting LPAREN but received INT
+18:void g(ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x{;}
+18:		Syntax Error, token:LCRLY is not expected here.
+18:void g(ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x{;}
+18:		Consuming LCRLY because it is not expected.
+18:void g(ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x{;}
+18:		Consuming SEMI because it is not expected.
+18:void g(ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x{;}
+18:		Consuming RCRLY because it is not expected.
+18:void g(ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x{;}
+18:		Syntax Error, expecting RPAREN but received ENDFILE
+18:void g(ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x{;}
+18:		Syntax Error, expecting LCRLY but received ENDFILE
+18:void g(ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x{;}
+18:		Expecting statement!
+18:void g(ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x,ref int x{;}
+18:		Syntax Error, expecting RCRLY but received ENDFILE

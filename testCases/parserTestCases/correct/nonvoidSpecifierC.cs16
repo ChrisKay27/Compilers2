@@ -1,0 +1,27 @@
+/*
+
+    Author: Chris Kaebe
+    Date: Feb 21, 2016
+*/
+
+int x;
+bool isWoman,isMan;
+
+
+int main(bool isWoman){
+    return isFat(isWoman);
+}
+
+bool isFat(bool isWoman){
+    int height;
+
+    {
+        bool isPregnant;
+        int age;
+
+        if( isWoman )
+            return true;
+        else
+            return false;
+    }
+}

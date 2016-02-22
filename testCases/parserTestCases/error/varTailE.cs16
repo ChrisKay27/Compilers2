@@ -1,0 +1,16 @@
+/*
+     This test var tail
+     Author: Chris Kaebe
+     Date: Feb 21, 2016
+ */
+
+ void main(void){
+     int x[5];
+     x[1] := x6];
+
+     x[2] := x[5;
+
+     x[3] := x[];
+
+     x[3] := x[]
+ }

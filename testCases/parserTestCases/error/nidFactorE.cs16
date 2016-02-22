@@ -1,0 +1,44 @@
+/*
+
+    Author: Chris Kaebe
+    Date: Feb 21, 2016
+*/
+
+int x;
+bool isWoman,isMan;
+
+
+int main(bool isWoman){
+    int x;
+
+    x := - not (x;
+    x := not +x;
+    x := not (-x);
+    x := not 1;
+    x := not ((((((((()))))))false;
+    x := not (((((((((false)))))));
+    x := not (false);
+    x := not x;
+    x := true;
+    x := not not not not not not not not not not not not not not not not not not not not not not not not not not not not
+    not not not not not not not not not not not not not not not not not not not not not not not not not not not not not
+     not not not not not not not not not not not not not not not not not not not not not not not not not not not not not
+      not not not not not not not not not not not not not not not not not not not not not not not not not not not not not
+       not not not not not not not not not not not not not not not not not not not not not not not not not not not not
+       not not not not not not not not not not not not not not not not not not not not not not not not not not not not
+       not not not not not not not not not not not not not not not not not not not not not not not not not not not not
+       not not not not not not not not not not not not not not not not not not not not not not not not not not not not
+       not not not not not not not not not not not not not not not not not not not not not not not not not not not not
+       not not not not not not not not not not not not not not not not not not not not not not not not not not not not
+       not not not not not not not not not not not not not not not not not not not not not not not not not not not not
+        not not not not not not not not not not not not not not not not not not not not not not not not not not not not
+         not not not not not not not not not not not not not not not not not not not not not not not not not not not not
+         not not not not not not not not not not not not not not not not not not not not not not not not not not not not
+          not not not not not not not not not not not not not not not not not not not not not not not not not not not
+          not not not not not not not not not not not not not not not not not not not not not not not not not not not
+           not not not not not not not not not not not not not not not not not not not not not not not not not not not
+            not not not not not not not not not not not not not not not not not not not not not not not not not not not
+            not not not not not not not not not not not not false;
+
+   return -1;
+}

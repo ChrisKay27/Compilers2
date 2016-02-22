@@ -1,0 +1,4 @@
+10:    x := -;
+10:		Syntax Error, expecting ID but received SEMI
+11:    y := z[-];
+11:		Syntax Error, expecting ID but received RSQR

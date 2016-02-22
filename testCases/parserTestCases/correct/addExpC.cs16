@@ -1,0 +1,8 @@
+-- Carston Schilds, Feb 21st 2016
+void main(void){
+    x1 := x + y;
+    x2 := x - y;
+    x3 := x or y;
+    x4 := x || y;
+    x5 := x + y - z or a || b;
+}

@@ -1,0 +1,106 @@
+8:    x := p  q;
+8:		Syntax Error, expecting SEMI but received ID
+8:    x := p  q;
+8:		Syntax Error, expecting LPAREN but received SEMI
+8:    x := p  q;
+8:		Syntax Error, expecting RPAREN but received SEMI
+13:    x := p < q< q;
+13:		Syntax Error, token:LT is not expected here.
+13:    x := p < q< q;
+13:		Consuming LT because it is not expected.
+13:    x := p < q< q;
+13:		Syntax Error, expecting SEMI but received ID
+13:    x := p < q< q;
+13:		Syntax Error, expecting LPAREN but received SEMI
+13:    x := p < q< q;
+13:		Syntax Error, expecting RPAREN but received SEMI
+14:    x := p <= q<= q;
+14:		Syntax Error, token:LTEQ is not expected here.
+14:    x := p <= q<= q;
+14:		Consuming LTEQ because it is not expected.
+14:    x := p <= q<= q;
+14:		Syntax Error, expecting SEMI but received ID
+14:    x := p <= q<= q;
+14:		Syntax Error, expecting LPAREN but received SEMI
+14:    x := p <= q<= q;
+14:		Syntax Error, expecting RPAREN but received SEMI
+15:    x := p > q> q;
+15:		Syntax Error, token:GT is not expected here.
+15:    x := p > q> q;
+15:		Consuming GT because it is not expected.
+15:    x := p > q> q;
+15:		Syntax Error, expecting SEMI but received ID
+15:    x := p > q> q;
+15:		Syntax Error, expecting LPAREN but received SEMI
+15:    x := p > q> q;
+15:		Syntax Error, expecting RPAREN but received SEMI
+16:    x := p >= q>= q;
+16:		Syntax Error, token:GTEQ is not expected here.
+16:    x := p >= q>= q;
+16:		Consuming GTEQ because it is not expected.
+16:    x := p >= q>= q;
+16:		Syntax Error, expecting SEMI but received ID
+16:    x := p >= q>= q;
+16:		Syntax Error, expecting LPAREN but received SEMI
+16:    x := p >= q>= q;
+16:		Syntax Error, expecting RPAREN but received SEMI
+17:    x := p = q= q;
+17:		Syntax Error, token:EQ is not expected here.
+17:    x := p = q= q;
+17:		Consuming EQ because it is not expected.
+17:    x := p = q= q;
+17:		Syntax Error, expecting SEMI but received ID
+17:    x := p = q= q;
+17:		Syntax Error, expecting LPAREN but received SEMI
+17:    x := p = q= q;
+17:		Syntax Error, expecting RPAREN but received SEMI
+18:    x := p /= q/= q;
+18:		Syntax Error, token:NEQ is not expected here.
+18:    x := p /= q/= q;
+18:		Consuming NEQ because it is not expected.
+18:    x := p /= q/= q;
+18:		Syntax Error, expecting SEMI but received ID
+18:    x := p /= q/= q;
+18:		Syntax Error, expecting LPAREN but received SEMI
+18:    x := p /= q/= q;
+18:		Syntax Error, expecting RPAREN but received SEMI
+21:    x := -;
+21:		Syntax Error, expecting ID but received SEMI
+22:    x := ;
+22:		Syntax Error, expecting ID but received SEMI
+23:    x := p < ;
+23:		Syntax Error, expecting ID but received SEMI
+24:    x := p <= ;
+24:		Syntax Error, expecting ID but received SEMI
+25:    x := p > ;
+25:		Syntax Error, expecting ID but received SEMI
+26:    x := p >= ;
+26:		Syntax Error, expecting ID but received SEMI
+27:    x := p = ;
+27:		Syntax Error, expecting ID but received SEMI
+28:    x := p /= ;
+28:		Syntax Error, expecting ID but received SEMI
+29:    x := < q;
+29:		Syntax Error, token:LT is not expected here.
+29:    x := < q;
+29:		Consuming LT because it is not expected.
+30:    x := <= q;
+30:		Syntax Error, token:LTEQ is not expected here.
+30:    x := <= q;
+30:		Consuming LTEQ because it is not expected.
+31:    x := > q;
+31:		Syntax Error, token:GT is not expected here.
+31:    x := > q;
+31:		Consuming GT because it is not expected.
+32:    x := >= q;
+32:		Syntax Error, token:GTEQ is not expected here.
+32:    x := >= q;
+32:		Consuming GTEQ because it is not expected.
+33:    x := = q;
+33:		Syntax Error, token:EQ is not expected here.
+33:    x := = q;
+33:		Consuming EQ because it is not expected.
+34:    x := /= q;
+34:		Syntax Error, token:NEQ is not expected here.
+34:    x := /= q;
+34:		Consuming NEQ because it is not expected.

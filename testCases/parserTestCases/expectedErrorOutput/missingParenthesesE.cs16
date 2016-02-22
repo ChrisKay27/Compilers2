@@ -1,0 +1,10 @@
+8:    sout(;
+8:		Syntax Error, expecting RPAREN but received SEMI
+10:    sout);
+10:		Syntax Error, token:RPAREN is not expected here.
+10:    sout);
+10:		Consuming RPAREN because it is not expected.
+10:    sout);
+10:		Syntax Error, expecting LPAREN but received SEMI
+10:    sout);
+10:		Syntax Error, expecting RPAREN but received SEMI
