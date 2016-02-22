@@ -1,7 +1,7 @@
 package parser;
 
 import parser.grammar.ASTNode;
-import parser.grammar.expressions.BLIT_NidFactor;
+import parser.grammar.expressions.LiteralBool;
 import parser.grammar.expressions.Term;
 import parser.grammar.declarations.Declaration;
 import parser.grammar.declarations.FuncDeclaration;
@@ -677,11 +677,11 @@ public class Parser {
     private Term term(Set<TokenType> synch) {
         if (traceEnabled) lineTraceOutput.accept("\t\tEntering term");
 
-        ASTNode factor = factor(union(synch,FIRSTofMultop));
+        Subexpression factor = factor(union(synch,FIRSTofMultop));
         Term result = new Term (factor);
         TokenType tempMultOp = null;
-        ASTNode tempFactor = null;
-        ASTNode current = result;
+        Subexpression tempFactor = null;
+        Subexpression current = result;
         MultOpFactor next;
 
         while (FIRSTofMultop.contains(lookahead)) {
@@ -696,10 +696,10 @@ public class Parser {
         return result;
     }
 
-    private ASTNode factor(Set<TokenType> synch) {
+    private Subexpression factor(Set<TokenType> synch) {
         if (traceEnabled) lineTraceOutput.accept("\t\tEntering factor");
 
-        ASTNode factor;
+        Subexpression factor;
         if (FIRSTofNid_factor.contains(lookahead)) {
             factor = nid_factor(synch);
         } else {
@@ -710,10 +710,10 @@ public class Parser {
         return factor;
     }
 
-    private ASTNode nid_factor(Set<TokenType> synch) {
+    private Subexpression nid_factor(Set<TokenType> synch) {
         if (traceEnabled) lineTraceOutput.accept("\t\tEntering nid-factor");
 
-        ASTNode nidFactor = null;
+        Subexpression nidFactor = null;
         switch (lookahead) {
             case NOT:
                 match(NOT, union(synch,FIRSTofFactor));
@@ -727,12 +727,12 @@ public class Parser {
             case NUM:
                 Token numToken = lookaheadToken;
                 match(NUM, synch);
-                nidFactor = new NUM_NidFactor((Integer) numToken.attrValue);
+                nidFactor = new LiteralNum((Integer) numToken.attrValue);
                 break;
             case BLIT:
                 Token blitToken = lookaheadToken;
                 match(BLIT, synch);
-                nidFactor = new BLIT_NidFactor((Integer) blitToken.attrValue);
+                nidFactor = new LiteralBool((Integer) blitToken.attrValue);
                 break;
         }
 

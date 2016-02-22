@@ -6,17 +6,17 @@ import parser.grammar.ASTNode;
 /**
  * Created by Chris on 2/12/2016.
  */
-public class Term extends ASTNode {
-    private final ASTNode factor;
+public class Term extends Subexpression {
+    private final Subexpression factor;
     private final TokenType multop;
-    private final ASTNode factor2;
+    private final Subexpression factor2;
 
-    public Term(ASTNode factor, TokenType multop, ASTNode factor2) {
+    public Term(Subexpression factor, TokenType multop, Subexpression factor2) {
         this.factor = factor;
         this.multop = multop;
         this.factor2 = factor2;
     }
-    public Term(ASTNode factor) {
+    public Term(Subexpression factor) {
         this(factor, null, null);
     }
 

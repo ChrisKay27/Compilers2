@@ -6,7 +6,7 @@ import parser.grammar.ASTNode;
 /**
  * Created by Carston on 2/21/2016.
  */
-public class AddOpTerm extends ASTNode {
+public class AddOpTerm extends Subexpression {
 
     private final TokenType addOp;
 

@@ -7,7 +7,7 @@ import parser.grammar.expressions.AddExpression;
 /**
  * Created by Chris on 1/30/2016.
  */
-public class Expression extends ASTNode {
+public class Expression extends Subexpression {
     private final AddExpression addExp;
     private final TokenType relop;
     private final AddExpression addExp2;

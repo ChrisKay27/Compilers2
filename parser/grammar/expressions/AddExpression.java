@@ -6,7 +6,7 @@ import parser.grammar.ASTNode;
 /**
  * Created by Chris on 1/30/2016.
  */
-public class AddExpression extends ASTNode {
+public class AddExpression extends Subexpression {
     private final boolean uminus;
     private final Term term;
 
