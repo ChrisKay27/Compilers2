@@ -29,13 +29,31 @@ import static parser.grammar.FirstSets.*;
  */
 public class Parser {
 
-    // standard library
-    private static String[] libraries = {
-            "int readint(void);",
-            "void writeint(int x);",
-            "bool readbool(void);",
-            "void writebool(bool x);"
-    };
+//    // standard library
+//    private static String[] libraries = {
+//            "int readint(void);",
+//            "void writeint(int x);",
+//            "bool readbool(void);",
+//            "void writebool(bool x);"
+//    };
+//    /**
+//     * Tokenizes the standard library line by line
+//     * Disables the trace temporarily so that the tokenizing process is never apart of output
+//     * Restores the trace flag to its previous value before returning.
+//     *
+//     * @throws java.io.IOException
+//     */
+//    public void injectLibraries() throws java.io.IOException {
+//
+//        boolean temp = scanner.isTraceEnabled();
+//        scanner.setTraceEnabled(false);
+//
+//        for (String foo : libraries) {
+//            parseLine(foo);
+//        }
+//
+//        scanner.setTraceEnabled(temp);
+//    }
 
     private final Scanner scanner;
     private final Consumer<String> errorOutput;
@@ -80,24 +98,7 @@ public class Parser {
         return null;
     }
 
-    /**
-     * Tokenizes the standard library line by line
-     * Disables the trace temporarily so that the tokenizing process is never apart of output
-     * Restores the trace flag to its previous value before returning.
-     *
-     * @throws java.io.IOException
-     */
-    public void injectLibraries() throws java.io.IOException {
 
-        boolean temp = scanner.isTraceEnabled();
-        scanner.setTraceEnabled(false);
-
-        for (String foo : libraries) {
-            parseLine(foo);
-        }
-
-        scanner.setTraceEnabled(temp);
-    }
 
 
     String currentLine;
