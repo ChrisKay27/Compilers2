@@ -57,19 +57,22 @@ public class ParserTest {
                 System.out.println("\nBut received:");
                 errorLog.forEach(System.out::println);
 
-                File expectedErrorLog = new File(ERROR_MESSAGES_TEST_CASE_PATH+testFileName);
-                if( !expectedErrorLog.exists() )
-                    expectedErrorLog.createNewFile();
-                Writer bw = new BufferedWriter(new FileWriter(expectedErrorLog));
-                errorLog.forEach(s->{
-                    System.out.println("Writing to error file:" +expectedErrorLog.getName()+" -> " + s);
-                    try {
-                        bw.write(s+'\n');
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                });
-                bw.close();
+                if( errorFile ) {
+                    File expectedErrorLog = new File(ERROR_MESSAGES_TEST_CASE_PATH + testFileName);
+                    if (!expectedErrorLog.exists())
+                        expectedErrorLog.createNewFile();
+                    Writer bw = new BufferedWriter(new FileWriter(expectedErrorLog));
+                    errorLog.forEach(s -> {
+//                    System.out.println("Writing to error file:" +expectedErrorLog.getName()+" -> " + s);
+                        try {
+                            bw.write(s + '\n');
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    });
+                    bw.close();
+                }
+
             }
 
             admin.close();
@@ -106,7 +109,7 @@ public class ParserTest {
             for(File f : correctFiles) {
                 String testFileName = f.getName();
                 List<String> expectedOutput = new ArrayList<>();
-                ParserTest ts = new ParserTest(testFileName, expectedOutput, options, true);
+                ParserTest ts = new ParserTest(testFileName, expectedOutput, options, false);
                 testCases.add(ts);
             }
         }
@@ -123,7 +126,7 @@ public class ParserTest {
 
                 ParserTest ts = new ParserTest(testFileName, expectedOutput, options, true);
                 testCases.add(ts);
-                System.out.println("Adding error file test: " + f.getName());
+//                System.out.println("Adding error file test: " + f.getName());
             }
         }
 
@@ -133,7 +136,7 @@ public class ParserTest {
     public static List<String> getExpectedOutput(File f,File[] expectedErrorOutputFiles){
         for(File errorLog : expectedErrorOutputFiles){
             if( f.getName().equals(errorLog.getName())){
-                System.out.println("Found error log file for " + f.getName());
+//                System.out.println("Found error log file for " + f.getName());
                 List<String> error = new ArrayList<>();
 
                 try {
@@ -144,6 +147,9 @@ public class ParserTest {
                     e.printStackTrace();
                     throw new WTFException(e);
                 }
+
+
+
                 return error;
             }
         }
