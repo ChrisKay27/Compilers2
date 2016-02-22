@@ -144,9 +144,6 @@ public class ParserTest {
                     e.printStackTrace();
                     throw new WTFException(e);
                 }
-
-
-
                 return error;
             }
         }

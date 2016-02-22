@@ -1,5 +1,0 @@
--- Carston Schilds, Feb 21st 2016
-void main(void){
-    foo(x+x, not y, (a[b]), bar());
-    foo(x+x, not y, foo2(a[b], bar()));
-}

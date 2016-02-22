@@ -43,8 +43,11 @@ public class Scanner {
         keywords.put("void", new Token(TokenType.VOID, null));
         keywords.put("true", new Token(TokenType.BLIT, 1));
         keywords.put("false", new Token(TokenType.BLIT, 0));
+        keywords.put("readint", new Token(TokenType.ID, null));
+        keywords.put("writeint", new Token(TokenType.ID, null));
+        keywords.put("readbool", new Token(TokenType.ID, null));
+        keywords.put("writebool", new Token(TokenType.ID, null));
     }
-
 
     private Supplier<Integer> reader;
     private final Consumer<List<Token>> tokensOnLineConsumer;

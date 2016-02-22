@@ -1,8 +1,0 @@
--- Carston Schilds, Feb 21st 2016
-void main(void){
-    -- omitting rsqr
-    y[1 := bar();
-
-    -- omitting lsqr
-    y 1] := bar();
-}
