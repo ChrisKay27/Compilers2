@@ -6,6 +6,7 @@ import util.WTFException;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static java.lang.System.out;
@@ -41,7 +42,15 @@ public class ParserTest {
             admin = new TestAdmin(options);
             admin.compile();
 
-            List<String> errorLog = admin.getOutputHandler().getErrorLog();
+            List<String> errorLog = new ArrayList<>();
+
+            //Get the error log entries in the correct format...
+            admin.getOutputHandler().getErrorLog().forEach(line -> {
+                line = line.replaceAll("( |\\t)","");
+                String[] lines = line.split("\n");
+                Collections.addAll(errorLog, lines);
+            });
+
 
 //            System.out.println("Error log size:" + errorLog.size());
 
@@ -56,23 +65,6 @@ public class ParserTest {
                 expectedErrorMessages.forEach(System.out::println);
                 System.out.println("\nBut received:");
                 errorLog.forEach(System.out::println);
-
-                if( errorFile ) {
-                    File expectedErrorLog = new File(ERROR_MESSAGES_TEST_CASE_PATH + testFileName);
-                    if (!expectedErrorLog.exists())
-                        expectedErrorLog.createNewFile();
-                    Writer bw = new BufferedWriter(new FileWriter(expectedErrorLog));
-                    errorLog.forEach(s -> {
-//                    System.out.println("Writing to error file:" +expectedErrorLog.getName()+" -> " + s);
-                        try {
-                            bw.write(s + '\n');
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    });
-                    bw.close();
-                }
-
             }
 
             admin.close();
@@ -85,7 +77,7 @@ public class ParserTest {
     }
 
     public static boolean runAll(Options options) {
-
+        options.unitTesting = true;
         boolean res = true;
         for (ParserTest test : getTestCases(options)) {
 
@@ -141,7 +133,12 @@ public class ParserTest {
 
                 try {
                     BufferedReader r = new BufferedReader(new FileReader(errorLog));
-                    r.lines().forEach(error::add);
+                    r.lines().forEach(line -> {
+
+//                        System.out.println(line);
+//                        System.out.println(line.replaceAll("( |\\t)",""));
+                        error.add(line.replaceAll("( |\\t)",""));
+                    });
                     r.close();
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -156,3 +153,22 @@ public class ParserTest {
         throw new WTFException("Could not find output file for this test case! (" + f.getName());
     }
 }
+
+
+/*
+if( errorFile ) {
+                    File expectedErrorLog = new File(ERROR_MESSAGES_TEST_CASE_PATH + testFileName);
+                    if (!expectedErrorLog.exists())
+                        expectedErrorLog.createNewFile();
+                    Writer bw = new BufferedWriter(new FileWriter(expectedErrorLog));
+                    admin.getOutputHandler().getErrorLog().forEach(s -> {
+                    System.out.println("Writing to error file:" +expectedErrorLog.getName()+" -> " + s);
+                        try {
+                            bw.write(s + '\n');
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    });
+                    bw.close();
+                }
+ */

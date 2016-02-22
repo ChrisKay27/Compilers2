@@ -45,7 +45,9 @@ public class OutputHandler {
     public void printErrorMessage(String msg) {
         if( errorOut != null )
             errorOut.accept(msg);
-        errorLog.add(msg);
+    }
+    public void addErrorMessage(String errorMsg) {
+        errorLog.add(errorMsg);
     }
 
     public void addScannerOutput(String currentLine, String output) {
@@ -104,6 +106,8 @@ public class OutputHandler {
     public List<String> getErrorLog() {
         return errorLog;
     }
+
+
 
 
 //    public void addScannerOutput

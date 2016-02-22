@@ -16,6 +16,8 @@ public class Options {
     public final String errorFilePath;
     public String inputFilePath;
     public final boolean printAST;
+    public boolean unitTesting;
+
 
 
     public Options(boolean quiet, boolean verbose, boolean tuplePhase, boolean parserPhase, boolean fullCompile, boolean lexicalPhase, boolean semanticPhase, String outputFilePath, String errorFilePath, String inputFilePath, boolean printAST) {
@@ -30,5 +32,24 @@ public class Options {
         this.errorFilePath = errorFilePath;
         this.inputFilePath = inputFilePath;
         this.printAST = printAST;
+    }
+
+    public String getPhase() {
+        if(fullCompile){
+            return "Complete Compilation Phase";
+        }
+        else if(tuplePhase){
+            return "Tuple Phase";
+        }
+        else if(semanticPhase){
+            return "Semantic Phase";
+        }
+        else if(parserPhase){
+            return "Parser Phase";
+        }
+        else{
+            return "Lexical Phase";
+        }
+
     }
 }

@@ -1,12 +1,14 @@
 package admininstration;
 
 import parser.Parser;
+import parser.TokenType;
 import parser.grammar.ASTNode;
 import scanner.Scanner;
 import scanner.Token;
 
 import java.io.*;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -40,6 +42,7 @@ public class Administration implements Administrator {
 
         this.options = options;
 
+
         if( options.errorFilePath != null )
             initErrorFile(options.errorFilePath);
         if( options.outputFilePath != null )
@@ -47,6 +50,8 @@ public class Administration implements Administrator {
         else {
             outputHandler.setErrorOutput(System.out::println);
         }
+
+        printLineTrace("Compiling up to the " + options.getPhase()+'\n');
 
         this.initReader(options.inputFilePath);
 
@@ -65,33 +70,58 @@ public class Administration implements Administrator {
      */
     public void compile() throws IOException {
 
+        if(options.fullCompile){
+            //fullCompile();
+        }
+        else if(options.tuplePhase){
+            //tupleCompile();
+        }
+         else if(options.semanticPhase){
+            //semanticCompile();
+        }
+         else if(options.parserPhase){
+            parserCompile();
+        }
+         else if(options.lexicalPhase){
+            lexicalCompile();
+        }
+    }
+
+    private void lexicalCompile() {
+        List<Token> tokens = new ArrayList<>();
+        Token t = null;
+        do {
+            t = scanner.nextToken();
+            tokens.add(t);
+        }while(t.token != TokenType.ENDFILE);
+
+
+//        System.out.println(tokens);
+    }
+
+    private void parserCompile() throws IOException {
         ASTNode tree = parser.startParsing();
 
-        if( options.verbose ){
-//            outputHandler.printOutputs(this::printLineTrace);
-            //outputHandler.printScannerOutput(this::printLineTrace);
-            //outputHandler.printParserOutput(this::printLineTrace);
-        }
 
         if( tree != null && options.printAST ){
             printLineTrace("\n\n---- Abstract Syntax Tree ----\n\n");
             printLineTrace(tree.toString());
         }
 
+        if(tree != null ) {
+            if (!options.unitTesting)
+                out.println("\n\tCompile Successful");
+        }else {
 
-        if(tree != null)
-            out.println("\n\tCompile Successful");
-        else {
             out.println("\n-------------------------------------\n");
             out.println("\tCompile Failed\n");
-
-            outputHandler.printErrorOutputs(out::println);
+            if( !options.unitTesting )
+                outputHandler.printErrorOutputs(out::println);
         }
-
-
     }
 
     public void printTokensOnCurrentLine(List<Token> tokens) {
+        if( options.unitTesting ) return;
 
         if (!tokens.isEmpty() && options.verbose) {
             StringBuilder sb = new StringBuilder();
@@ -102,15 +132,18 @@ public class Administration implements Administrator {
     }
 
     public void printLineTrace(String line){
-        if( outputWriter != null ){
-            try {
-                outputWriter.write(line);
-            } catch (IOException e) {
-                e.printStackTrace();
+        if( options.unitTesting ) return;
+
+        if (options.verbose)
+            if( outputWriter != null ){
+                try {
+                    outputWriter.write(line);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
-        }
-        else if (options.verbose)
-            out.print(line);
+            else
+                out.print(line);
     }
 
 
@@ -118,12 +151,15 @@ public class Administration implements Administrator {
         outputHandler.addParseOutput(lineNumber+": "+currentLine.trim(),lineNumber+": "+trace);
 
         if(options.verbose){
-            printLineTrace(trace);
+            printLineTrace(trace+'\n');
         }
     }
 
     public void printErrorMessage(String msg){
-        outputHandler.printErrorMessage((lineNumber) + ":" + currentLine + (lineNumber) + ":" +msg);
+        String errorMsg = (lineNumber) + ":" + currentLine + (lineNumber) + ":" +msg;
+        if( !options.unitTesting && !options.quiet )
+            outputHandler.printErrorMessage(errorMsg);
+        outputHandler.addErrorMessage(errorMsg);
     }
 
 
@@ -137,7 +173,7 @@ public class Administration implements Administrator {
      */
     private void initReader(String path) throws UnrecognizedSourceCodeException {
         if (isCs16File(path)) { // verifies that the source code file has the correct extension
-
+            printLineTrace("Reading " + path + '\n');
             File input = new File(path);
             Charset encoding = Charset.forName("ascii");
 
@@ -145,8 +181,9 @@ public class Administration implements Administrator {
                 InputStream in = new FileInputStream(input);
                 Reader reader = new InputStreamReader(in, encoding);
                 fileScanner = new java.util.Scanner(reader);
-
-                String curLine = fileScanner.nextLine();
+                String curLine = "";
+                if( fileScanner.hasNext() )
+                    curLine = fileScanner.nextLine();
                 currentLineFeed = curLine + '\n';
                 currentLine = currentLineFeed;
                 lineNumber = 1;
