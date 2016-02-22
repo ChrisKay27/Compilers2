@@ -52,14 +52,33 @@ void main(int x){
 
 
     branch(y)
-    case 5
+        case 5: ;
+    end;
 
 
-    : branch(y)
-      case 5:;
-      end;
-    default:
-        loop
+    branch
+
+    (
+
+    y
+
+    )
+            case
+             5
+
+
+             :
+
+
+              ;
+        end
+
+        ;
+
+
+    branch(y)
+        case 5:;
+        default:
             loop
                 loop
                     loop
@@ -70,7 +89,10 @@ void main(int x){
                                         loop
                                             loop
                                                 loop
-                                                   exit;
+                                                    loop
+                                                       exit;
+                                                    end;
+                                                    exit;
                                                 end;
                                                 exit;
                                             end;
@@ -90,9 +112,7 @@ void main(int x){
                 end;
                 exit;
             end;
-            exit;
-        end;
-    end;
+
 
 
 

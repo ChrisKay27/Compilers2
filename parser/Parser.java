@@ -72,6 +72,7 @@ public class Parser {
         try {
             astNode = parse();
         } catch (Exception e) {
+            e.printStackTrace();
             return null;
         }
         if (!syntaxError)
@@ -585,12 +586,12 @@ public class Parser {
 
         AddExpression addexp = add_exp(union(synch,RPAREN));
 
-        match(RPAREN, synch);
+        match(RPAREN, union(synch,FIRSTofCase_stmt));
 
-        CaseStatement caseStmt = case_stmt(union(synch,END));
+        CaseStatement caseStmt = case_stmt(union(synch,FIRSTofCase_stmt,END));
         CaseStatement next = caseStmt;
         while (FIRSTofCase_stmt.contains(lookahead)) {
-            CaseStatement temp = case_stmt(union(synch,END));
+            CaseStatement temp = case_stmt(union(synch,FIRSTofCase_stmt,END));
             next.setNextNode(temp);
             next = temp;
         }
@@ -601,6 +602,7 @@ public class Parser {
         if (traceEnabled) lineTraceOutput.accept("\t\tLeaving branch-stmt");
         return new BranchStatement(addexp, caseStmt);
     }
+
 
 
     private CaseStatement case_stmt(Set<TokenType> synch) {
@@ -654,15 +656,15 @@ public class Parser {
         Term term = term(union(synch,FIRSTofAddOp));
 
         AddExpression result = new AddExpression(minusExpr, term);
-        TokenType termpAddOp;
+        TokenType tempAddOp;
         Term tempTerm;
         ASTNode current = result;
         AddOpTerm next;
 
         while (FIRSTofAddOp.contains(lookahead)) {
-            termpAddOp = addop(union(synch, FIRSTofTerm));
+            tempAddOp = addop(union(synch, FIRSTofTerm));
             tempTerm = term(union(synch, FIRSTofAddOp));
-            next = new AddOpTerm(termpAddOp, tempTerm);
+            next = new AddOpTerm(tempAddOp, tempTerm);
             current.setNextNode(next);
             current = next;
         }
@@ -683,7 +685,7 @@ public class Parser {
 
         while (FIRSTofMultop.contains(lookahead)) {
             tempMultOp = multop(union(synch,FIRSTofFactor));
-            tempFactor = factor(synch);
+            tempFactor = factor(union(synch,FIRSTofMultop));
             next = new MultOpFactor(tempMultOp, tempFactor);
             current.setNextNode(next);
             current = next;
@@ -913,6 +915,14 @@ public class Parser {
     private Set<TokenType> union(TokenType token, Set<TokenType> synch) {
         Set<TokenType> newSynch = new HashSet<>(synch);
         newSynch.add(token);
+        return newSynch;
+    }
+
+
+    private Set<TokenType> union(Set<TokenType> synch, Set<TokenType> firsTofCase_stmt, TokenType... tts) {
+        Set<TokenType> newSynch = new HashSet<>(synch);
+        newSynch.addAll(firsTofCase_stmt);
+        newSynch.addAll(Arrays.asList(tts));
         return newSynch;
     }
 
