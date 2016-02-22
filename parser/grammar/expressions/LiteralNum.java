@@ -10,6 +10,7 @@ public class LiteralNum extends NidFactor {
     public int getNum() {
         return num;
     }
+
     public String toString(){
         return "" +this.num ;
     }

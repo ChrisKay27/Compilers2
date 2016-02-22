@@ -11,16 +11,17 @@ import java.util.List;
  * Created by Chris on 2/12/2016.
  */
 public class VarDecTail implements DecTail {
-    private final AddExpression arrayLenthExpr;
+    
+    private final AddExpression arrayLengthExpr;
     private final List<VarName> varNames;
 
-    public VarDecTail(AddExpression arrayLenthExpr, List<VarName> varNames) {
-        this.arrayLenthExpr = arrayLenthExpr;
+    public VarDecTail(AddExpression arrayLengthExpr, List<VarName> varNames) {
+        this.arrayLengthExpr = arrayLengthExpr;
         this.varNames = varNames;
     }
 
     public AddExpression getArrayLenthExpr() {
-        return arrayLenthExpr;
+        return arrayLengthExpr;
     }
 
     public List<VarName> getVarNames() {
@@ -28,9 +29,9 @@ public class VarDecTail implements DecTail {
     }
 
     public VarDeclaration toVarDeclarations(Type type, Token id){
-        VarDeclaration head = new VarDeclaration(type, id, arrayLenthExpr);
+        VarDeclaration head = new VarDeclaration(type, id, arrayLengthExpr);
         VarDeclaration current = head;
-        VarDeclaration temp = null;
+        VarDeclaration temp;
         for (VarName var : varNames) {
             temp = new VarDeclaration(type, var.getId(), var.getAddExpression());
             current.setNextNode(temp);
