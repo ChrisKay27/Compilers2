@@ -1,7 +1,7 @@
 package parser;
 
 import parser.grammar.ASTNode;
-import parser.grammar.BLIT_NidFactor;
+import parser.grammar.expressions.BLIT_NidFactor;
 import parser.grammar.expressions.Term;
 import parser.grammar.declarations.Declaration;
 import parser.grammar.declarations.FuncDeclaration;

@@ -12,9 +12,14 @@ public class NotNidFactor extends NidFactor {
     public NotNidFactor(ASTNode factor) {
         this.factor = factor;
     }
-
     @Override
-    public String toString() {
-        return " Not " + factor;
+    public void appendContents(StringBuilder sb , int tabs) {
+        sb.append('\n');
+        sb.append(getTabs(tabs));
+        sb.append(getClass().getSimpleName());
+        factor.appendContents(sb, tabs + 1);
+
+        if( nextNode != null )
+            nextNode.appendContents(sb, tabs + 2);
     }
 }

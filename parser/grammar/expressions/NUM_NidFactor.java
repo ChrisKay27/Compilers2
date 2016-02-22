@@ -12,4 +12,7 @@ public class NUM_NidFactor extends NidFactor {
     public int getNum() {
         return num;
     }
+    public String toString(){
+        return "" +this.num ;
+    }
 }

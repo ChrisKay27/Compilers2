@@ -8,15 +8,13 @@ import parser.grammar.ASTNode;
 public class Factor extends ASTNode {
 
     @Override
-    public void appendContents(StringBuilder sb , int tabs) {
+    public void appendContents(StringBuilder sb, int tabs) {
         sb.append('\n');
         for (int i = 0; i < tabs; i++)
             sb.append("    ");
-        sb.append(getClass().getSimpleName());
+        sb.append(getClass().getSimpleName() + " VALUE(" +this.toString()+")");
 
-        if( nextNode != null )
+        if (nextNode != null)
             nextNode.appendContents(sb, tabs);
     }
-
-
 }
