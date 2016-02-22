@@ -2,15 +2,16 @@
 void main(void){
     int x,y,z;
     bool a,b,c;
-    int[] p,q,r;
+    int p,q[-y],r;
     {
     int x,y,z;
     bool a,b,c;
-    int[] p,q,r;
+    int p,q,r[a];
         {
         int x,y,z;
         bool a,b,c;
-        int[] p,q,r;
+        int p[7],q,r;
+        ;
         }
     }
 }

@@ -40,14 +40,16 @@ public class Administration implements Administrator {
 
         this.options = options;
 
-        this.initReader(options.inputFilePath);
-
         if( options.errorFilePath != null )
             initErrorFile(options.errorFilePath);
         if( options.outputFilePath != null )
             initOutputFileWriter(options.outputFilePath);
-        else
+        else {
             outputHandler.setErrorOutput(System.out::println);
+        }
+
+        this.initReader(options.inputFilePath);
+
 
         this.scanner = new Scanner(fileInput,this::printTokensOnCurrentLine,this::printLineTrace,this::printErrorMessage);
         scanner.setTraceEnabled(options.verbose);
@@ -116,7 +118,7 @@ public class Administration implements Administrator {
         outputHandler.addParseOutput(lineNumber+": "+currentLine.trim(),lineNumber+": "+trace);
 
         if(options.verbose){
-            out.println(trace);
+            printLineTrace(trace);
         }
     }
 
@@ -150,7 +152,7 @@ public class Administration implements Administrator {
                 lineNumber = 1;
 
                 if(options.verbose && !curLine.trim().isEmpty() )
-                    out.println("\n" + lineNumber+": " + curLine);
+                    printLineTrace("\n" + lineNumber+": " + curLine);
 
                 fileInput = () -> {
                     if (currentLineFeed.length() == 0 ) {
@@ -160,7 +162,7 @@ public class Administration implements Administrator {
                              currentLine = currentLineFeed;
                              lineNumber++;
                              if(options.verbose && !currLine.trim().isEmpty() )
-                                 out.println("\n" + lineNumber+": " + currLine);
+                                 printLineTrace("\n" + lineNumber+": " + currLine);
 
 
                         }else

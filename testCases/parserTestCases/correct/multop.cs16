@@ -43,7 +43,7 @@ int main(bool isWoman){
         y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && 
         y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && 
         y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && 
-        y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && )
+        y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y && y )
         return true;
         
     z := z * z * z * z * z * z * z * z * z * z * z * z * z * z * z * z * z * z * z * z * z * z * z * z * z * z;

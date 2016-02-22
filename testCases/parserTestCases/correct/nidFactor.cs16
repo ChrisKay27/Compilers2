@@ -13,7 +13,7 @@ int main(bool isWoman){
 
     x := - not x;
     x := not x;
-    x := not (-x)
+    x := not (-x);
     x := not 1;
     x := not true;
     x := not false;

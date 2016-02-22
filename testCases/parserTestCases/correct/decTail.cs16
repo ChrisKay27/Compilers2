@@ -1,11 +1,14 @@
 -- Carston Schilds, Feb 21st 2016
 
 int x,y,z;
-int[] i,j,k;
+int i[5],j[3],k[4];
+int m[2],n,o[4];
 int foo1(void){;}
 
 bool a,b,c;
-bool[] p,q,r;
+bool p,q[5],r;
+bool p[1],q,r[-1];
+bool z,xq[2],cr[99999999];
 bool foo3(void){;}
 
 void main(void){;}

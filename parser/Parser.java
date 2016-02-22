@@ -459,7 +459,7 @@ public class Parser {
 
         Expression tmp = exp;
         while (lookahead == COMMA) {
-            match(COMMA, synch);
+            match(COMMA, union(synch,FIRSTofExpression));
             Expression tmp2 = expression(union(synch,COMMA));
             tmp.setNextNode(tmp2);
             tmp = tmp2;
