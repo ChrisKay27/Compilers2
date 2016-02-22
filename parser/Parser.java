@@ -263,10 +263,11 @@ public class Parser {
         if (lookahead == LSQR) {
             match(LSQR, union(FIRSTofAdd_expr, synch));
             add_exp = add_exp(union(RSQR, synch));
-            match(RSQR, union(SEMI, synch));
-        } else while (lookahead == COMMA) {
+            match(RSQR, union(synch,SEMI,COMMA));
+        }
+        while (lookahead == COMMA) {
             match(COMMA, union(FIRSTofVar_name, synch));
-            varNames.add(var_name(union(SEMI, union(COMMA, synch))));
+            varNames.add(var_name(union(synch,COMMA, SEMI)));
         }
         match(SEMI, synch);
 
@@ -717,7 +718,7 @@ public class Parser {
                 break;
             case LPAREN:
                 match(LPAREN, union(synch,FIRSTofExpression));
-                nidFactor = expression(union(RPAREN, synch));
+                nidFactor = expression(union(synch,RPAREN));
                 match(RPAREN, synch);
                 break;
             case NUM:
@@ -767,8 +768,8 @@ public class Parser {
 
         AddExpression add_exp = null;
         if (lookahead == LSQR) {
-            match(LSQR, synch);
-            add_exp = add_exp(union(synch,LSQR));
+            match(LSQR, union(synch,FIRSTofAdd_expr));
+            add_exp = add_exp(union(synch,RSQR));
             match(RSQR, synch);
         }
 
@@ -915,9 +916,9 @@ public class Parser {
         return newSynch;
     }
 
-    private Set<TokenType> union(Set<TokenType> synch, TokenType tt) {
+    private Set<TokenType> union(Set<TokenType> synch, TokenType... tt) {
         Set<TokenType> newSynch = new HashSet<>(synch);
-        newSynch.add(tt);
+        newSynch.addAll(Arrays.asList(tt));
         return newSynch;
     }
 
