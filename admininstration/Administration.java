@@ -38,11 +38,15 @@ public class Administration implements Administrator {
     private String currentLineFeed;
     private String lastLine;
 
+    /**
+     * @param options Used to specify which phase to parse to, the volume level of the compile (verbose or quiet), and
+     *                the input and output file.
+     */
     public Administration(Options options) throws IOException, UnrecognizedSourceCodeException {
 
         this.options = options;
 
-
+        //initializes the error and output file writers
         if( options.errorFilePath != null )
             initErrorFile(options.errorFilePath);
         if( options.outputFilePath != null )
@@ -51,15 +55,18 @@ public class Administration implements Administrator {
             outputHandler.setErrorOutput(System.out::println);
         }
 
+        //Prints some information to the user about to what phase of compiling is being performed.
         if( options.quiet )
             System.out.println("Compiling up to the " + options.getPhase());
         printLineTrace("Compiling up to the " + options.getPhase()+'\n');
 
+        //inits the input file reader
         this.initReader(options.inputFilePath);
 
 
         this.scanner = new Scanner(fileInput,this::printTokensOnCurrentLine,this::printLineTrace,this::printErrorMessage);
         scanner.setTraceEnabled(options.verbose);
+
         this.parser = new Parser(this.scanner,this::printParserLineTrace,this::printErrorMessage);
         parser.setTraceEnabled(options.verbose);
 
@@ -97,31 +104,36 @@ public class Administration implements Administrator {
             tokens.add(t);
         }while(t.token != TokenType.ENDFILE);
 
-
-//        System.out.println(tokens);
     }
 
     private void parserCompile() throws IOException {
         ASTNode tree = parser.startParsing();
 
-
+        //if a tree was returned we decide to print it or not based on a program argument
         if( tree != null && options.printAST ){
             printLineTrace("\n\n---- Abstract Syntax Tree ----\n\n");
             printLineTrace(tree.toString());
         }
 
         if(tree != null ) {
+            //If it returned a tree we report success
             if (!options.unitTesting)
                 out.println("\n\tCompile Successful");
         }else {
-
+            //If no tree was returned then the compiling failed
             out.println("\n-------------------------------------\n");
             out.println("\tCompile Failed\n");
+
+            //And we print the error messages to the user
             if( !options.unitTesting )
                 outputHandler.printErrorOutputs(out::println);
         }
     }
 
+    /**
+     * Used to collect the line + all the tokens on that line.
+     * Not currently being used though
+     */
     public void printTokensOnCurrentLine(List<Token> tokens) {
         if( options.unitTesting ) return;
 
@@ -133,6 +145,9 @@ public class Administration implements Administrator {
         }
     }
 
+    /**
+     * Prints an message out to standard out or to the output file
+     */
     public void printLineTrace(String line){
         if( options.unitTesting ) return;
 
@@ -148,7 +163,9 @@ public class Administration implements Administrator {
                 out.print(line);
     }
 
-
+    /**
+     * Prints messages from the parser
+     */
     public void printParserLineTrace(String trace){
         outputHandler.addParseOutput(lineNumber+": "+currentLine.trim(),lineNumber+": "+trace);
 
@@ -157,6 +174,9 @@ public class Administration implements Administrator {
         }
     }
 
+    /**
+     * Prints error messages from the scanner or parser to the appropriate output
+     */
     public void printErrorMessage(String msg){
         String errorMsg = (lineNumber) + ":" + currentLine + (lineNumber) + ":" +msg;
         if( !options.unitTesting && !options.quiet )
@@ -164,7 +184,7 @@ public class Administration implements Administrator {
         outputHandler.addErrorMessage(errorMsg);
     }
 
-
+    //Keeping track of the line number
     private int lineNumber = 0;
     /**
      * initializes the buffered reader to the source code file
@@ -271,9 +291,7 @@ public class Administration implements Administrator {
     }
 
     /**
-     * closes the buffered reader
-     *
-     * @throws IOException
+     * Closes the buffered reader
      */
     public void close() throws IOException {
         if( fileScanner != null )
