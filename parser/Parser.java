@@ -676,7 +676,7 @@ public class Parser {
         ASTNode factor = factor(union(synch,FIRSTofMultop));
         Term result = new Term (factor);
         TokenType tempMultOp = null;
-        Factor tempFactor = null;
+        ASTNode tempFactor = null;
         ASTNode current = result;
         MultOpFactor next;
 
@@ -692,12 +692,12 @@ public class Parser {
         return result;
     }
 
-    private Factor factor(Set<TokenType> synch) {
+    private ASTNode factor(Set<TokenType> synch) {
         if (traceEnabled) lineTraceOutput.accept("\t\tEntering factor");
 
-        Factor factor;
+        ASTNode factor;
         if (FIRSTofNid_factor.contains(lookahead)) {
-            factor = (Factor)nid_factor(synch);
+            factor = nid_factor(synch);
         } else {
             factor = id_factor(synch);
         }
@@ -717,7 +717,7 @@ public class Parser {
                 break;
             case LPAREN:
                 match(LPAREN, union(synch,FIRSTofExpression));
-                nidFactor = expression(synch);
+                nidFactor = expression(union(RPAREN, synch));
                 match(RPAREN, synch);
                 break;
             case NUM:

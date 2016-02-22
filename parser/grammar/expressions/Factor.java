@@ -17,4 +17,6 @@ public class Factor extends ASTNode {
         if( nextNode != null )
             nextNode.appendContents(sb, tabs);
     }
+
+
 }

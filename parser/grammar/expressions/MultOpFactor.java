@@ -9,16 +9,16 @@ import parser.grammar.ASTNode;
 public class MultOpFactor extends ASTNode {
 
     private final TokenType addOp;
-    private final Factor factor;
+    private final ASTNode factor;
 
-    public MultOpFactor(TokenType addOp, Factor term) {
+    public MultOpFactor(TokenType addOp, ASTNode term) {
         this.addOp = addOp;
         this.factor = term;
     }
 
     public TokenType getMultOp() { return addOp; }
 
-    public Factor getFactor() { return factor; }
+    public ASTNode getFactor() { return factor; }
 
     @Override
     public void appendContents(StringBuilder sb, int tabs) {
