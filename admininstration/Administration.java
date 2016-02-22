@@ -51,6 +51,8 @@ public class Administration implements Administrator {
             outputHandler.setErrorOutput(System.out::println);
         }
 
+        if( options.quiet )
+            System.out.println("Compiling up to the " + options.getPhase());
         printLineTrace("Compiling up to the " + options.getPhase()+'\n');
 
         this.initReader(options.inputFilePath);
@@ -173,7 +175,11 @@ public class Administration implements Administrator {
      */
     private void initReader(String path) throws UnrecognizedSourceCodeException {
         if (isCs16File(path)) { // verifies that the source code file has the correct extension
+
+            if( options.quiet )
+                System.out.println("Reading " + path);
             printLineTrace("Reading " + path + '\n');
+
             File input = new File(path);
             Charset encoding = Charset.forName("ascii");
 
