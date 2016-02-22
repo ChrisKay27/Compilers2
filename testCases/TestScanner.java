@@ -21,7 +21,7 @@ import static Main.Main.*;
  */
 public class TestScanner {
     //
-    private static final String TEST_CASE_PATH = "src/testCases/";
+    private static final String TEST_CASE_PATH = "src/testCases/scannerTestCases";
     //
     protected List<Token> expectedTokens;
     private static List<Token> libraryTokens;

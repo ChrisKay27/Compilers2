@@ -1,8 +1,6 @@
 package parser;
 
 import parser.grammar.ASTNode;
-import parser.grammar.expressions.LiteralBool;
-import parser.grammar.expressions.Term;
 import parser.grammar.declarations.Declaration;
 import parser.grammar.declarations.FuncDeclaration;
 import parser.grammar.declarations.ParamDeclaration;
@@ -98,9 +96,6 @@ public class Parser {
         return null;
     }
 
-
-
-
     String currentLine;
 
     /**
@@ -143,7 +138,12 @@ public class Parser {
         return program(new HashSet<>(Arrays.asList(new TokenType[] {ENDFILE})));
     }
 
-
+    /**
+     * 1.	program → {|declaration|}+
+     *
+     * @param synch - Set of tokens collected during parsing which represents valid next tokens, used for error recovery purposes
+     * @return
+     */
     private ASTNode program(Set<TokenType> synch) {
         if (traceEnabled) lineTraceOutput.accept("\t\tEntering program");
 
@@ -165,6 +165,8 @@ public class Parser {
 
 
     /**
+     * 18.	if-stmt → if ( expression ) statement [ else statement ]
+     * <p>
      * THE DISAMBIGUATION RULE:
      * The if-stmt production rule (20) causes the `dangling else' ambiguity in the specified
      * grammar. This is intentional, as it makes the grammar simpler. The disambiguation rule is that
@@ -172,7 +174,7 @@ public class Parser {
      * stance, if (E1) if (E2) C1 else C2 means the same as if (E1) {if (E2) C1 else C2}.
      * We must write if (E1) {if (E2) C1} else C2 if we wish the else to match the first if.
      *
-     * @param synch
+     * @param synch - Set of tokens collected during parsing which represents valid next tokens, used for error recovery purposes
      * @return
      */
     private IfStatement if_stmt(Set<TokenType> synch) {
@@ -195,6 +197,12 @@ public class Parser {
         return new IfStatement(e, s, elseStatement);
     }
 
+    /**
+     * 2.	declaration → void ID fun-dec-tail | nonvoid-specifier ID dec-tail
+     *
+     * @param synch - Set of tokens collected during parsing which represents valid next tokens, used for error recovery purposes
+     * @return
+     */
     private Declaration declaration(Set<TokenType> synch) {
         if (traceEnabled) lineTraceOutput.accept("\t\tEntering declaration");
         //
@@ -228,6 +236,12 @@ public class Parser {
         return null;
     }
 
+    /**
+     * 3.	nonvoid-specifier→ int | bool
+     *
+     * @param synch - Set of tokens collected during parsing which represents valid next tokens, used for error recovery purposes
+     * @return
+     */
     private Type nonvoid_specifier(Set<TokenType> synch) {
         if (traceEnabled) lineTraceOutput.accept("\t\tEntering nonvoid-specifier");
 
@@ -242,6 +256,12 @@ public class Parser {
         return Type.BOOL;
     }
 
+    /**
+     * 4.	dec-tail → var-dec-tail | fun-dec-tail
+     *
+     * @param synch - Set of tokens collected during parsing which represents valid next tokens, used for error recovery purposes
+     * @return
+     */
     private DecTail dec_tail(Set<TokenType> synch) {
         if (traceEnabled) lineTraceOutput.accept("\t\tEntering dec-tail");
 
@@ -256,6 +276,12 @@ public class Parser {
         return decTail;
     }
 
+    /**
+     * 5.	var-dec-tail → [ [ add-exp ] ]  {|, var-name |}
+     *
+     * @param synch - Set of tokens collected during parsing which represents valid next tokens, used for error recovery purposes
+     * @return
+     */
     private VarDecTail var_dec_tail(Set<TokenType> synch) {
         if (traceEnabled) lineTraceOutput.accept("\t\tEntering var-dec-tail");
 
@@ -265,11 +291,11 @@ public class Parser {
         if (lookahead == LSQR) {
             match(LSQR, union(FIRSTofAdd_expr, synch));
             add_exp = add_exp(union(RSQR, synch));
-            match(RSQR, union(synch,SEMI,COMMA));
+            match(RSQR, union(synch, SEMI, COMMA));
         }
         while (lookahead == COMMA) {
             match(COMMA, union(FIRSTofVar_name, synch));
-            varNames.add(var_name(union(synch,COMMA, SEMI)));
+            varNames.add(var_name(union(synch, COMMA, SEMI)));
         }
         match(SEMI, synch);
 
@@ -277,6 +303,12 @@ public class Parser {
         return new VarDecTail(add_exp, varNames);
     }
 
+    /**
+     * 6.	var-name → ID [ [ add-exp ] ]
+     *
+     * @param synch - Set of tokens collected during parsing which represents valid next tokens, used for error recovery purposes
+     * @return
+     */
     private VarName var_name(Set<TokenType> synch) {
         if (traceEnabled) lineTraceOutput.accept("\t\tEntering var-name");
 
@@ -294,6 +326,12 @@ public class Parser {
         return new VarName(IDToken, add_exp);
     }
 
+    /**
+     * 7.	fun-dec-tail → ( params ) compound-stmt
+     *
+     * @param synch - Set of tokens collected during parsing which represents valid next tokens, used for error recovery purposes
+     * @return
+     */
     private FuncDeclarationTail fun_dec_tail(Set<TokenType> synch) {
 
         if (traceEnabled) lineTraceOutput.accept("\t\tEntering fun-dec-tail");
@@ -307,10 +345,15 @@ public class Parser {
         return new FuncDeclarationTail(params, statement);
     }
 
-
+    /**
+     * 8.	params → param {|, param|} | void
+     *
+     * @param synch - Set of tokens collected during parsing which represents valid next tokens, used for error recovery purposes
+     * @return
+     */
     private ParamDeclaration params(Set<TokenType> synch) {
         if (traceEnabled) lineTraceOutput.accept("\t\tEntering params");
-        //
+
         if (lookahead == VOID) {
             match(VOID, synch);
             if (traceEnabled) lineTraceOutput.accept("\t\tLeaving params");
@@ -330,6 +373,12 @@ public class Parser {
         }
     }
 
+    /**
+     * 9.	param → ref nonvoid-specifier ID | nonvoid-specifier ID [ [ ] ]
+     *
+     * @param synch - Set of tokens collected during parsing which represents valid next tokens, used for error recovery purposes
+     * @return
+     */
     private ParamDeclaration param(Set<TokenType> synch) {
         if (traceEnabled) lineTraceOutput.accept("\t\tEntering param");
         boolean isReference = lookahead == REF;
@@ -355,6 +404,12 @@ public class Parser {
         return null;
     }
 
+    /**
+     * 10.	statement → id-stmt | compound-stmt | if-stmt | loop-stmt | exit-stmt | continue-stmt | return-stmt | null-stmt | branch-stmt
+     *
+     * @param synch - Set of tokens collected during parsing which represents valid next tokens, used for error recovery purposes
+     * @return
+     */
     private Statement statement(Set<TokenType> synch) {
         if (traceEnabled) lineTraceOutput.accept("\t\tEntering statement");
 
@@ -385,6 +440,12 @@ public class Parser {
         return s;
     }
 
+    /**
+     * 11.	id-stmt → ID id-stmt-tail
+     *
+     * @param synch - Set of tokens collected during parsing which represents valid next tokens, used for error recovery purposes
+     * @return
+     */
     private IdStatement id_stmt(Set<TokenType> synch) {
         if (traceEnabled) lineTraceOutput.accept("\t\tEntering id-stmt");
 
@@ -397,6 +458,12 @@ public class Parser {
         return new IdStatement(idToken, id_stmt_tail);
     }
 
+    /**
+     * 12.	id-stmt-tail → assign-stmt-tail | call-stmt-tail
+     *
+     * @param synch - Set of tokens collected during parsing which represents valid next tokens, used for error recovery purposes
+     * @return
+     */
     private StatementTail id_stmt_tail(Set<TokenType> synch) {
         if (traceEnabled) lineTraceOutput.accept("\t\tEntering id-stmt-tail");
 
@@ -411,6 +478,12 @@ public class Parser {
         return statementTail;
     }
 
+    /**
+     * 13.	assign-stmt-tail → [ [ add-exp ] ] := expression ;
+     *
+     * @param synch - Set of tokens collected during parsing which represents valid next tokens, used for error recovery purposes
+     * @return
+     */
     private StatementTail assign_stmt_tail(Set<TokenType> synch) {
         if (traceEnabled) lineTraceOutput.accept("\t\tEntering assign-stmt-tail");
 
@@ -430,6 +503,12 @@ public class Parser {
         return new AssignStatementTail(addExpression, exp);
     }
 
+    /**
+     * 14.	call-stmt-tail → call-tail ;
+     *
+     * @param synch - Set of tokens collected during parsing which represents valid next tokens, used for error recovery purposes
+     * @return
+     */
     private CallStatementTail call_stmt_tail(Set<TokenType> synch) {
         if (traceEnabled) lineTraceOutput.accept("\t\tEntering call-stmt-tail");
 
@@ -440,11 +519,16 @@ public class Parser {
         return new CallStatementTail(call_tail);
     }
 
+    /**
+     * 15.	call-tail → ( [ arguments ] )
+     * @param synch - Set of tokens collected during parsing which represents valid next tokens, used for error recovery purposes
+     * @return
+     */
     private Expression call_tail(Set<TokenType> synch) {
         if (traceEnabled) lineTraceOutput.accept("\t\tEntering call-tail");
 
         Expression args = null;
-        match(LPAREN, union(union(FIRSTofArguments, synch),RPAREN));
+        match(LPAREN, union(union(FIRSTofArguments, synch), RPAREN));
         if (FIRSTofArguments.contains(lookahead))
             args = arguments(union(RPAREN, synch));
         match(RPAREN, synch);
@@ -453,15 +537,20 @@ public class Parser {
         return args;
     }
 
+    /**
+     * 16.	arguments → expression {|, expression|}
+     * @param synch - Set of tokens collected during parsing which represents valid next tokens, used for error recovery purposes
+     * @return
+     */
     private Expression arguments(Set<TokenType> synch) {
         if (traceEnabled) lineTraceOutput.accept("\t\tEntering argument");
 
-        Expression exp = expression(union(synch,COMMA));
+        Expression exp = expression(union(synch, COMMA));
 
         Expression tmp = exp;
         while (lookahead == COMMA) {
-            match(COMMA, union(synch,FIRSTofExpression));
-            Expression tmp2 = expression(union(synch,COMMA));
+            match(COMMA, union(synch, FIRSTofExpression));
+            Expression tmp2 = expression(union(synch, COMMA));
             tmp.setNextNode(tmp2);
             tmp = tmp2;
         }
@@ -470,21 +559,26 @@ public class Parser {
         return exp;
     }
 
-
+    /**
+     * 17.	compound-stmt →{ {|nonvoid-specifier ID var-dec-tail |}  {|statment|}+ }
+     *
+     * @param synch - Set of tokens collected during parsing which represents valid next tokens, used for error recovery purposes
+     * @return
+     */
     private CompoundStatement compound_stmt(Set<TokenType> synch) {
         if (traceEnabled) lineTraceOutput.accept("\t\tEntering compound-stmt");
 
-        match(LCRLY, union(union(synch,FIRSTofNonvoid_specifier),FIRSTofStatement));
+        match(LCRLY, union(union(synch, FIRSTofNonvoid_specifier), FIRSTofStatement));
 
         Declaration firstDec = null;
         Declaration tempDec = null;
         while (FIRSTofNonvoid_specifier.contains(lookahead)) {
 
-            Type decType = nonvoid_specifier(union(synch,ID));
+            Type decType = nonvoid_specifier(union(synch, ID));
             Token IDToken = lookaheadToken;
-            match(ID, union(synch,FIRSTofVar_dec_tail));
+            match(ID, union(synch, FIRSTofVar_dec_tail));
 
-            var_dec_tail(union(union(synch,FIRSTofStatement),FIRSTofNonvoid_specifier));
+            var_dec_tail(union(union(synch, FIRSTofStatement), FIRSTofNonvoid_specifier));
 
             Declaration tempDec2 = new Declaration(decType, IDToken);
             if (firstDec == null) {
@@ -499,7 +593,7 @@ public class Parser {
         Statement first = null;
         Statement tempStmt = null;
         do {
-            Statement temp = statement(union(union(synch,FIRSTofStatement),RCRLY));
+            Statement temp = statement(union(union(synch, FIRSTofStatement), RCRLY));
 
             if (first == null) {
                 first = temp;
@@ -516,53 +610,77 @@ public class Parser {
         return new CompoundStatement(firstDec, first);
     }
 
+    /**
+     * 19.	loop-stmt → loop {| statement |}+¬ end ;
+     *
+     * @param synch - Set of tokens collected during parsing which represents valid next tokens, used for error recovery purposes
+     * @return
+     */
     private Statement loop_stmt(Set<TokenType> synch) {
         if (traceEnabled) lineTraceOutput.accept("\t\tEntering loop-stmt");
 
-        match(LOOP, union(synch,FIRSTofStatement));
+        match(LOOP, union(synch, FIRSTofStatement));
 
-        Statement first = statement(union(union(synch,FIRSTofStatement),END));
+        Statement first = statement(union(union(synch, FIRSTofStatement), END));
         Statement temp = first;
         while (FIRSTofStatement.contains(lookahead)) {
-            Statement temp2 = statement(union(union(synch,FIRSTofStatement),END));
+            Statement temp2 = statement(union(union(synch, FIRSTofStatement), END));
             temp.setNextNode(temp2);
             temp = temp2;
         }
-        match(END, union(synch,SEMI));
+        match(END, union(synch, SEMI));
         match(SEMI, synch);
 
         if (traceEnabled) lineTraceOutput.accept("\t\tLeaving loop-stmt");
         return new LoopStatement(first);
     }
 
+    /**
+     * 20.	exit-stmt → exit ;
+     *
+     * @param synch - Set of tokens collected during parsing which represents valid next tokens, used for error recovery purposes
+     * @return
+     */
     private Statement exit_stmt(Set<TokenType> synch) {
         if (traceEnabled) lineTraceOutput.accept("\t\tEntering exit-stmt");
 
-        match(EXIT, union(synch,EXIT));
+        match(EXIT, union(synch, EXIT));
         match(SEMI, synch);
 
         if (traceEnabled) lineTraceOutput.accept("\t\tLeaving exit-stmt");
         return new ExitStatement();
     }
 
+    /**
+     * 21.	continue-stmt → continue ;
+     *
+     * @param synch - Set of tokens collected during parsing which represents valid next tokens, used for error recovery purposes
+     * @return
+     */
     private Statement continue_stmt(Set<TokenType> synch) {
         if (traceEnabled) lineTraceOutput.accept("\t\tEntering continue-stmt");
 
-        match(CONTINUE, union(synch,SEMI));
+        match(CONTINUE, union(synch, SEMI));
         match(SEMI, synch);
 
         if (traceEnabled) lineTraceOutput.accept("\t\tLeaving continue-stmt");
         return new ContinueStatement();
     }
 
+    /**
+     * 22.	return-stmt → return [ expression ] ;
+     *
+     * @param synch - Set of tokens collected during parsing which represents valid next tokens, used for error recovery purposes
+     * @return
+     */
     private ReturnStatement return_stmt(Set<TokenType> synch) {
         if (traceEnabled) lineTraceOutput.accept("\t\tEntering return-stmt");
 
-        match(RETURN, union(union(synch,FIRSTofExpression),SEMI));
+        match(RETURN, union(union(synch, FIRSTofExpression), SEMI));
 
         Expression returnValue = null;
         if (FIRSTofExpression.contains(lookahead))
-            returnValue = expression(union(synch,SEMI));
+            returnValue = expression(union(synch, SEMI));
 
         match(SEMI, synch);
 
@@ -570,7 +688,12 @@ public class Parser {
         return new ReturnStatement(returnValue);
     }
 
-
+    /**
+     * 23.	null-stmt → ;
+     *
+     * @param synch - Set of tokens collected during parsing which represents valid next tokens, used for error recovery purposes
+     * @return
+     */
     private Statement null_stmt(Set<TokenType> synch) {
         if (traceEnabled) lineTraceOutput.accept("\t\tEntering null-stmt");
         match(SEMI, synch);
@@ -579,47 +702,57 @@ public class Parser {
         return new NullStatement();
     }
 
+    /**
+     * 24.	branch-stmt → branch ( add-exp ) {| case |}+ end;
+     *
+     * @param synch - Set of tokens collected during parsing which represents valid next tokens, used for error recovery purposes
+     * @return
+     */
     private BranchStatement branch_stmt(Set<TokenType> synch) {
         if (traceEnabled) lineTraceOutput.accept("\t\tEntering branch-stmt");
 
-        match(BRANCH, union(synch,LPAREN));
-        match(LPAREN, union(synch,FIRSTofAdd_expr));
+        match(BRANCH, union(synch, LPAREN));
+        match(LPAREN, union(synch, FIRSTofAdd_expr));
 
-        AddExpression addexp = add_exp(union(synch,RPAREN));
+        AddExpression addexp = add_exp(union(synch, RPAREN));
 
-        match(RPAREN, union(synch,FIRSTofCase_stmt));
+        match(RPAREN, union(synch, FIRSTofCase_stmt));
 
-        CaseStatement caseStmt = case_stmt(union(synch,FIRSTofCase_stmt,END));
+        CaseStatement caseStmt = case_stmt(union(synch, FIRSTofCase_stmt, END));
         CaseStatement next = caseStmt;
         while (FIRSTofCase_stmt.contains(lookahead)) {
-            CaseStatement temp = case_stmt(union(synch,FIRSTofCase_stmt,END));
+            CaseStatement temp = case_stmt(union(synch, FIRSTofCase_stmt, END));
             next.setNextNode(temp);
             next = temp;
         }
 
-        match(END, union(synch,SEMI));
+        match(END, union(synch, SEMI));
         match(SEMI, synch);
 
         if (traceEnabled) lineTraceOutput.accept("\t\tLeaving branch-stmt");
         return new BranchStatement(addexp, caseStmt);
     }
 
-
-
+    /**
+     * 25.	case → case NUM : statement | default : statement
+     *
+     * @param synch - Set of tokens collected during parsing which represents valid next tokens, used for error recovery purposes
+     * @return
+     */
     private CaseStatement case_stmt(Set<TokenType> synch) {
         if (traceEnabled) lineTraceOutput.accept("\t\tEntering case-stmt");
 
         Statement statement;
         Token t = null;
         if (lookahead == CASE) {
-            match(CASE, union(synch,NUM));
+            match(CASE, union(synch, NUM));
             t = lookaheadToken;
-            match(NUM, union(synch,COLON));
-            match(COLON, union(synch,FIRSTofStatement));
+            match(NUM, union(synch, COLON));
+            match(COLON, union(synch, FIRSTofStatement));
             statement = statement(synch);
         } else {
-            match(DEFAULT, union(synch,COLON));
-            match(COLON, union(synch,FIRSTofStatement));
+            match(DEFAULT, union(synch, COLON));
+            match(COLON, union(synch, FIRSTofStatement));
             statement = statement(synch);
         }
 
@@ -627,14 +760,20 @@ public class Parser {
         return new CaseStatement(t, statement);
     }
 
+    /**
+     * 26.	expression → add-exp [ relop add-exp ]
+     *
+     * @param synch - Set of tokens collected during parsing which represents valid next tokens, used for error recovery purposes
+     * @return
+     */
     private Expression expression(Set<TokenType> synch) {
         if (traceEnabled) lineTraceOutput.accept("\t\tEntering expression");
 
-        AddExpression addExpression = add_exp(union(synch,FIRSTofRelop));
+        AddExpression addExpression = add_exp(union(synch, FIRSTofRelop));
 
         if (FIRSTofRelop.contains(lookahead)) {
 
-            TokenType relop = relop(union(synch,FIRSTofAdd_expr));
+            TokenType relop = relop(union(synch, FIRSTofAdd_expr));
             AddExpression addExp2 = add_exp(synch);
 
             return new Expression(addExpression, relop, addExp2);
@@ -644,17 +783,22 @@ public class Parser {
         return new Expression(addExpression, null, null);
     }
 
-
+    /**
+     * 27.	add-exp → [ uminus ] term {| addop term |}
+     *
+     * @param synch - Set of tokens collected during parsing which represents valid next tokens, used for error recovery purposes
+     * @return
+     */
     private AddExpression add_exp(Set<TokenType> synch) {
         if (traceEnabled) lineTraceOutput.accept("\t\tEntering add-exp");
 
         boolean minusExpr = false;
         if (FIRSTofUMinus.contains(lookahead)) {
-            uminus(union(synch,FIRSTofTerm));
+            uminus(union(synch, FIRSTofTerm));
             minusExpr = true;
         }
 
-        Term term = term(union(synch,FIRSTofAddOp));
+        Term term = term(union(synch, FIRSTofAddOp));
 
         AddExpression result = new AddExpression(minusExpr, term);
         TokenType tempAddOp;
@@ -674,19 +818,25 @@ public class Parser {
         return result;
     }
 
+    /**
+     * 28.	term → factor {| multop factor |}
+     *
+     * @param synch - Set of tokens collected during parsing which represents valid next tokens, used for error recovery purposes
+     * @return
+     */
     private Term term(Set<TokenType> synch) {
         if (traceEnabled) lineTraceOutput.accept("\t\tEntering term");
 
-        Subexpression factor = factor(union(synch,FIRSTofMultop));
-        Term result = new Term (factor);
+        Subexpression factor = factor(union(synch, FIRSTofMultop));
+        Term result = new Term(factor);
         TokenType tempMultOp = null;
         Subexpression tempFactor = null;
         Subexpression current = result;
         MultOpFactor next;
 
         while (FIRSTofMultop.contains(lookahead)) {
-            tempMultOp = multop(union(synch,FIRSTofFactor));
-            tempFactor = factor(union(synch,FIRSTofMultop));
+            tempMultOp = multop(union(synch, FIRSTofFactor));
+            tempFactor = factor(union(synch, FIRSTofMultop));
             next = new MultOpFactor(tempMultOp, tempFactor);
             current.setNextNode(next);
             current = next;
@@ -696,6 +846,12 @@ public class Parser {
         return result;
     }
 
+    /**
+     * 29.	factor → nid-factor | id-factor
+     *
+     * @param synch - Set of tokens collected during parsing which represents valid next tokens, used for error recovery purposes
+     * @return
+     */
     private Subexpression factor(Set<TokenType> synch) {
         if (traceEnabled) lineTraceOutput.accept("\t\tEntering factor");
 
@@ -710,18 +866,24 @@ public class Parser {
         return factor;
     }
 
+    /**
+     * 30.	nid-factor → not factor | ( expression ) | NUM | BLIT
+     *
+     * @param synch - Set of tokens collected during parsing which represents valid next tokens, used for error recovery purposes
+     * @return
+     */
     private Subexpression nid_factor(Set<TokenType> synch) {
         if (traceEnabled) lineTraceOutput.accept("\t\tEntering nid-factor");
 
         Subexpression nidFactor = null;
         switch (lookahead) {
             case NOT:
-                match(NOT, union(synch,FIRSTofFactor));
+                match(NOT, union(synch, FIRSTofFactor));
                 nidFactor = new NotNidFactor(factor(synch));
                 break;
             case LPAREN:
-                match(LPAREN, union(synch,FIRSTofExpression));
-                nidFactor = expression(union(synch,RPAREN));
+                match(LPAREN, union(synch, FIRSTofExpression));
+                nidFactor = expression(union(synch, RPAREN));
                 match(RPAREN, synch);
                 break;
             case NUM:
@@ -740,17 +902,29 @@ public class Parser {
         return nidFactor;
     }
 
+    /**
+     * 31.	id-factor → ID id-tail
+     *
+     * @param synch - Set of tokens collected during parsing which represents valid next tokens, used for error recovery purposes
+     * @return
+     */
     private Factor id_factor(Set<TokenType> synch) {
         if (traceEnabled) lineTraceOutput.accept("\t\tEntering id-factor");
 
         Token IDToken = lookaheadToken;
-        match(ID, union(synch,FIRSTofId_tail));
+        match(ID, union(synch, FIRSTofId_tail));
         ASTNode idTail = id_tail(synch);
 
         if (traceEnabled) lineTraceOutput.accept("\t\tLeaving id-factor");
         return new IdFactor(IDToken, idTail);
     }
 
+    /**
+     * 32.	id-tail → var-tail | call-tail
+     *
+     * @param synch - Set of tokens collected during parsing which represents valid next tokens, used for error recovery purposes
+     * @return
+     */
     private ASTNode id_tail(Set<TokenType> synch) {
         if (traceEnabled) lineTraceOutput.accept("\t\tEntering id-tail");
 
@@ -765,14 +939,19 @@ public class Parser {
         return idTail;
     }
 
-
+    /**
+     * 33.	var-tail → [ [ add-exp ] ]
+     *
+     * @param synch - Set of tokens collected during parsing which represents valid next tokens, used for error recovery purposes
+     * @return
+     */
     private ASTNode var_tail(Set<TokenType> synch) {
         if (traceEnabled) lineTraceOutput.accept("\t\tEntering var-tail");
 
         AddExpression add_exp = null;
         if (lookahead == LSQR) {
-            match(LSQR, union(synch,FIRSTofAdd_expr));
-            add_exp = add_exp(union(synch,RSQR));
+            match(LSQR, union(synch, FIRSTofAdd_expr));
+            add_exp = add_exp(union(synch, RSQR));
             match(RSQR, synch);
         }
 
@@ -780,6 +959,12 @@ public class Parser {
         return add_exp;
     }
 
+    /**
+     * 34.	relop → <= | < | > | >= | = | /=
+     *
+     * @param synch - Set of tokens collected during parsing which represents valid next tokens, used for error recovery purposes
+     * @return
+     */
     private TokenType relop(Set<TokenType> synch) {
         if (traceEnabled) lineTraceOutput.accept("\t\tEntering relop");
 
@@ -809,6 +994,12 @@ public class Parser {
         return tt;
     }
 
+    /**
+     * 35.	addop → + | - | or | ||
+     *
+     * @param synch - Set of tokens collected during parsing which represents valid next tokens, used for error recovery purposes
+     * @return
+     */
     private TokenType addop(Set<TokenType> synch) {
         if (traceEnabled) lineTraceOutput.accept("\t\tEntering addop");
 
@@ -832,6 +1023,12 @@ public class Parser {
         return tokenType;
     }
 
+    /**
+     * 36.	multop → * | / | mod | and | &&
+     *
+     * @param synch - Set of tokens collected during parsing which represents valid next tokens, used for error recovery purposes
+     * @return
+     */
     private TokenType multop(Set<TokenType> synch) {
         if (traceEnabled) lineTraceOutput.accept("\t\tEntering multop");
 
@@ -858,6 +1055,12 @@ public class Parser {
         return multop;
     }
 
+    /**
+     * 37.	uminus → -
+     * 
+     * @param synch - Set of tokens collected during parsing which represents valid next tokens, used for error recovery purposes
+     * @return
+     */
     private MinusExpression uminus(Set<TokenType> synch) {
         if (traceEnabled) lineTraceOutput.accept("\t\tEntering unimus");
 
@@ -867,6 +1070,12 @@ public class Parser {
         return new MinusExpression();
     }
 
+    /**
+     * Drives the scanner to produce more tokens when parsing, sets up the lookahead token, and verifies that tokens expected by the production rule methods are found.
+     * 
+     * @param expected - The token expected by the calling production rule method
+     * @param synch - Set of tokens collected during parsing which represents valid next tokens, used for error recovery purposes
+     */
     private void match(TokenType expected, Set<TokenType> synch) {
         if (lookahead == expected) {
             if (traceEnabled) lineTraceOutput.accept("\t\tMatched " + expected.toString());
@@ -880,6 +1089,11 @@ public class Parser {
         syntaxCheck(synch);
     }
 
+    /**
+     * Checks if a syntax error has been encountered using the synch set. If an error is encountered, an error message is produced and error recovery begins.
+     * 
+     * @param synch - Set of tokens collected during parsing which represents valid next tokens, used for error recovery purposes
+     */
     private void syntaxCheck(Set<TokenType> synch) {
         if (!synch.contains(lookahead)) {
             errorOutput.accept("\t\tSyntax Error, token:" + lookahead + " is not expected here.");
@@ -887,11 +1101,22 @@ public class Parser {
         }
     }
 
+    /**
+     * Called when an expected token does not match the lookahead token. If an error is encountered, an error message is produced and error recovery begins.
+     *
+     * @param expected
+     * @param synch - Set of tokens collected during parsing which represents valid next tokens, used for error recovery purposes
+     */
     private void syntaxError(TokenType expected, Set<TokenType> synch) {
         errorOutput.accept("\t\tSyntax Error, expecting " + expected + " but received " + lookahead);
         syntaxError(synch);
     }
 
+    /**
+     * Implementation of panic mode error recovery. Consumes tokens until a token that is contained in the synch set is encountered.
+     * 
+     * @param synch - Set of tokens collected during parsing which represents valid next tokens, used for error recovery purposes
+     */
     private void syntaxError(Set<TokenType> synch) {
         syntaxError = true;
         while (!synch.contains(lookahead)) {
@@ -906,7 +1131,6 @@ public class Parser {
         this.traceEnabled = traceEnabled;
     }
 
-
     private Set<TokenType> union(Set<TokenType> synch, Set<TokenType> firstSet) {
         Set<TokenType> newSynch = new HashSet<>(synch);
         newSynch.addAll(firstSet);
@@ -918,7 +1142,6 @@ public class Parser {
         newSynch.add(token);
         return newSynch;
     }
-
 
     private Set<TokenType> union(Set<TokenType> synch, Set<TokenType> firsTofCase_stmt, TokenType... tts) {
         Set<TokenType> newSynch = new HashSet<>(synch);
