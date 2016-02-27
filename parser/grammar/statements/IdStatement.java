@@ -1,5 +1,6 @@
 package parser.grammar.statements;
 
+import parser.grammar.declarations.Declaration;
 import scanner.Token;
 
 /**
@@ -8,6 +9,8 @@ import scanner.Token;
 public class IdStatement extends Statement {
     private final Token idToken;
     private final StatementTail id_stmt_tail;
+
+    private Declaration decl;
 
     public IdStatement(Token idToken, StatementTail id_stmt_tail) {
 
@@ -37,5 +40,13 @@ public class IdStatement extends Statement {
 
         if( nextNode != null )
             nextNode.appendContents(sb,tabs);
+    }
+
+    public Declaration getDecl() {
+        return decl;
+    }
+
+    public void setDecl(Declaration decl) {
+        this.decl = decl;
     }
 }

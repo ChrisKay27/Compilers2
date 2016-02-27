@@ -52,4 +52,8 @@ public class Token {
 
         return attrValue != null && attrValue.equals(t.attrValue);
     }
+
+    public int getAttrValue() {
+        return (int) attrValue;
+    }
 }

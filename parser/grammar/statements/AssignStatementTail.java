@@ -28,4 +28,12 @@ public class AssignStatementTail extends StatementTail {
             addExpression.appendContents(sb, tabs+1);
         exp.appendContents(sb,tabs+1);
     }
+
+    public AddExpression getAddExpression() {
+        return addExpression;
+    }
+
+    public Expression getExp() {
+        return exp;
+    }
 }

@@ -13,6 +13,7 @@ public class ParamDeclaration extends VarDeclaration {
     protected boolean isReference;
     protected boolean isArray;
 
+
     //constructors
     private ParamDeclaration() {
         super(Type.VOID, null);

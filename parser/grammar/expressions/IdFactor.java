@@ -1,6 +1,7 @@
 package parser.grammar.expressions;
 
 import parser.grammar.ASTNode;
+import parser.grammar.declarations.Declaration;
 import scanner.Token;
 
 /**
@@ -10,6 +11,8 @@ public class IdFactor extends Factor {
 
     private final Token idToken;
     private final ASTNode idTail;
+
+    private Declaration decl;
 
     public IdFactor(Token idToken, ASTNode idTail) {
         super();
@@ -33,10 +36,19 @@ public class IdFactor extends Factor {
         sb.append(getClass().getSimpleName());
 
         sb.append(idToken);
+
         if( idTail != null )
             idTail.appendContents(sb,tabs+1);
 
         if( nextNode != null )
             nextNode.appendContents(sb,tabs);
+    }
+
+    public Declaration getDecl() {
+        return decl;
+    }
+
+    public void setDecl(Declaration decl) {
+        this.decl = decl;
     }
 }
