@@ -1,19 +1,12 @@
 -- Carston Schilds, Feb 21st 2016
 void main(void){
     branch(foo())
-        default:;
+        default: foo();
     end;
     branch(foo())
-        case 1:;
-        case 11:;
-        case 12:;
-        case 13:;
-        case 14:;
-        case 15:;
-        case 16:;
-        case 17:;
-        case 18:;
-        case 19:;
-        default:;
+        case 1: foo1();
+        case 11: foo11();
+        case 12: foo12();
+        default: foo();
     end;
 }

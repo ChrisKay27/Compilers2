@@ -23,4 +23,17 @@ public class BranchStatement extends Statement {
     public CaseStatement getCaseStmt() {
         return caseStmt;
     }
+
+    @Override
+    public void appendContents(StringBuilder sb, int tabs) {
+        sb.append('\n');
+        for (int i = 0; i < tabs; i++)
+            sb.append("    ");
+
+        sb.append(getClass().getSimpleName());
+        addexp.appendContents(sb, tabs+1);
+        caseStmt.appendContents(sb, tabs+1);
+        if (nextNode != null)
+            nextNode.appendContents(sb, tabs);
+    }
 }
