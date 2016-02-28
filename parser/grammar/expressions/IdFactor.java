@@ -51,4 +51,6 @@ public class IdFactor extends Factor {
     public void setDecl(Declaration decl) {
         this.decl = decl;
     }
+
+
 }

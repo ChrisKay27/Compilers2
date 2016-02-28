@@ -9,16 +9,16 @@ import scanner.Token;
  */
 public class VarDeclaration extends Declaration {
 
-    protected AddExpression arrayIndex;
+    protected AddExpression arraySize;
 
     public VarDeclaration(Type type, Token ID) {
         super(type, ID);
-        this.arrayIndex = null;
+        this.arraySize = null;
     }
 
-    public VarDeclaration(Type type, Token ID, AddExpression arrayIndex) {
+    public VarDeclaration(Type type, Token ID, AddExpression arraySize) {
         super(type, ID);
-        this.arrayIndex = arrayIndex;
+        this.arraySize = arraySize;
     }
 
     @Override
@@ -28,10 +28,15 @@ public class VarDeclaration extends Declaration {
             sb.append("    ");
         sb.append(getClass().getSimpleName()).append(' ').append(getType()).append(' ').append(getID());
 
-        if( arrayIndex != null )
-            arrayIndex.appendContents(sb,tabs+1);
+        if( arraySize != null )
+            arraySize.appendContents(sb,tabs+1);
 
         if( nextNode != null )
             nextNode.appendContents(sb,tabs);
+    }
+
+
+    public boolean isAnArray() {
+        return arraySize != null;
     }
 }

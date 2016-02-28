@@ -7,9 +7,9 @@ import parser.grammar.ASTNode;
  */
 public class NotNidFactor extends NidFactor {
 
-    private final ASTNode factor;
+    private final Subexpression factor;
 
-    public NotNidFactor(ASTNode factor) {
+    public NotNidFactor(Subexpression factor) {
         this.factor = factor;
     }
 
@@ -22,5 +22,9 @@ public class NotNidFactor extends NidFactor {
 
         if( nextNode != null )
             nextNode.appendContents(sb, tabs + 2);
+    }
+
+    public Subexpression getFactor() {
+        return factor;
     }
 }

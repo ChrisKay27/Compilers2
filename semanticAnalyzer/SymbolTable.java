@@ -1,5 +1,6 @@
 package semanticAnalyzer;
 
+import parser.grammar.ASTNode;
 import util.WTFException;
 
 import java.util.ArrayList;
@@ -66,6 +67,8 @@ public class SymbolTable {
         }
     }
 
+
+
     public SymbolTableEntry get(int id) {
         if (index.size() <= 0) return null;
         return index.get(id);
@@ -84,4 +87,5 @@ public class SymbolTable {
         int x = frameSizes.pop();
         if (x != 0) throw new WTFException("leave frame function screwed up. [ frameSize:" + x + "]");
     }
+
 }

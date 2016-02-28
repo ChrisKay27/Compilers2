@@ -1,6 +1,7 @@
 package parser.grammar.expressions;
 
 import parser.TokenType;
+import parser.Type;
 import parser.grammar.ASTNode;
 import parser.grammar.expressions.AddExpression;
 
@@ -11,6 +12,8 @@ public class Expression extends Subexpression {
     private final AddExpression addExp;
     private final TokenType relop;
     private final AddExpression addExp2;
+
+    private Type type;
 
 
     public Expression(AddExpression addExpression, TokenType relop, AddExpression addExp2) {
@@ -47,4 +50,11 @@ public class Expression extends Subexpression {
             nextNode.appendContents(sb,tabs);
     }
 
+    public void setType(Type type) {
+        this.type = type;
+    }
+
+    public Type getType() {
+        return type;
+    }
 }

@@ -23,4 +23,8 @@ public class Term extends Subexpression {
         if( nextNode != null )
             nextNode.appendContents(sb, tabs);
     }
+
+    public Subexpression getFactor() {
+        return factor;
+    }
 }
