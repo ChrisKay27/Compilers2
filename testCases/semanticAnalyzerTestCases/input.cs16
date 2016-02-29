@@ -10,6 +10,7 @@ int y;
 void sout(int x){
     ;
 }
+
 /*
     /*
         Here is main
@@ -32,6 +33,5 @@ void main(int args[]){
                     continue;
             }
             end;
-
     }
 }

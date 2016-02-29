@@ -50,10 +50,10 @@ public class SymbolTable {
     }
 
     /**
-     * @param entry
      * @return True if the index contained entry already, false if the index did not contain a previous occurrence of entry
      */
     public boolean push(SymbolTableEntry entry) {
+
         frameSizes.push(frameSizes.pop() + 1);
         if (index.size() <= entry.getId()) {
             index.add(entry);

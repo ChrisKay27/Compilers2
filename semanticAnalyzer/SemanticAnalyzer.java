@@ -58,11 +58,14 @@ public class SemanticAnalyzer implements SemAnalInter {
     }
 
 //    public void analyze(ASTNode AST) {
+
 //        System.out.println("Class of this ASTNode: " + AST.getClass().getSimpleName());
 //    }
 
     public void analyze(FuncDeclaration AST){
-        enteringFuncDeclation(AST);
+		System.out.println("analyze FuncDeclaration");
+        
+        enteringFuncDeclaration(AST);
 
         analyze(AST.getParams());
 
@@ -72,16 +75,21 @@ public class SemanticAnalyzer implements SemAnalInter {
     }
 
 
-    private void enteringFuncDeclation(FuncDeclaration AST) {
+    private void enteringFuncDeclaration(FuncDeclaration AST) {
+        System.out.println("enteringFuncDeclaration");
         enteringCompoundStmt();
+        if( currentFuncDecl != null )
+            throw new WTFException("No functions are allowed to be inside other functions");
         currentFuncDecl = AST;
     }
     private void leavingFuncDeclaration() {
+        System.out.println("leavingFuncDeclaration");
         currentFuncDecl = null;
         leavingCompoundStmt();
     }
 
     public void analyze(ParamDeclaration AST) {
+		System.out.println("analyze ParamDeclaration");
         while (AST != null) {
             addDeclaration(AST);
             AST = (ParamDeclaration) AST.getNextNode();
@@ -90,10 +98,12 @@ public class SemanticAnalyzer implements SemAnalInter {
 
 
     public void analyze(VarDeclaration AST) {
+		System.out.println("analyze VarDeclaration");
         //Dec already added in first sweep phase
     }
 
     public void analyze(Statement AST) {
+		System.out.println("analyze Statement");
         if( AST instanceof IdStatement )
             analyze((IdStatement) AST);
         if( AST instanceof IfStatement )
@@ -117,6 +127,7 @@ public class SemanticAnalyzer implements SemAnalInter {
     }
 
     public void analyze(IdStatement AST) {
+		System.out.println("analyze IdStatement");
         AST.setDecl(getDeclaration(AST.getIdToken().getAttrValue()));
         analyze(AST.getId_stmt_tail());
 
@@ -145,6 +156,7 @@ public class SemanticAnalyzer implements SemAnalInter {
     }
 
     public void analyze(StatementTail AST){
+		System.out.println("analyze StatementTail");
         if( AST instanceof AssignStatementTail )
             analyze((AssignStatementTail) AST);
         else if( AST instanceof CallStatementTail )
@@ -152,12 +164,14 @@ public class SemanticAnalyzer implements SemAnalInter {
     }
 
     public void analyze(AssignStatementTail AST) {
+		System.out.println("analyze AssignStatementTail");
         if (AST.getAddExpression() != null)
             analyze(AST.getAddExpression());
         analyze(AST.getExp());
     }
 
     public void analyze(IfStatement AST) {
+		System.out.println("analyze IfStatement");
         analyze(AST.getExpression());
         analyze(AST.getStatement());
         Statement elseStatement = AST.getElseStatement();
@@ -165,11 +179,13 @@ public class SemanticAnalyzer implements SemAnalInter {
     }
 
     public void analyze(CallStatementTail AST) {
+		System.out.println("analyze CallStatementTail");
        analyze(AST.getCall_tail());
     }
 
 
     public void analyze(CompoundStatement AST) {
+		System.out.println("analyze CompoundStatement");
         enteringCompoundStmt();
 
         Declaration d = AST.getDeclarations();
@@ -190,6 +206,7 @@ public class SemanticAnalyzer implements SemAnalInter {
 
 
     public void analyze(LoopStatement AST) {
+		System.out.println("analyze LoopStatement");
         Statement statement = AST.getStatement();
         loopConstraints(statement);
         analyze(statement);
@@ -225,14 +242,17 @@ public class SemanticAnalyzer implements SemAnalInter {
 
 
     public void analyze(ExitStatement AST) {
+		System.out.println("analyze ExitStatement");
 
     }
 
     public void analyze(ContinueStatement AST) {
+		System.out.println("analyze ContinueStatement");
 
     }
 
     public void analyze(ReturnStatement AST){
+		System.out.println("analyze ReturnStatement");
         analyze(AST.getReturnValue());
 
         if( currentFuncDecl == null )
@@ -243,10 +263,12 @@ public class SemanticAnalyzer implements SemAnalInter {
     }
 
     public void analyze(NullStatement AST){
+		System.out.println("analyze NullStatement");
         
     }
 
     public void analyze(BranchStatement AST) {
+		System.out.println("analyze BranchStatement");
         branchConstraints(AST.getCaseStmt());
         analyze(AST.getAddexp());
         analyze(AST.getCaseStmt());
@@ -277,6 +299,7 @@ public class SemanticAnalyzer implements SemAnalInter {
     }
 
     public Type analyze(Expression AST){
+		System.out.println("analyze Expression");
         Type t = analyze(AST.getAddExp());
         Type t2 = analyze(AST.getAddExp2());
         if( t != t2 ) {
@@ -290,6 +313,7 @@ public class SemanticAnalyzer implements SemAnalInter {
 
 
     public Type analyze(AddExpression AST){
+		System.out.println("analyze AddExpression");
         Type t = analyze(AST.getTerm());
 
         AddExpression next = (AddExpression) AST.getNextNode();
@@ -309,6 +333,7 @@ public class SemanticAnalyzer implements SemAnalInter {
     }
 
     public Type analyze(Term AST){
+		System.out.println("analyze Term");
         Type t = analyze(AST.getFactor());
 
         Factor next = (Factor) AST.getNextNode();
@@ -325,7 +350,8 @@ public class SemanticAnalyzer implements SemAnalInter {
         return t;
     }
 
-    public Type analyze(Subexpression AST){ //Nothing to analyze here
+    public Type analyze(Subexpression AST){
+		System.out.println("analyze Subexpression"); //Nothing to analyze here
 
         if( AST instanceof AddExpression )
             return analyze((AddExpression) AST);
@@ -354,18 +380,23 @@ public class SemanticAnalyzer implements SemAnalInter {
 
 
 
-    public Type analyze(LiteralBool AST){ //Nothing to analyze here
+    public Type analyze(LiteralBool AST){
+		System.out.println("analyze LiteralBool"); //Nothing to analyze here
         return BOOL;
     }
-    public Type analyze(LiteralNum AST){ //Nothing to analyze here
+    public Type analyze(LiteralNum AST){
+		System.out.println("analyze LiteralNum"); //Nothing to analyze here
         return INT;
     }
 
     public Type analyze(MultOpFactor AST){
+		System.out.println("analyze MultOpFactor");
         return analyze(AST.getFactor());
     }
 
     public Type analyze(NotNidFactor AST){
+		System.out.println("analyze NotNidFactor");
+        
         Type t = analyze(AST.getFactor());
         if( t != BOOL )
             return ERROR;
@@ -373,6 +404,7 @@ public class SemanticAnalyzer implements SemAnalInter {
     }
 
     public Type analyze(IdFactor AST){
+        System.out.println("analyze IdFactor");
         AST.setDecl(getDeclaration(AST.getIdToken().getAttrValue()));
         analyze(AST.getIdTail());
         return AST.getDecl().getType();
@@ -380,11 +412,13 @@ public class SemanticAnalyzer implements SemAnalInter {
 
 
     private void enteringCompoundStmt() {
+        System.out.println("enteringCompoundStmt");
         symbolTable.enterFrame();
     }
 
 
     private void leavingCompoundStmt() {
+        System.out.println("leavingCompoundStmt");
         symbolTable.leaveFrame();
     }
 
@@ -402,6 +436,7 @@ public class SemanticAnalyzer implements SemAnalInter {
     }
 
     @Override
-    public void analyze(ASTNode AST) {        
+    public void analyze(ASTNode AST) {
+		System.out.println("analyze ASTNode");        
     }
 }
