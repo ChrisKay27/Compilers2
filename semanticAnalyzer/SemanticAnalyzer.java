@@ -19,7 +19,7 @@ import static parser.Type.INT;
 /**
  * Created by Carston on 2/27/2016.
  */
-public class SemanticAnalyzer {
+public class SemanticAnalyzer implements SemAnalInter {
 
     private ASTNode astRoot;
     private SymbolTable symbolTable;
@@ -33,35 +33,36 @@ public class SemanticAnalyzer {
         this.error = error;
 
         this.symbolTable = new SymbolTable();
-
-        startSemAnal(astRoot);
-
     }
 
 
-    public void startSemAnal(ASTNode AST) {
+    public void startSemAnal(Declaration AST) {
 
-        ASTNode n = AST;
+        Declaration n = AST;
         do {
-            addDeclaration((Declaration) n);
+            addDeclaration(n);
         }
-        while ((n = n.getNextNode()) != null);
+        while ((n = (Declaration) n.getNextNode()) != null);
 
         n = AST;
         do {
-            analyze(n);
+            if( n instanceof VarDeclaration )
+                analyze((VarDeclaration)n);
+            else
+                analyze((FuncDeclaration)n);
+
+            n = (Declaration) n.getNextNode();
         }
-        while ((n = n.getNextNode()) != null);
+        while (n != null);
 
     }
 
-    private void analyze(ASTNode AST) {
-        throw new WTFException("Finish implementing the methods. Look for a method for " + AST.getClass().getSimpleName());
-    }
+//    public void analyze(ASTNode AST) {
+//        System.out.println("Class of this ASTNode: " + AST.getClass().getSimpleName());
+//    }
 
-    private void analyze(FuncDeclaration AST){
+    public void analyze(FuncDeclaration AST){
         enteringFuncDeclation(AST);
-
 
         analyze(AST.getParams());
 
@@ -80,7 +81,7 @@ public class SemanticAnalyzer {
         leavingCompoundStmt();
     }
 
-    private void analyze(ParamDeclaration AST) {
+    public void analyze(ParamDeclaration AST) {
         while (AST != null) {
             addDeclaration(AST);
             AST = (ParamDeclaration) AST.getNextNode();
@@ -88,18 +89,43 @@ public class SemanticAnalyzer {
     }
 
 
-    private void analyze(VarDeclaration AST) {
+    public void analyze(VarDeclaration AST) {
         //Dec already added in first sweep phase
     }
 
+    public void analyze(Statement AST) {
+        if( AST instanceof IdStatement )
+            analyze((IdStatement) AST);
+        if( AST instanceof IfStatement )
+            analyze((IfStatement) AST);
+        if( AST instanceof CompoundStatement )
+            analyze((CompoundStatement) AST);
+        if( AST instanceof LoopStatement )
+            analyze((LoopStatement) AST);
+        if( AST instanceof ContinueStatement )
+            analyze((ContinueStatement) AST);
+        if( AST instanceof ExitStatement )
+            analyze((ExitStatement) AST);
+        if( AST instanceof ReturnStatement )
+            analyze((ReturnStatement) AST);
+        if( AST instanceof BranchStatement )
+            analyze((BranchStatement) AST);
+        if( AST instanceof CaseStatement )
+            analyze((CaseStatement) AST);
+        else if( AST instanceof NullStatement )
+            analyze((NullStatement) AST);
+    }
 
-    private void analyze(IdStatement AST) {
+    public void analyze(IdStatement AST) {
         AST.setDecl(getDeclaration(AST.getIdToken().getAttrValue()));
         analyze(AST.getId_stmt_tail());
 
         Declaration d = AST.getDecl();
-        if( d instanceof FuncDeclaration && (AST.getId_stmt_tail() instanceof AssignStatementTail) )
-            error.accept(d.getID() + " is a function declaration and it is being assigned to.");
+        if( d instanceof FuncDeclaration ) {
+            if ((AST.getId_stmt_tail() instanceof AssignStatementTail))
+                error.accept(d.getID() + " is a function declaration and it is being assigned to.");
+        }
+
 
         if( d instanceof VarDeclaration ){
             VarDeclaration varDec = (VarDeclaration) d;
@@ -113,31 +139,37 @@ public class SemanticAnalyzer {
                 if( assignTail.getAddExpression() != null && !varDec.isAnArray() )
                     error.accept(d.getID()+" is not an array and we are trying to index it.");
 
-                //TODO have to check if an array is being assigned to an array! But currently we dont know what type the
-                //expression in assign tail is.
+                //TODO have to check if an array is being assigned to an array!
             }
         }
     }
 
-    private void analyze(AssignStatementTail AST) {
+    public void analyze(StatementTail AST){
+        if( AST instanceof AssignStatementTail )
+            analyze((AssignStatementTail) AST);
+        else if( AST instanceof CallStatementTail )
+            analyze((CallStatementTail) AST);
+    }
+
+    public void analyze(AssignStatementTail AST) {
         if (AST.getAddExpression() != null)
             analyze(AST.getAddExpression());
         analyze(AST.getExp());
     }
 
-    private void analyze(IfStatement AST) {
+    public void analyze(IfStatement AST) {
         analyze(AST.getExpression());
         analyze(AST.getStatement());
         Statement elseStatement = AST.getElseStatement();
         if(elseStatement != null) analyze(elseStatement);
     }
 
-    private void analyze(CallStatementTail AST) {
+    public void analyze(CallStatementTail AST) {
        analyze(AST.getCall_tail());
     }
 
 
-    private void analyze(CompoundStatement AST) {
+    public void analyze(CompoundStatement AST) {
         enteringCompoundStmt();
 
         Declaration d = AST.getDeclarations();
@@ -157,7 +189,7 @@ public class SemanticAnalyzer {
     }
 
 
-    private void analyze(LoopStatement AST) {
+    public void analyze(LoopStatement AST) {
         Statement statement = AST.getStatement();
         loopConstraints(statement);
         analyze(statement);
@@ -192,15 +224,15 @@ public class SemanticAnalyzer {
     }
 
 
-    private void analyze(ExitStatement AST) {
+    public void analyze(ExitStatement AST) {
 
     }
 
-    private void analyze(ContinueStatement AST) {
+    public void analyze(ContinueStatement AST) {
 
     }
 
-    private void analyze(ReturnStatement AST){
+    public void analyze(ReturnStatement AST){
         analyze(AST.getReturnValue());
 
         if( currentFuncDecl == null )
@@ -210,14 +242,14 @@ public class SemanticAnalyzer {
 
     }
 
-    private void analyze(NullStatement AST){
-
+    public void analyze(NullStatement AST){
+        
     }
 
-    private void analyze(BranchStatement AST) {
+    public void analyze(BranchStatement AST) {
         branchConstraints(AST.getCaseStmt());
         analyze(AST.getAddexp());
-        analyze((CaseStatement) AST.getCaseStmt());
+        analyze(AST.getCaseStmt());
     }
 
     /**
@@ -239,12 +271,12 @@ public class SemanticAnalyzer {
         }
     }
 
-    private void analyze(CaseStatement statement) {
+    public void analyze(CaseStatement statement) {
         analyze(statement.getStatement()); // statement for this case
         analyze(statement.getNextNode()); // next case in branch statement
     }
 
-    private void analyze(Expression AST){
+    public Type analyze(Expression AST){
         Type t = analyze(AST.getAddExp());
         Type t2 = analyze(AST.getAddExp2());
         if( t != t2 ) {
@@ -253,10 +285,11 @@ public class SemanticAnalyzer {
             AST.setType(ERROR);
         }else
             AST.setType(t);
+        return AST.getType();
     }
 
 
-    private Type analyze(AddExpression AST){
+    public Type analyze(AddExpression AST){
         Type t = analyze(AST.getTerm());
 
         AddExpression next = (AddExpression) AST.getNextNode();
@@ -275,7 +308,7 @@ public class SemanticAnalyzer {
         return t;
     }
 
-    private Type analyze(Term AST){
+    public Type analyze(Term AST){
         Type t = analyze(AST.getFactor());
 
         Factor next = (Factor) AST.getNextNode();
@@ -292,25 +325,54 @@ public class SemanticAnalyzer {
         return t;
     }
 
-    private Type analyze(Subexpression AST){ //Nothing to analyze here
+    public Type analyze(Subexpression AST){ //Nothing to analyze here
+
+        if( AST instanceof AddExpression )
+            return analyze((AddExpression) AST);
+		if( AST instanceof AddOpTerm )
+			return analyze(((AddOpTerm) AST).getTerm());
+		if( AST instanceof Expression )
+			return analyze((Expression) AST);
+		if( AST instanceof IdFactor )
+            return analyze((IdFactor) AST);
+        if( AST instanceof LiteralBool )
+            return analyze((LiteralBool) AST);
+        if( AST instanceof LiteralNum )
+			return analyze((LiteralNum) AST);
+		if( AST instanceof MinusExpression )
+			return INT;//analyze((MinusExpression) AST);
+		if( AST instanceof MultOpFactor )
+			return analyze((MultOpFactor) AST);
+        if( AST instanceof NotNidFactor )
+            return analyze((NotNidFactor) AST);
+		if( AST instanceof Term )
+			return analyze((Term) AST);
+
         return ERROR;
     }
 
-    private Type analyze(LiteralBool AST){ //Nothing to analyze here
+
+
+
+    public Type analyze(LiteralBool AST){ //Nothing to analyze here
         return BOOL;
     }
-    private Type analyze(LiteralNum AST){ //Nothing to analyze here
+    public Type analyze(LiteralNum AST){ //Nothing to analyze here
         return INT;
     }
 
-    private Type analyze(NotNidFactor AST){
+    public Type analyze(MultOpFactor AST){
+        return analyze(AST.getFactor());
+    }
+
+    public Type analyze(NotNidFactor AST){
         Type t = analyze(AST.getFactor());
         if( t != BOOL )
             return ERROR;
         return BOOL;
     }
 
-    private Type analyze(IdFactor AST){
+    public Type analyze(IdFactor AST){
         AST.setDecl(getDeclaration(AST.getIdToken().getAttrValue()));
         analyze(AST.getIdTail());
         return AST.getDecl().getType();
@@ -335,7 +397,11 @@ public class SemanticAnalyzer {
         return null;
     }
 
-    private void addDeclaration(Declaration d) {
+    public void addDeclaration(Declaration d) {
         symbolTable.push(new SymbolTableEntry(d.getID().getAttrValue(),d));
+    }
+
+    @Override
+    public void analyze(ASTNode AST) {        
     }
 }

@@ -3,8 +3,10 @@ package admininstration;
 import parser.Parser;
 import parser.TokenType;
 import parser.grammar.ASTNode;
+import parser.grammar.declarations.Declaration;
 import scanner.Scanner;
 import scanner.Token;
+import semanticAnalyzer.SemanticAnalyzer;
 
 import java.io.*;
 import java.nio.charset.Charset;
@@ -86,7 +88,7 @@ public class Administration implements Administrator {
             //tupleCompile();
         }
          else if(options.semanticPhase){
-            //semanticCompile();
+            semanticCompile();
         }
          else if(options.parserPhase){
             parserCompile();
@@ -95,6 +97,7 @@ public class Administration implements Administrator {
             lexicalCompile();
         }
     }
+
 
     private void lexicalCompile() {
         List<Token> tokens = new ArrayList<>();
@@ -109,6 +112,23 @@ public class Administration implements Administrator {
     private void parserCompile() throws IOException {
         ASTNode tree = parser.startParsing();
 
+        printCompilationResults(tree);
+    }
+
+
+
+    private void semanticCompile() throws IOException {
+
+        ASTNode tree = parser.startParsing();
+
+        SemanticAnalyzer semAnal = new SemanticAnalyzer(tree,this::printErrorMessage);
+
+        semAnal.startSemAnal((Declaration) tree);
+
+        printCompilationResults(tree);
+    }
+
+    public void printCompilationResults(ASTNode tree){
         //if a tree was returned we decide to print it or not based on a program argument
         if( tree != null && options.printAST ){
             printLineTrace("\n\n---- Abstract Syntax Tree ----\n\n");
