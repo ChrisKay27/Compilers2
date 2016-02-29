@@ -423,6 +423,7 @@ public class SemanticAnalyzer implements SemAnalInter {
     }
 
 
+
     private Declaration getDeclaration(int id) {
         SymbolTableEntry d = symbolTable.get(id);
         if( d == null ){
