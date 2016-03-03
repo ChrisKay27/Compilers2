@@ -8,16 +8,17 @@ import parser.grammar.ASTNode;
 public class SymbolTableEntry {
 
     private int id;
-    private SymbolTableEntry previousOccurance;
+    private int layer;
+    private SymbolTableEntry previousOccurrence;
     private ASTNode node;
 
     public SymbolTableEntry(int id, ASTNode node) {
         this(id, null, node);
     }
 
-    public SymbolTableEntry(int id, SymbolTableEntry previousOccurance, ASTNode node) {
+    public SymbolTableEntry(int id, SymbolTableEntry previousOccurrence, ASTNode node) {
         this.id = id;
-        this.previousOccurance = previousOccurance;
+        this.previousOccurrence = previousOccurrence;
         this.node = node;
     }
 
@@ -25,19 +26,29 @@ public class SymbolTableEntry {
         return id;
     }
 
-    public SymbolTableEntry getPreviousOccurance() {
-        return previousOccurance;
+    public SymbolTableEntry getPreviousOccurrence() {
+        return previousOccurrence;
     }
 
-    public void setPreviousOccurance(SymbolTableEntry previousOccurance) {
-        this.previousOccurance = previousOccurance;
+    public void setPreviousOccurrence(SymbolTableEntry previousOccurrence) {
+        this.previousOccurrence = previousOccurrence;
     }
 
     public ASTNode getNode() {
         return node;
     }
 
+    public int getLayer() {return this.layer;}
+
+    public void setLayer(int layer){
+        this.layer = layer;
+    }
+
+    public boolean collision(SymbolTableEntry arg){
+        return this.getLayer() == arg.getLayer();
+    }
+
     public String toString(){
-        return this.getId() + ":" + this.getPreviousOccurance() + ":" + this.getNode();
+        return this.getId() + ":" + this.getPreviousOccurrence() + ":" + this.getNode();
     }
 }

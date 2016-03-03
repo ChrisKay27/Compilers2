@@ -1,9 +1,8 @@
 package semanticAnalyzer;
 
-import parser.grammar.ASTNode;
 import util.WTFException;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Stack;
 
 /**
@@ -11,12 +10,12 @@ import java.util.Stack;
  */
 public class SymbolTable {
 
-    private ArrayList<SymbolTableEntry> index;
+    private HashMap<Integer, SymbolTableEntry> index;
     private Stack<SymbolTableEntry> stack;
     private Stack<Integer> frameSizes;
 
     public SymbolTable() {
-        index = new ArrayList<SymbolTableEntry>();
+        index = new HashMap<Integer, SymbolTableEntry>();
         stack = new Stack<SymbolTableEntry>();
         frameSizes = new Stack<Integer>();
         frameSizes.push(0);
@@ -30,7 +29,7 @@ public class SymbolTable {
         else if (!indexEmpty && !stackEmpty && !frameSizesEmpty) return false;
         else {
             throw new WTFException("One of the underlying data structures is inconsistent [index: "
-                    + indexEmpty + ", stack:" + stackEmpty + ", frames:" + frameSizesEmpty+"]");
+                    + indexEmpty + ", stack:" + stackEmpty + ", frames:" + frameSizesEmpty + "]");
         }
     }
 
@@ -39,9 +38,9 @@ public class SymbolTable {
         frameSizes.push(frameSizes.pop() - 1);
         SymbolTableEntry result = stack.pop();
 
-        if (result.getPreviousOccurance() != null) {
+        if (result.getPreviousOccurrence() != null) {
             index.remove(result.getId());
-            index.add(result.getId(), result.getPreviousOccurance());
+            index.put(result.getId(), result.getPreviousOccurrence());
         } else {
             index.remove(result.getId());
         }
@@ -49,24 +48,29 @@ public class SymbolTable {
         return result;
     }
 
+    public SymbolTableEntry peek(){
+        if (stack.empty()) return null;
+        return stack.peek();
+    }
     /**
-     * @return True if the index contained entry already, false if the index did not contain a previous occurrence of entry
+     * @return True if the entry could be inserted, false if there was a duplicate definition
      */
     public boolean push(SymbolTableEntry entry) {
-
+        entry.setLayer(frameSizes.size());
         frameSizes.push(frameSizes.pop() + 1);
-        if (index.size() <= entry.getId()) {
-            index.add(entry);
+        if (index.containsKey(entry.getId())) {
+            if (index.get(entry.getId()).collision(entry))
+                return false;
+            entry.setPreviousOccurrence(index.remove(entry.getId()));
+            index.put(entry.getId(), entry);
             stack.push(entry);
-            return false;
+            return true;
         } else {
-            entry.setPreviousOccurance(index.remove(entry.getId()));
-            index.add(entry.getId(), entry);
+            index.put(entry.getId(), entry);
             stack.push(entry);
             return true;
         }
     }
-
 
 
     public SymbolTableEntry get(int id) {
@@ -85,7 +89,10 @@ public class SymbolTable {
             this.pop();
         }
         int x = frameSizes.pop();
-        if (x != 0) throw new WTFException("leave frame function screwed up. [ frameSize:" + x + "]");
+        if (x != 0) {
+            this.stack.forEach(System.out::print);
+            throw new WTFException("leave frame function screwed up. [ frameSize:" + x + "]");
+        }
     }
 
 }

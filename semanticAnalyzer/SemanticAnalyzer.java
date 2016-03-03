@@ -27,6 +27,10 @@ public class SemanticAnalyzer implements SemAnalInter {
 
     private FuncDeclaration currentFuncDecl;
     private boolean foundError;
+    private boolean traceEnabled;
+    public void setTraceEnabled(boolean traceEnabled) {
+        this.traceEnabled = traceEnabled;
+    }
 
     public SemanticAnalyzer(ASTNode astRoot, Consumer<String> error){
         this.astRoot = astRoot;
@@ -264,7 +268,7 @@ public class SemanticAnalyzer implements SemAnalInter {
 
     public void analyze(NullStatement AST){
 		System.out.println("analyze NullStatement");
-        
+
     }
 
     public void analyze(BranchStatement AST) {
@@ -426,9 +430,11 @@ public class SemanticAnalyzer implements SemAnalInter {
 
     private Declaration getDeclaration(int id) {
         SymbolTableEntry d = symbolTable.get(id);
+
         if( d == null ){
             error.accept("");
         }
+
         return null;
     }
 
