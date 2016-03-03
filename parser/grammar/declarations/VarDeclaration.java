@@ -11,13 +11,13 @@ public class VarDeclaration extends Declaration {
 
     protected AddExpression arraySize;
 
-    public VarDeclaration(Type type, Token ID) {
-        super(type, ID);
+    public VarDeclaration(String line, Type type, Token ID) {
+        super(line, type, ID);
         this.arraySize = null;
     }
 
-    public VarDeclaration(Type type, Token ID, AddExpression arraySize) {
-        super(type, ID);
+    public VarDeclaration(String line, Type type, Token ID, AddExpression arraySize) {
+        super(line, type, ID);
         this.arraySize = arraySize;
     }
 

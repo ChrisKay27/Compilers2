@@ -11,7 +11,8 @@ public class AddOpTerm extends SubExpression {
 
     private final Term term;
 
-    public AddOpTerm(TokenType addOp, Term term) {
+    public AddOpTerm(String line, TokenType addOp, Term term) {
+        super(line);
         this.addOp = addOp;
         this.term = term;
     }

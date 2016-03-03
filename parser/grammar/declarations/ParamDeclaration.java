@@ -8,20 +8,20 @@ import scanner.Token;
  */
 public class ParamDeclaration extends VarDeclaration {
     //static instances
-    public static ParamDeclaration voidParam = new ParamDeclaration();
+    public static ParamDeclaration voidParam = new ParamDeclaration("");
     //members
     protected boolean isReference;
     protected boolean isArray;
 
 
     //constructors
-    private ParamDeclaration() {
-        super(Type.VOID, null);
+    private ParamDeclaration(String line) {
+        super(line, Type.VOID, null);
         this.isReference = false;
     }
 
-    public ParamDeclaration(Type type, Token ID, boolean isArray, boolean isReference) {
-        super(type, ID);
+    public ParamDeclaration(String line, Type type, Token ID, boolean isArray, boolean isReference) {
+        super(line, type, ID);
         this.isReference = isReference;
         this.isArray = isArray;
     }

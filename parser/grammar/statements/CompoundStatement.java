@@ -11,7 +11,8 @@ public class CompoundStatement extends Statement {
     private final Declaration declarations;
     private final Statement statements;
 
-    public CompoundStatement(Declaration declarations, Statement statements) {
+    public CompoundStatement(String line, Declaration declarations, Statement statements) {
+        super(line);
         this.declarations = declarations;
         this.statements = statements;
     }

@@ -12,8 +12,8 @@ public class IdStatement extends Statement {
 
     private Declaration decl;
 
-    public IdStatement(Token idToken, StatementTail id_stmt_tail) {
-
+    public IdStatement(String line, Token idToken, StatementTail id_stmt_tail) {
+        super(line);
         this.idToken = idToken;
         this.id_stmt_tail = id_stmt_tail;
     }

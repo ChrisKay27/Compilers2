@@ -5,5 +5,8 @@ package parser.grammar.expressions;
  */
 public abstract class NidFactor extends Factor {
 
+    protected NidFactor(String line) {
+        super(line);
+    }
 }
 

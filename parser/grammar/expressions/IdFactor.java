@@ -14,8 +14,8 @@ public class IdFactor extends Factor {
 
     private Declaration decl;
 
-    public IdFactor(Token idToken, ASTNode idTail) {
-        super();
+    public IdFactor(String line, Token idToken, ASTNode idTail) {
+        super(line);
         this.idToken = idToken;
         this.idTail = idTail;
     }

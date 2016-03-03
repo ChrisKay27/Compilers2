@@ -56,6 +56,7 @@ public class Parser {
     private final Scanner scanner;
     private final Consumer<String> errorOutput;
     private final Consumer<String> lineTraceOutput;
+    private final Supplier<String> lineNumber;
     private List<Token> tokens;
 
     private Token lookaheadToken;
@@ -64,10 +65,11 @@ public class Parser {
     private boolean syntaxError;
 
 
-    public Parser(Scanner scanner, Consumer<String> lineTraceOutput, Consumer<String> errorOutput) {
+    public Parser(Scanner scanner, Consumer<String> lineTraceOutput, Consumer<String> errorOutput, Supplier<String> lineNumber) {
         this.scanner = scanner;
         this.lineTraceOutput = lineTraceOutput;
         this.errorOutput = errorOutput;
+        this.lineNumber = lineNumber;
         tokens = new ArrayList<>();
     }
 
@@ -179,8 +181,8 @@ public class Parser {
      */
     private IfStatement if_stmt(Set<TokenType> synch) {
         if (traceEnabled) lineTraceOutput.accept("\t\tEntering if-stmt");
-
         match(IF, union(LPAREN, synch));
+        String line = lineNumber.get();
         match(LPAREN, union(FIRSTofExpression, synch));
         Expression e = expression(union(RPAREN, synch));
         match(RPAREN, union(FIRSTofStatement, synch));
@@ -194,7 +196,7 @@ public class Parser {
         }
 
         if (traceEnabled) lineTraceOutput.accept("\t\tLeaving if-stmt");
-        return new IfStatement(e, s, elseStatement);
+        return new IfStatement(line, e, s, elseStatement);
     }
 
     /**
@@ -206,13 +208,14 @@ public class Parser {
     private Declaration declaration(Set<TokenType> synch) {
         if (traceEnabled) lineTraceOutput.accept("\t\tEntering declaration");
         //
+        String line = lineNumber.get();
         if (lookahead == VOID) {
             //void function declaration
             match(VOID, union(ID, synch));
             Token token = lookaheadToken;
             match(ID, union(FIRSTofFun_dec_tail, synch));
             FuncDeclarationTail funcDecTail = fun_dec_tail(synch);
-            return new FuncDeclaration(Type.VOID, token, funcDecTail.getParams(), funcDecTail.getFuncBody());
+            return new FuncDeclaration(line, Type.VOID, token, funcDecTail.getParams(), funcDecTail.getFuncBody());
         } else if (FIRSTofNonvoid_specifier.contains(lookahead)) {
             //variable declaration or nonvoid function declaration
             Type type = nonvoid_specifier(union(ID, synch));
@@ -222,12 +225,12 @@ public class Parser {
             //build ast node
             if (decTail instanceof VarDecTail) {
                 VarDecTail varDecTail = (VarDecTail) decTail;
-                return varDecTail.toVarDeclarations(type, token);
+                return varDecTail.toVarDeclarations(line, type, token);
             } else if (decTail instanceof FuncDeclarationTail) {
                 FuncDeclarationTail funcDecTail = (FuncDeclarationTail) decTail;
-                return new FuncDeclaration(type, token, funcDecTail.getParams(), funcDecTail.getFuncBody());
+                return new FuncDeclaration(line, type, token, funcDecTail.getParams(), funcDecTail.getFuncBody());
             }
-            return new VarDeclaration(type, token);
+            return new VarDeclaration(line, type, token);
         } else {
             //error
         }
@@ -381,6 +384,7 @@ public class Parser {
      */
     private ParamDeclaration param(Set<TokenType> synch) {
         if (traceEnabled) lineTraceOutput.accept("\t\tEntering param");
+        String line = lineNumber.get();
         boolean isReference = lookahead == REF;
         boolean isArray = false;
         if (isReference) {
@@ -388,7 +392,7 @@ public class Parser {
             Type type = nonvoid_specifier(union(ID, synch));
             Token token = lookaheadToken;
             match(ID, synch);
-            return new ParamDeclaration(type, token, isArray, isReference);
+            return new ParamDeclaration(line, type, token, isArray, isReference);
         } else if (FIRSTofNonvoid_specifier.contains(lookahead)) {
             Type type = nonvoid_specifier(union(ID, synch));
             Token token = lookaheadToken;
@@ -398,7 +402,7 @@ public class Parser {
                 match(RSQR, synch);
                 isArray = true;
             }
-            return new ParamDeclaration(type, token, isArray, isReference);
+            return new ParamDeclaration(line, type, token, isArray, isReference);
         }
         if (traceEnabled) lineTraceOutput.accept("\t\tLeaving param");
         return null;
@@ -449,13 +453,14 @@ public class Parser {
     private IdStatement id_stmt(Set<TokenType> synch) {
         if (traceEnabled) lineTraceOutput.accept("\t\tEntering id-stmt");
 
+        String line = lineNumber.get();
         Token idToken = lookaheadToken;
         match(ID, union(FIRSTofId_stmt_tail, synch));
 
         StatementTail id_stmt_tail = id_stmt_tail(synch);
 
         if (traceEnabled) lineTraceOutput.accept("\t\tLeaving id-stmt");
-        return new IdStatement(idToken, id_stmt_tail);
+        return new IdStatement(line, idToken, id_stmt_tail);
     }
 
     /**
@@ -487,6 +492,7 @@ public class Parser {
     private StatementTail assign_stmt_tail(Set<TokenType> synch) {
         if (traceEnabled) lineTraceOutput.accept("\t\tEntering assign-stmt-tail");
 
+        String line = lineNumber.get();
         AddExpression addExpression = null;
 
         if (lookahead == LSQR) {
@@ -500,7 +506,7 @@ public class Parser {
         match(SEMI, synch);
 
         if (traceEnabled) lineTraceOutput.accept("\t\tLeaving assign-stmt-tail");
-        return new AssignStatementTail(addExpression, exp);
+        return new AssignStatementTail(line, addExpression, exp);
     }
 
     /**
@@ -512,11 +518,12 @@ public class Parser {
     private CallStatementTail call_stmt_tail(Set<TokenType> synch) {
         if (traceEnabled) lineTraceOutput.accept("\t\tEntering call-stmt-tail");
 
+        String line = lineNumber.get();
         Expression call_tail = call_tail(union(SEMI, synch));
         match(SEMI, synch);
 
         if (traceEnabled) lineTraceOutput.accept("\t\tLeaving call-stmt-tail");
-        return new CallStatementTail(call_tail);
+        return new CallStatementTail(line, call_tail);
     }
 
     /**
@@ -568,6 +575,7 @@ public class Parser {
     private CompoundStatement compound_stmt(Set<TokenType> synch) {
         if (traceEnabled) lineTraceOutput.accept("\t\tEntering compound-stmt");
 
+        String line = lineNumber.get();
         match(LCRLY, union(union(synch, FIRSTofNonvoid_specifier), FIRSTofStatement));
 
         Declaration firstDec = null;
@@ -580,7 +588,7 @@ public class Parser {
 
             var_dec_tail(union(union(synch, FIRSTofStatement), FIRSTofNonvoid_specifier));
 
-            Declaration tempDec2 = new Declaration(decType, IDToken);
+            Declaration tempDec2 = new Declaration(line, decType, IDToken);
             if (firstDec == null) {
                 firstDec = tempDec2;
                 tempDec = tempDec2;
@@ -607,7 +615,7 @@ public class Parser {
         match(RCRLY, synch);
 
         if (traceEnabled) lineTraceOutput.accept("\t\tLeaving compound-stmt");
-        return new CompoundStatement(firstDec, first);
+        return new CompoundStatement(line, firstDec, first);
     }
 
     /**
@@ -619,6 +627,7 @@ public class Parser {
     private Statement loop_stmt(Set<TokenType> synch) {
         if (traceEnabled) lineTraceOutput.accept("\t\tEntering loop-stmt");
 
+        String line = lineNumber.get();
         match(LOOP, union(synch, FIRSTofStatement));
 
         Statement first = statement(union(union(synch, FIRSTofStatement), END));
@@ -632,7 +641,7 @@ public class Parser {
         match(SEMI, synch);
 
         if (traceEnabled) lineTraceOutput.accept("\t\tLeaving loop-stmt");
-        return new LoopStatement(first);
+        return new LoopStatement(line, first);
     }
 
     /**
@@ -644,11 +653,12 @@ public class Parser {
     private Statement exit_stmt(Set<TokenType> synch) {
         if (traceEnabled) lineTraceOutput.accept("\t\tEntering exit-stmt");
 
+        String line = lineNumber.get();
         match(EXIT, union(synch, EXIT));
         match(SEMI, synch);
 
         if (traceEnabled) lineTraceOutput.accept("\t\tLeaving exit-stmt");
-        return new ExitStatement();
+        return new ExitStatement(line);
     }
 
     /**
@@ -660,11 +670,12 @@ public class Parser {
     private Statement continue_stmt(Set<TokenType> synch) {
         if (traceEnabled) lineTraceOutput.accept("\t\tEntering continue-stmt");
 
+        String line = lineNumber.get();
         match(CONTINUE, union(synch, SEMI));
         match(SEMI, synch);
 
         if (traceEnabled) lineTraceOutput.accept("\t\tLeaving continue-stmt");
-        return new ContinueStatement();
+        return new ContinueStatement(line);
     }
 
     /**
@@ -676,6 +687,7 @@ public class Parser {
     private ReturnStatement return_stmt(Set<TokenType> synch) {
         if (traceEnabled) lineTraceOutput.accept("\t\tEntering return-stmt");
 
+        String line = lineNumber.get();
         match(RETURN, union(union(synch, FIRSTofExpression), SEMI));
 
         Expression returnValue = null;
@@ -685,7 +697,7 @@ public class Parser {
         match(SEMI, synch);
 
         if (traceEnabled) lineTraceOutput.accept("\t\tLeaving return-stmt");
-        return new ReturnStatement(returnValue);
+        return new ReturnStatement(line, returnValue);
     }
 
     /**
@@ -696,10 +708,11 @@ public class Parser {
      */
     private Statement null_stmt(Set<TokenType> synch) {
         if (traceEnabled) lineTraceOutput.accept("\t\tEntering null-stmt");
+        String line = lineNumber.get();
         match(SEMI, synch);
 
         if (traceEnabled) lineTraceOutput.accept("\t\tLeaving null-stmt");
-        return new NullStatement();
+        return new NullStatement(line);
     }
 
     /**
@@ -711,6 +724,7 @@ public class Parser {
     private BranchStatement branch_stmt(Set<TokenType> synch) {
         if (traceEnabled) lineTraceOutput.accept("\t\tEntering branch-stmt");
 
+        String line = lineNumber.get();
         match(BRANCH, union(synch, LPAREN));
         match(LPAREN, union(synch, FIRSTofAdd_expr));
 
@@ -730,7 +744,7 @@ public class Parser {
         match(SEMI, synch);
 
         if (traceEnabled) lineTraceOutput.accept("\t\tLeaving branch-stmt");
-        return new BranchStatement(addexp, caseStmt);
+        return new BranchStatement(line, addexp, caseStmt);
     }
 
     /**
@@ -742,6 +756,7 @@ public class Parser {
     private CaseStatement case_stmt(Set<TokenType> synch) {
         if (traceEnabled) lineTraceOutput.accept("\t\tEntering case-stmt");
 
+        String line = lineNumber.get();
         Statement statement;
         Token t = null;
         if (lookahead == CASE) {
@@ -757,7 +772,7 @@ public class Parser {
         }
 
         if (traceEnabled) lineTraceOutput.accept("\t\tLeaving case-stmt");
-        return new CaseStatement(t, statement);
+        return new CaseStatement(line, t, statement);
     }
 
     /**
@@ -769,6 +784,7 @@ public class Parser {
     private Expression expression(Set<TokenType> synch) {
         if (traceEnabled) lineTraceOutput.accept("\t\tEntering expression");
 
+        String line = lineNumber.get();
         AddExpression addExpression = add_exp(union(synch, FIRSTofRelop));
 
         if (FIRSTofRelop.contains(lookahead)) {
@@ -776,11 +792,11 @@ public class Parser {
             TokenType relop = relop(union(synch, FIRSTofAdd_expr));
             AddExpression addExp2 = add_exp(synch);
 
-            return new Expression(addExpression, relop, addExp2);
+            return new Expression(line, addExpression, relop, addExp2);
         }
 
         if (traceEnabled) lineTraceOutput.accept("\t\tLeaving expression");
-        return new Expression(addExpression, null, null);
+        return new Expression(line, addExpression, null, null);
     }
 
     /**
@@ -792,6 +808,8 @@ public class Parser {
     private AddExpression add_exp(Set<TokenType> synch) {
         if (traceEnabled) lineTraceOutput.accept("\t\tEntering add-exp");
 
+        String line = lineNumber.get();
+
         boolean minusExpr = false;
         if (FIRSTofUMinus.contains(lookahead)) {
             uminus(union(synch, FIRSTofTerm));
@@ -800,7 +818,7 @@ public class Parser {
 
         Term term = term(union(synch, FIRSTofAddOp));
 
-        AddExpression result = new AddExpression(minusExpr, term);
+        AddExpression result = new AddExpression(line, minusExpr, term);
         TokenType tempAddOp;
         Term tempTerm;
         ASTNode current = result;
@@ -809,7 +827,7 @@ public class Parser {
         while (FIRSTofAddOp.contains(lookahead)) {
             tempAddOp = addop(union(synch, FIRSTofTerm));
             tempTerm = term(union(synch, FIRSTofAddOp));
-            next = new AddOpTerm(tempAddOp, tempTerm);
+            next = new AddOpTerm(line, tempAddOp, tempTerm);
             current.setNextNode(next);
             current = next;
         }
@@ -827,8 +845,9 @@ public class Parser {
     private Term term(Set<TokenType> synch) {
         if (traceEnabled) lineTraceOutput.accept("\t\tEntering term");
 
+        String line = lineNumber.get();
         SubExpression factor = factor(union(synch, FIRSTofMultop));
-        Term result = new Term(factor);
+        Term result = new Term(line, factor);
         TokenType tempMultOp = null;
         SubExpression tempFactor = null;
         SubExpression current = result;
@@ -837,7 +856,7 @@ public class Parser {
         while (FIRSTofMultop.contains(lookahead)) {
             tempMultOp = multop(union(synch, FIRSTofFactor));
             tempFactor = factor(union(synch, FIRSTofMultop));
-            next = new MultOpFactor(tempMultOp, tempFactor);
+            next = new MultOpFactor(line, tempMultOp, tempFactor);
             current.setNextNode(next);
             current = next;
         }
@@ -875,11 +894,12 @@ public class Parser {
     private SubExpression nid_factor(Set<TokenType> synch) {
         if (traceEnabled) lineTraceOutput.accept("\t\tEntering nid-factor");
 
+        String line = lineNumber.get();
         SubExpression nidFactor = null;
         switch (lookahead) {
             case NOT:
                 match(NOT, union(synch, FIRSTofFactor));
-                nidFactor = new NotNidFactor(factor(synch));
+                nidFactor = new NotNidFactor(line, factor(synch));
                 break;
             case LPAREN:
                 match(LPAREN, union(synch, FIRSTofExpression));
@@ -889,12 +909,12 @@ public class Parser {
             case NUM:
                 Token numToken = lookaheadToken;
                 match(NUM, synch);
-                nidFactor = new LiteralNum((Integer) numToken.attrValue);
+                nidFactor = new LiteralNum(line, (Integer) numToken.attrValue);
                 break;
             case BLIT:
                 Token blitToken = lookaheadToken;
                 match(BLIT, synch);
-                nidFactor = new LiteralBool((Integer) blitToken.attrValue);
+                nidFactor = new LiteralBool(line, (Integer) blitToken.attrValue);
                 break;
         }
 
@@ -911,12 +931,13 @@ public class Parser {
     private Factor id_factor(Set<TokenType> synch) {
         if (traceEnabled) lineTraceOutput.accept("\t\tEntering id-factor");
 
+        String line = lineNumber.get();
         Token IDToken = lookaheadToken;
         match(ID, union(synch, FIRSTofId_tail));
         ASTNode idTail = id_tail(synch);
 
         if (traceEnabled) lineTraceOutput.accept("\t\tLeaving id-factor");
-        return new IdFactor(IDToken, idTail);
+        return new IdFactor(line, IDToken, idTail);
     }
 
     /**
@@ -1064,10 +1085,11 @@ public class Parser {
     private MinusExpression uminus(Set<TokenType> synch) {
         if (traceEnabled) lineTraceOutput.accept("\t\tEntering unimus");
 
+        String line = lineNumber.get();
         match(MINUS, synch);
 
         if (traceEnabled) lineTraceOutput.accept("\t\tLeaving unimus");
-        return new MinusExpression();
+        return new MinusExpression(line);
     }
 
     /**

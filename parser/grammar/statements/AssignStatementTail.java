@@ -10,23 +10,23 @@ public class AssignStatementTail extends StatementTail {
     private final AddExpression addExpression;
     private final Expression exp;
 
-    public AssignStatementTail(AddExpression addExpression, Expression exp) {
-
+    public AssignStatementTail(String line, AddExpression addExpression, Expression exp) {
+        super(line);
         this.addExpression = addExpression;
         this.exp = exp;
     }
 
     @Override
-    public void appendContents(StringBuilder sb , int tabs) {
+    public void appendContents(StringBuilder sb, int tabs) {
         sb.append('\n');
         for (int i = 0; i < tabs; i++)
             sb.append("    ");
         sb.append(getClass().getSimpleName());
         sb.append(' ');
 
-        if( addExpression != null )
-            addExpression.appendContents(sb, tabs+1);
-        exp.appendContents(sb,tabs+1);
+        if (addExpression != null)
+            addExpression.appendContents(sb, tabs + 1);
+        exp.appendContents(sb, tabs + 1);
     }
 
     public AddExpression getAddExpression() {

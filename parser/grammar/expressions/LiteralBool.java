@@ -3,7 +3,8 @@ package parser.grammar.expressions;
 public class LiteralBool extends NidFactor {
     private final int bool;
 
-    public LiteralBool(int bool) {
+    public LiteralBool(String line, int bool) {
+        super(line);
         if(!(bool == 1 || bool == 0)) throw new RuntimeException("Bad Boolean Value :" + bool);
         this.bool = bool;
     }

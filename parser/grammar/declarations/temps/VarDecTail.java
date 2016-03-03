@@ -28,12 +28,12 @@ public class VarDecTail implements DecTail {
         return varNames;
     }
 
-    public VarDeclaration toVarDeclarations(Type type, Token id){
-        VarDeclaration head = new VarDeclaration(type, id, arrayLengthExpr);
+    public VarDeclaration toVarDeclarations(String line, Type type, Token id) {
+        VarDeclaration head = new VarDeclaration(line, type, id, arrayLengthExpr);
         VarDeclaration current = head;
         VarDeclaration temp;
         for (VarName var : varNames) {
-            temp = new VarDeclaration(type, var.getId(), var.getAddExpression());
+            temp = new VarDeclaration(line, type, var.getId(), var.getAddExpression());
             current.setNextNode(temp);
             current = temp;
         }

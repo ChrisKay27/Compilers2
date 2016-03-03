@@ -7,7 +7,8 @@ public class Term extends SubExpression {
 
     private final SubExpression factor;
 
-    public Term(SubExpression factor) {
+    public Term(String line, SubExpression factor) {
+        super(line);
         this.factor = factor;
     }
 

@@ -10,7 +10,8 @@ public class MultOpFactor extends SubExpression {
     private final TokenType addOp;
     private final SubExpression factor;
 
-    public MultOpFactor(TokenType addOp, SubExpression term) {
+    public MultOpFactor(String line, TokenType addOp, SubExpression term) {
+        super(line);
         this.addOp = addOp;
         this.factor = term;
     }

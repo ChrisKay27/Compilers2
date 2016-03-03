@@ -3,7 +3,8 @@ package parser.grammar.expressions;
 public class LiteralNum extends NidFactor {
     private final int num;
 
-    public LiteralNum(int num) {
+    public LiteralNum(String line, int num) {
+        super(line);
         this.num = num;
     }
 

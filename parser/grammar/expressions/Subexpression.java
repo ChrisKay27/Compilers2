@@ -9,6 +9,10 @@ import parser.grammar.ASTNode;
 public abstract class SubExpression extends ASTNode {
     private Type type;
 
+    protected SubExpression(String line) {
+        super(line);
+    }
+
     public Type getType() {
         return type;
     }

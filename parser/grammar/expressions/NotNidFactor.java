@@ -7,7 +7,8 @@ public class NotNidFactor extends NidFactor {
 
     private final SubExpression factor;
 
-    public NotNidFactor(SubExpression factor) {
+    public NotNidFactor(String line, SubExpression factor) {
+        super(line);
         this.factor = factor;
     }
 

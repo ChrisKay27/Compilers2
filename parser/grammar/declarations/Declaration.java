@@ -12,7 +12,9 @@ public class Declaration extends ASTNode {
     protected final Type type;
     protected final Token ID;
 
-    public Declaration(Type type, Token ID) {
+
+    public Declaration(String line, Type type, Token ID) {
+        super(line);
         this.type = type;
         this.ID = ID;
     }

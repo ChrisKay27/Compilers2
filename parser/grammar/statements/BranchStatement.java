@@ -10,8 +10,8 @@ public class BranchStatement extends Statement {
     private final AddExpression addexp;
     private final CaseStatement caseStmt;
 
-    public BranchStatement(AddExpression addexp, CaseStatement caseStmt) {
-        super();
+    public BranchStatement(String line, AddExpression addexp, CaseStatement caseStmt) {
+        super(line);
         this.addexp = addexp;
         this.caseStmt = caseStmt;
     }

@@ -7,16 +7,16 @@ import parser.grammar.ASTNode;
  */
 public class Statement extends ASTNode {
 
-    public Statement(){}
+    public Statement(String line) {super(line);}
 
     @Override
-    public void appendContents(StringBuilder sb , int tabs) {
+    public void appendContents(StringBuilder sb, int tabs) {
         sb.append('\n');
         for (int i = 0; i < tabs; i++)
             sb.append("    ");
         sb.append(getClass().getSimpleName());
 
-        if( nextNode != null )
+        if (nextNode != null)
             nextNode.appendContents(sb, tabs);
     }
 }

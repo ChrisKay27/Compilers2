@@ -7,8 +7,8 @@ package parser.grammar.statements;
 public class LoopStatement extends Statement {
     private final Statement statement;
 
-    public LoopStatement(Statement statement) {
-
+    public LoopStatement(String line, Statement statement) {
+        super(line);
         this.statement = statement;
     }
 

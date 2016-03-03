@@ -5,6 +5,10 @@ package parser.grammar.expressions;
  */
 public class MinusExpression extends SubExpression {
 
+    public MinusExpression(String line) {
+        super(line);
+    }
+
     @Override
     public void appendContents(StringBuilder sb , int tabs) {
         sb.append('\n');

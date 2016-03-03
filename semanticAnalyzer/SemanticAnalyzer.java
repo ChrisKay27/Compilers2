@@ -68,15 +68,33 @@ public class SemanticAnalyzer implements SemAnalInter {
 //    }
 
     public void analyze(FuncDeclaration AST){
-		System.out.println("analyze FuncDeclaration");
-        
+        System.out.println("analyze FuncDeclaration");
+
         enteringFuncDeclaration(AST);
 
         analyze(AST.getParams());
 
         analyze(AST.getBody());
+        functionConstraints(AST.getType(), AST.getBody());
 
         leavingFuncDeclaration();
+    }
+
+    private void functionConstraints(Type type, Statement statement) {
+        boolean returnFound = false;
+        while (statement != null) {
+            statement = (Statement) statement.getNextNode();
+            if (statement instanceof ReturnStatement) {
+                returnFound = true;
+                ReturnStatement returnStatement = (ReturnStatement) statement;
+                if (returnStatement.getType() != type) {
+                    error.accept("The returned value must match the return type of the function.");
+                }
+            }
+        }
+        if (!returnFound && type != Type.VOID) {
+            error.accept("No return statement found.");
+        }
     }
 
 

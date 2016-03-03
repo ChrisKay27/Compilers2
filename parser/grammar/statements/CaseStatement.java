@@ -10,8 +10,8 @@ public class CaseStatement extends Statement {
     private final Statement statement;
     private final Token numberToken;
 
-    public CaseStatement(Token t, Statement statement) {
-
+    public CaseStatement(String line, Token t, Statement statement) {
+        super(line);
         this.numberToken = t;
         this.statement = statement;
     }

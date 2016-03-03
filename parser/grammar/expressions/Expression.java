@@ -14,7 +14,8 @@ public class Expression extends SubExpression {
     private Type type;
 
 
-    public Expression(AddExpression addExpression, TokenType relop, AddExpression addExp2) {
+    public Expression(String line, AddExpression addExpression, TokenType relop, AddExpression addExp2) {
+        super(line);
         this.addExp = addExpression;
         this.relop = relop;
         this.addExp2 = addExp2;

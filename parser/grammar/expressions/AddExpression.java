@@ -7,9 +7,11 @@ public class AddExpression extends SubExpression {
     private final boolean uminus;
     private final Term term;
 
-    public AddExpression(boolean uminus, Term term) {
+    public AddExpression(String line, boolean uminus, Term term) {
+        super(line);
         this.uminus = uminus;
         this.term = term;
+        this.line = line;
     }
 
     public boolean isUminus() {

@@ -48,10 +48,11 @@ public class SymbolTable {
         return result;
     }
 
-    public SymbolTableEntry peek(){
+    public SymbolTableEntry peek() {
         if (stack.empty()) return null;
         return stack.peek();
     }
+
     /**
      * @return True if the entry could be inserted, false if there was a duplicate definition
      */
@@ -84,14 +85,15 @@ public class SymbolTable {
 
     public void leaveFrame() {
         int count = frameSizes.peek();
-        while (count > 1) {
-            count = frameSizes.peek();
+        while (count > 0) {
             this.pop();
+            count = frameSizes.peek();
         }
         int x = frameSizes.pop();
         if (x != 0) {
+            this.index.forEach((k, v) -> System.out.println(k + ", " + v));
             this.stack.forEach(System.out::print);
-            throw new WTFException("leave frame function screwed up. [ frameSize:" + x + "]");
+            throw new WTFException("leave frame function screwed up. [frameSize: " + x + "]");
         }
     }
 

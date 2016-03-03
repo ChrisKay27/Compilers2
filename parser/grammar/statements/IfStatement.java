@@ -12,7 +12,8 @@ public class IfStatement extends Statement {
     private final Statement statement;
     private final Statement elseStatement;
 
-    public IfStatement(Expression expression, Statement statement, Statement elseStatement) {
+    public IfStatement(String line, Expression expression, Statement statement, Statement elseStatement) {
+        super(line);
         this.expression = expression;
         this.statement = statement;
         this.elseStatement = elseStatement;
