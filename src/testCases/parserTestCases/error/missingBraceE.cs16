@@ -1,8 +1,0 @@
-/*
-    This test omits parentheses
-    Author: Chris Kaebe
-    Date: Feb 21, 2016
-*/
-
-void main(int args[]){
-    sout();
