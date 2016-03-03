@@ -12,7 +12,7 @@ public class IfStatement extends Statement {
     private final Statement statement;
     private final Statement elseStatement;
 
-    public IfStatement(String line, Expression expression, Statement statement, Statement elseStatement) {
+    public IfStatement(int line, Expression expression, Statement statement, Statement elseStatement) {
         super(line);
         this.expression = expression;
         this.statement = statement;
@@ -36,7 +36,7 @@ public class IfStatement extends Statement {
         sb.append('\n');
         for (int i = 0; i < tabs; i++)
             sb.append("    ");
-        sb.append(getClass().getSimpleName() + " Line: " + getLine());
+        sb.append(getLine() + ":" + getClass().getSimpleName());
 
         expression.appendContents(sb, tabs + 1);
         statement.appendContents(sb,tabs+1);

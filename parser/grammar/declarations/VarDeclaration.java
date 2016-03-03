@@ -11,12 +11,12 @@ public class VarDeclaration extends Declaration {
 
     protected AddExpression arraySize;
 
-    public VarDeclaration(String line, Type type, Token ID) {
+    public VarDeclaration(int line, Type type, Token ID) {
         super(line, type, ID);
         this.arraySize = null;
     }
 
-    public VarDeclaration(String line, Type type, Token ID, AddExpression arraySize) {
+    public VarDeclaration(int line, Type type, Token ID, AddExpression arraySize) {
         super(line, type, ID);
         this.arraySize = arraySize;
     }
@@ -26,7 +26,7 @@ public class VarDeclaration extends Declaration {
         sb.append('\n');
         for (int i = 0; i < tabs; i++)
             sb.append("    ");
-        sb.append(getClass().getSimpleName()).append(' ').append(getType()).append(' ').append(getID());
+        sb.append(getLine() + ":" + getClass().getSimpleName()).append(' ').append(getType()).append(' ').append(getID());
 
         if( arraySize != null )
             arraySize.appendContents(sb,tabs+1);

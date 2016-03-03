@@ -5,7 +5,7 @@ package parser.grammar.expressions;
  */
 public abstract class Factor extends SubExpression {
 
-    protected Factor(String line) {
+    protected Factor(int line) {
         super(line);
     }
 }

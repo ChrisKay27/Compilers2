@@ -28,7 +28,7 @@ public class VarDecTail implements DecTail {
         return varNames;
     }
 
-    public VarDeclaration toVarDeclarations(String line, Type type, Token id) {
+    public VarDeclaration toVarDeclarations(int line, Type type, Token id) {
         VarDeclaration head = new VarDeclaration(line, type, id, arrayLengthExpr);
         VarDeclaration current = head;
         VarDeclaration temp;

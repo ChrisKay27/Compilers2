@@ -7,7 +7,7 @@ public class Term extends SubExpression {
 
     private final SubExpression factor;
 
-    public Term(String line, SubExpression factor) {
+    public Term(int line, SubExpression factor) {
         super(line);
         this.factor = factor;
     }
@@ -17,7 +17,7 @@ public class Term extends SubExpression {
         sb.append('\n');
         for (int i = 0; i < tabs; i++)
             sb.append("    ");
-        sb.append(getClass().getSimpleName() + " Line: " + getLine());
+        sb.append(getLine() + ":" + getClass().getSimpleName());
 
         factor.appendContents(sb, tabs + 1);
 

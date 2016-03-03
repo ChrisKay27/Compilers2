@@ -10,7 +10,7 @@ public class BranchStatement extends Statement {
     private final AddExpression addexp;
     private final CaseStatement caseStmt;
 
-    public BranchStatement(String line, AddExpression addexp, CaseStatement caseStmt) {
+    public BranchStatement(int line, AddExpression addexp, CaseStatement caseStmt) {
         super(line);
         this.addexp = addexp;
         this.caseStmt = caseStmt;
@@ -30,7 +30,7 @@ public class BranchStatement extends Statement {
         for (int i = 0; i < tabs; i++)
             sb.append("    ");
 
-        sb.append(getClass().getSimpleName() + " Line: " + getLine());
+        sb.append(getLine() + ":" + getClass().getSimpleName());
         addexp.appendContents(sb, tabs+1);
         caseStmt.appendContents(sb, tabs+1);
         if (nextNode != null)

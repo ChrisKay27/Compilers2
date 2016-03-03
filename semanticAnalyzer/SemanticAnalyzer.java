@@ -51,10 +51,10 @@ public class SemanticAnalyzer implements SemAnalInter {
     public void startSemAnal(Declaration AST) {
 
         //Library functions
-        addDeclaration(new FuncDeclaration(INT,new Token(TokenType.ID,0),null,null));
-        addDeclaration(new FuncDeclaration(Type.VOID,new Token(TokenType.ID,1),new ParamDeclaration(INT,new Token(TokenType.ID,4),false,false),null));
-        addDeclaration(new FuncDeclaration(Type.BOOL,new Token(TokenType.ID,2),null,null));
-        addDeclaration(new FuncDeclaration(Type.VOID,new Token(TokenType.ID,3),new ParamDeclaration(BOOL,new Token(TokenType.ID,4),false,false),null));
+        addDeclaration(new FuncDeclaration(-1, INT, new Token(TokenType.ID, 0), null, null));
+        addDeclaration(new FuncDeclaration(-1, Type.VOID, new Token(TokenType.ID, 1), new ParamDeclaration(-1, INT, new Token(TokenType.ID, 4), false, false), null));
+        addDeclaration(new FuncDeclaration(-1, Type.BOOL, new Token(TokenType.ID, 2), null, null));
+        addDeclaration(new FuncDeclaration(-1, Type.VOID, new Token(TokenType.ID, 3), new ParamDeclaration(-1, BOOL, new Token(TokenType.ID, 4), false, false), null));
 
 
         Declaration n = AST;
@@ -491,8 +491,7 @@ public class SemanticAnalyzer implements SemAnalInter {
     }
 
 
-
-    private Declaration errorDeclaration = new Declaration(Type.ERROR,null);
+    private Declaration errorDeclaration = new Declaration(-1, Type.ERROR, null);
 
     private Declaration getDeclaration(int id) {
         SymbolTableEntry d = symbolTable.get(id);

@@ -5,7 +5,7 @@ package parser.grammar.statements;
  */
 public class ExitStatement extends Statement{
 
-    public ExitStatement(String line) {
+    public ExitStatement(int line) {
         super(line);
     }
 }

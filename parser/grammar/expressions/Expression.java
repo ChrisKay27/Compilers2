@@ -14,7 +14,7 @@ public class Expression extends SubExpression {
     private Type type;
 
 
-    public Expression(String line, AddExpression addExpression, TokenType relop, AddExpression addExp2) {
+    public Expression(int line, AddExpression addExpression, TokenType relop, AddExpression addExp2) {
         super(line);
         this.addExp = addExpression;
         this.relop = relop;
@@ -38,11 +38,11 @@ public class Expression extends SubExpression {
         sb.append('\n');
         for (int i = 0; i < tabs; i++)
             sb.append("    ");
-        sb.append(getClass().getSimpleName() + " Line: " + getLine());
+        sb.append(getLine() + ":" + getClass().getSimpleName());
 
         addExp.appendContents(sb,tabs+1);
         if( relop != null ) {
-            sb.append('\n').append(getTabs(tabs)).append(relop);
+            sb.append('\n').append(getTabs(tabs)).append(getLine() + ":" + "Relop => " + relop);
             addExp2.appendContents(sb, tabs + 1);
         }
         if( nextNode != null )

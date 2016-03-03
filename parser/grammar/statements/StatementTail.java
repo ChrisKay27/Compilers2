@@ -7,7 +7,7 @@ import parser.grammar.ASTNode;
  */
 public abstract class StatementTail extends ASTNode {
 
-    protected StatementTail(String line) {
+    protected StatementTail(int line) {
         super(line);
     }
 

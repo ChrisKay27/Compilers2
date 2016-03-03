@@ -332,5 +332,5 @@ public class Administration implements Administrator {
         return outputHandler;
     }
 
-    public String getCurrentLine() {return this.currentLine;}
+    public int getCurrentLine() {return this.lineNumber;}
 }

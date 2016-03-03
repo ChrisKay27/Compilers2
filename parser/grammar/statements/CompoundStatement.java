@@ -11,7 +11,7 @@ public class CompoundStatement extends Statement {
     private final Declaration declarations;
     private final Statement statements;
 
-    public CompoundStatement(String line, Declaration declarations, Statement statements) {
+    public CompoundStatement(int line, Declaration declarations, Statement statements) {
         super(line);
         this.declarations = declarations;
         this.statements = statements;
@@ -30,7 +30,7 @@ public class CompoundStatement extends Statement {
         sb.append('\n');
         for (int i = 0; i < tabs; i++)
             sb.append("    ");
-        sb.append(getClass().getSimpleName() + " Line: " + getLine());
+        sb.append(getLine() + ":" + getClass().getSimpleName());
 
         if( declarations != null )
             declarations.appendContents(sb, tabs + 1);

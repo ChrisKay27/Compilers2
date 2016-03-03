@@ -5,7 +5,7 @@ package parser.grammar.expressions;
  */
 public class MinusExpression extends SubExpression {
 
-    public MinusExpression(String line) {
+    public MinusExpression(int line) {
         super(line);
     }
 
@@ -14,7 +14,7 @@ public class MinusExpression extends SubExpression {
         sb.append('\n');
         for (int i = 0; i < tabs; i++)
             sb.append("    ");
-        sb.append(getClass().getSimpleName() + " Line: " + getLine());
+        sb.append(getLine() + ":" + getClass().getSimpleName());
 
         if( nextNode != null )
             nextNode.appendContents(sb, tabs);

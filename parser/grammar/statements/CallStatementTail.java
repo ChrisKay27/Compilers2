@@ -10,7 +10,7 @@ import parser.grammar.expressions.Expression;
 public class CallStatementTail extends StatementTail {
     private final Expression call_tail;
 
-    public CallStatementTail(String line, Expression call_tail) {
+    public CallStatementTail(int line, Expression call_tail) {
         super(line);
         this.call_tail = call_tail;
     }

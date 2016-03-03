@@ -11,7 +11,7 @@ public class AddOpTerm extends SubExpression {
 
     private final Term term;
 
-    public AddOpTerm(String line, TokenType addOp, Term term) {
+    public AddOpTerm(int line, TokenType addOp, Term term) {
         super(line);
         this.addOp = addOp;
         this.term = term;
@@ -27,7 +27,7 @@ public class AddOpTerm extends SubExpression {
         sb.append('\n');
         String tabsStr = getTabs(tabs);
         sb.append(tabsStr);
-        sb.append(getClass().getSimpleName() + " Line: " + getLine());
+        sb.append(getLine() + ":" + getClass().getSimpleName());
 
         sb.append(" ").append(addOp).append(" ");
         term.appendContents(sb, tabs + 1);

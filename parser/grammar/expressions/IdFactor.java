@@ -14,7 +14,7 @@ public class IdFactor extends Factor {
 
     private Declaration decl;
 
-    public IdFactor(String line, Token idToken, ASTNode idTail) {
+    public IdFactor(int line, Token idToken, ASTNode idTail) {
         super(line);
         this.idToken = idToken;
         this.idTail = idTail;
@@ -33,7 +33,7 @@ public class IdFactor extends Factor {
         sb.append('\n');
         for (int i = 0; i < tabs; i++)
             sb.append("    ");
-        sb.append(getClass().getSimpleName() + " Line: " + getLine());
+        sb.append(getLine() + ":" + getClass().getSimpleName());
 
         sb.append(idToken);
 

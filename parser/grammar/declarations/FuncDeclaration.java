@@ -12,11 +12,8 @@ public class FuncDeclaration extends Declaration {
 
     private final ParamDeclaration params;
     private final CompoundStatement body;
-    private String line;
 
-    public String getLine() { return this.line;}
-
-    public FuncDeclaration(String line, Type type, Token ID, ParamDeclaration params, CompoundStatement body) {
+    public FuncDeclaration(int line, Type type, Token ID, ParamDeclaration params, CompoundStatement body) {
         super(line, type, ID);
         this.params = params;
         this.body = body;

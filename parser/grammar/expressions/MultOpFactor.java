@@ -10,7 +10,7 @@ public class MultOpFactor extends SubExpression {
     private final TokenType addOp;
     private final SubExpression factor;
 
-    public MultOpFactor(String line, TokenType addOp, SubExpression term) {
+    public MultOpFactor(int line, TokenType addOp, SubExpression term) {
         super(line);
         this.addOp = addOp;
         this.factor = term;
@@ -26,7 +26,7 @@ public class MultOpFactor extends SubExpression {
         sb.append('\n');
         String tabsStr = getTabs(tabs);
         sb.append(tabsStr);
-        sb.append(getClass().getSimpleName() + " Line: " + getLine());
+        sb.append(getLine() + ":" + getClass().getSimpleName());
 
         sb.append(" " + addOp + " ");
         factor.appendContents(sb, tabs + 1);

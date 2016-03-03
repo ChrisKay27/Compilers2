@@ -3,12 +3,13 @@ package parser.grammar;
 /**
  * Created by Chris on 1/30/2016.
  */
+
 public abstract class ASTNode {
 
     protected ASTNode nextNode;
-    protected String line;
+    protected int line;
 
-    protected ASTNode(String line) {
+    protected ASTNode(int line) {
         this.line = line;
     }
 
@@ -29,10 +30,6 @@ public abstract class ASTNode {
 
     public abstract void appendContents(StringBuilder sb, int tabs);
 
-    public String getLine() {
-        return line;
-    }
-
     public static String getTabs(int tabs) {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < tabs; i++)
@@ -42,6 +39,6 @@ public abstract class ASTNode {
 
 
     public int getLine() {
-        return 0;
+        return this.line;
     }
 }

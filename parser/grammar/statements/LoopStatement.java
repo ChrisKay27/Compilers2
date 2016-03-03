@@ -7,7 +7,7 @@ package parser.grammar.statements;
 public class LoopStatement extends Statement {
     private final Statement statement;
 
-    public LoopStatement(String line, Statement statement) {
+    public LoopStatement(int line, Statement statement) {
         super(line);
         this.statement = statement;
     }
@@ -21,7 +21,7 @@ public class LoopStatement extends Statement {
         sb.append('\n');
         for (int i = 0; i < tabs; i++)
             sb.append("    ");
-        sb.append(getClass().getSimpleName() + " Line: " + getLine());
+        sb.append(getLine() + ":" + getClass().getSimpleName());
 
         statement.appendContents(sb,tabs+1);
 

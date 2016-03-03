@@ -100,41 +100,4 @@ public class SymbolTable {
             throw new WTFException("leave frame function screwed up. [frameSize: " + x + "]");
         }
     }
-
-
-    public static void main(String[] args) {
-        SymbolTable st = new SymbolTable();
-
-
-        System.out.println(st.frameSizes);
-        System.out.println("Entering Frame");
-        st.enterFrame();
-        System.out.println(st.frameSizes);
-
-        st.push(new SymbolTableEntry(1,new IdFactor(new Token(TokenType.ID,"x"),null)));
-        st.push(new SymbolTableEntry(2,new LiteralBool(1)));
-        st.push(new SymbolTableEntry(3,new LiteralBool(1)));
-        st.push(new SymbolTableEntry(4,new LiteralBool(0)));
-        st.push(new SymbolTableEntry(5,new LiteralBool(0)));
-        System.out.println("Index:"+st.index);
-        System.out.println("Frame Sizes:"+ st.frameSizes);
-
-        System.out.println("Entering Frame");
-        st.enterFrame();
-        System.out.println("Index:"+st.index);
-        System.out.println("Frame Sizes:"+ st.frameSizes);
-        st.push(new SymbolTableEntry(1,new LiteralBool(1)));
-        st.push(new SymbolTableEntry(2,new LiteralBool(0)));
-        st.push(new SymbolTableEntry(4,new IdFactor(new Token(TokenType.ID,"y"),null)));
-        st.push(new SymbolTableEntry(5,new LiteralBool(1)));
-        System.out.println("Index:"+st.index);
-        System.out.println("Frame Sizes:"+ st.frameSizes);
-        st.leaveFrame();
-        System.out.println("Leaving Frame");
-        System.out.println("Index:"+st.index);
-        System.out.println("Frame Sizes:"+ st.frameSizes);
-        st.leaveFrame();
-        System.out.println("Index:"+st.index);
-        System.out.println("Frame Sizes:"+ st.frameSizes);
-    }
 }

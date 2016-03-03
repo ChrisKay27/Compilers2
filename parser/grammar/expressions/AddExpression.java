@@ -7,7 +7,7 @@ public class AddExpression extends SubExpression {
     private final boolean uminus;
     private final Term term;
 
-    public AddExpression(String line, boolean uminus, Term term) {
+    public AddExpression(int line, boolean uminus, Term term) {
         super(line);
         this.uminus = uminus;
         this.term = term;
@@ -27,7 +27,7 @@ public class AddExpression extends SubExpression {
         sb.append('\n');
         String tabsStr = getTabs(tabs);
         sb.append(tabsStr);
-        sb.append(getClass().getSimpleName() + " Line: " + getLine());
+        sb.append(getLine() + ":" + getClass().getSimpleName());
 
         if(uminus)
             sb.append(" - ");

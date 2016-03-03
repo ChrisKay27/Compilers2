@@ -5,7 +5,7 @@ package parser.grammar.statements;
  */
 public class ContinueStatement extends Statement {
 
-    public ContinueStatement(String line) {
+    public ContinueStatement(int line) {
         super(line);
     }
 }

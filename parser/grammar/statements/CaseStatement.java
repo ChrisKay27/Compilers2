@@ -10,7 +10,7 @@ public class CaseStatement extends Statement {
     private final Statement statement;
     private final Token numberToken;
 
-    public CaseStatement(String line, Token t, Statement statement) {
+    public CaseStatement(int line, Token t, Statement statement) {
         super(line);
         this.numberToken = t;
         this.statement = statement;
@@ -29,7 +29,7 @@ public class CaseStatement extends Statement {
         sb.append('\n');
         for (int i = 0; i < tabs; i++)
             sb.append("    ");
-        sb.append(getClass().getSimpleName()).append(" : ").append((numberToken == null) ? "Default" : numberToken).append(" ");
+        sb.append(getLine() + ":" + getClass().getSimpleName()).append(" : ").append((numberToken == null) ? "Default" : numberToken).append(" ");
         statement.appendContents(sb, (tabs + 1));
         if (nextNode != null)
             nextNode.appendContents(sb, tabs);

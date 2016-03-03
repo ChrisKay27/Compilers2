@@ -13,7 +13,7 @@ public class Declaration extends ASTNode {
     protected final Token ID;
 
 
-    public Declaration(String line, Type type, Token ID) {
+    public Declaration(int line, Type type, Token ID) {
         super(line);
         this.type = type;
         this.ID = ID;
@@ -33,7 +33,7 @@ public class Declaration extends ASTNode {
         for (int i = 0; i < tabs; i++)
             sb.append("    ");
 
-        sb.append(getClass().getSimpleName()).append(' ').append(type).append(' ').append(ID);
+        sb.append(getLine() + ":" + getClass().getSimpleName()).append(' ').append(type).append(' ').append(ID);
         if( nextNode != null )
             nextNode.appendContents(sb, tabs);
     }

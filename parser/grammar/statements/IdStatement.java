@@ -12,7 +12,7 @@ public class IdStatement extends Statement {
 
     private Declaration decl;
 
-    public IdStatement(String line, Token idToken, StatementTail id_stmt_tail) {
+    public IdStatement(int line, Token idToken, StatementTail id_stmt_tail) {
         super(line);
         this.idToken = idToken;
         this.id_stmt_tail = id_stmt_tail;
@@ -31,7 +31,7 @@ public class IdStatement extends Statement {
         sb.append('\n');
         for (int i = 0; i < tabs; i++)
             sb.append("    ");
-        sb.append(getClass().getSimpleName() + " Line: " + getLine());
+        sb.append(getLine() + ":" + getClass().getSimpleName());
         sb.append(' ');
 
         sb.append(idToken);

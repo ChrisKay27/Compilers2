@@ -7,7 +7,7 @@ public class NotNidFactor extends NidFactor {
 
     private final SubExpression factor;
 
-    public NotNidFactor(String line, SubExpression factor) {
+    public NotNidFactor(int line, SubExpression factor) {
         super(line);
         this.factor = factor;
     }
@@ -16,7 +16,7 @@ public class NotNidFactor extends NidFactor {
     public void appendContents(StringBuilder sb , int tabs) {
         sb.append('\n');
         sb.append(getTabs(tabs));
-        sb.append(getClass().getSimpleName() + " Line: " + getLine());
+        sb.append(getLine() + ":" + getClass().getSimpleName());
         factor.appendContents(sb, tabs + 1);
 
         if( nextNode != null )

@@ -10,7 +10,7 @@ import parser.Type;
 public class ReturnStatement extends Statement {
     private final Expression returnValue;
 
-    public ReturnStatement(String line, Expression returnValue) {
+    public ReturnStatement(int line, Expression returnValue) {
         super(line);
         this.returnValue = returnValue;
     }

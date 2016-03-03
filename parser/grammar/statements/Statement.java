@@ -7,14 +7,14 @@ import parser.grammar.ASTNode;
  */
 public class Statement extends ASTNode {
 
-    public Statement(String line) {super(line);}
+    public Statement(int line) {super(line);}
 
     @Override
     public void appendContents(StringBuilder sb, int tabs) {
         sb.append('\n');
         for (int i = 0; i < tabs; i++)
             sb.append("    ");
-        sb.append(getClass().getSimpleName() + " Line: " + getLine());
+        sb.append(getLine() + ":" + getClass().getSimpleName());
 
         if (nextNode != null)
             nextNode.appendContents(sb, tabs);

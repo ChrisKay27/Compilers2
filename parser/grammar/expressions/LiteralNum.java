@@ -3,7 +3,7 @@ package parser.grammar.expressions;
 public class LiteralNum extends NidFactor {
     private final int num;
 
-    public LiteralNum(String line, int num) {
+    public LiteralNum(int line, int num) {
         super(line);
         this.num = num;
     }
@@ -17,7 +17,7 @@ public class LiteralNum extends NidFactor {
         sb.append('\n');
         for (int i = 0; i < tabs; i++)
             sb.append("    ");
-        sb.append(getClass().getSimpleName()).append(" VALUE(").append(this.toString()).append(')');
+        sb.append(getLine() + ":" + getClass().getSimpleName()).append(" VALUE(").append(this.toString()).append(')');
 
         if (nextNode != null)
             nextNode.appendContents(sb, tabs);
