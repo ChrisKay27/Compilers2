@@ -16,7 +16,7 @@ public class NotNidFactor extends NidFactor {
     public void appendContents(StringBuilder sb , int tabs) {
         sb.append('\n');
         sb.append(getTabs(tabs));
-        sb.append(getClass().getSimpleName());
+        sb.append(getClass().getSimpleName() + " Line: " + getLine());
         factor.appendContents(sb, tabs + 1);
 
         if( nextNode != null )

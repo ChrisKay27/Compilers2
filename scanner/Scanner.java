@@ -5,7 +5,6 @@ import parser.TokenType;
 import stateMachine.State;
 
 import java.io.IOException;
-import java.io.Reader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -43,10 +42,10 @@ public class Scanner {
         keywords.put("void", new Token(TokenType.VOID, null));
         keywords.put("true", new Token(TokenType.BLIT, 1));
         keywords.put("false", new Token(TokenType.BLIT, 0));
-        keywords.put("readint", new Token(TokenType.ID, null));
-        keywords.put("writeint", new Token(TokenType.ID, null));
-        keywords.put("readbool", new Token(TokenType.ID, null));
-        keywords.put("writebool", new Token(TokenType.ID, null));
+        keywords.put("readint", new Token(TokenType.ID, 0));
+        keywords.put("writeint", new Token(TokenType.ID, 1));
+        keywords.put("readbool", new Token(TokenType.ID, 2));
+        keywords.put("writebool", new Token(TokenType.ID, 3));
     }
 
     private Supplier<Integer> reader;
@@ -54,7 +53,6 @@ public class Scanner {
     private final Consumer<String> lineTraceOutput;
     private final Consumer<String> errorOutput;
     private final List<Token> tokensOnCurrentLine = new ArrayList<>();
-    private final StringBuilder currentLine = new StringBuilder();
 
     private ScannerStateMachine ssm;
 
@@ -70,10 +68,15 @@ public class Scanner {
     public Scanner(Supplier<Integer> reader, Consumer<List<Token>> tokensOnLineConsumer, Consumer<String> lineTraceOutput, Consumer<String> errorOutput) throws IOException {
         this.reader = reader;
         this.tokensOnLineConsumer = tokensOnLineConsumer;
-
         this.lineTraceOutput = lineTraceOutput;
-
         this.errorOutput = errorOutput;
+
+        symbolTable.put("readint"  ,0);
+        symbolTable.put("writeint" ,1);
+        symbolTable.put("readbool" ,2);
+        symbolTable.put("writebool",3);
+        symbolTable.put("x",4);
+
         ssm = new ScannerStateMachine(errorOutput);
     }
 
@@ -105,9 +108,9 @@ public class Scanner {
             initNextChar = false;
         }
 
-        if (traceEnabled)
-            //Add the character to the current line to be output during the line traceEnabled
-            currentLine.append((char) nextChar);
+//        if (traceEnabled)
+//            //Add the character to the current line to be output during the line traceEnabled
+//            currentLine.append((char) nextChar);
 
         if (nextChar == -1)
             return new Token(TokenType.ENDFILE, null);
@@ -160,9 +163,9 @@ public class Scanner {
                 colCount++;
 
 
-                if (traceEnabled)
-                    //Add the character to the current line to be output during the line traceEnabled
-                    currentLine.append((char) nextChar);
+//                if (traceEnabled)
+//                    //Add the character to the current line to be output during the line traceEnabled
+//                    currentLine.append((char) nextChar);
 
             } else if (t == Token.COMMENT_TOKEN) {//If its a comment token we ignore it, resetting the state back to the init state
                 t = null;

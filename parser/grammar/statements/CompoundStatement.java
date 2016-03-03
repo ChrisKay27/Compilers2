@@ -30,7 +30,7 @@ public class CompoundStatement extends Statement {
         sb.append('\n');
         for (int i = 0; i < tabs; i++)
             sb.append("    ");
-        sb.append(getClass().getSimpleName());
+        sb.append(getClass().getSimpleName() + " Line: " + getLine());
 
         if( declarations != null )
             declarations.appendContents(sb, tabs + 1);

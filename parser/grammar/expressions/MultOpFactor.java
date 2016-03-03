@@ -26,7 +26,7 @@ public class MultOpFactor extends SubExpression {
         sb.append('\n');
         String tabsStr = getTabs(tabs);
         sb.append(tabsStr);
-        sb.append(getClass().getSimpleName());
+        sb.append(getClass().getSimpleName() + " Line: " + getLine());
 
         sb.append(" " + addOp + " ");
         factor.appendContents(sb, tabs + 1);

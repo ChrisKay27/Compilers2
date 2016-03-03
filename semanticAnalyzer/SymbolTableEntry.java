@@ -51,4 +51,6 @@ public class SymbolTableEntry {
     public String toString(){
         return this.getId() + ":" + this.getPreviousOccurrence() + ":" + this.getNode();
     }
+
+
 }

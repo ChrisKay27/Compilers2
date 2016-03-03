@@ -1,0 +1,38 @@
+5:        default:;
+5:		Syntax Error, token:DEFAULT is not expected here.
+5:        default:;
+5:		Consuming DEFAULT because it is not expected.
+5:        default:;
+5:		Consuming COLON because it is not expected.
+5:        default:;
+5:		Syntax Error, expecting RPAREN but received SEMI
+5:        default:;
+5:		Syntax Error, expecting DEFAULT but received SEMI
+5:        default:;
+5:		Syntax Error, expecting COLON but received SEMI
+9:        case 1:;
+9:		Syntax Error, token:CASE is not expected here.
+9:        case 1:;
+9:		Consuming CASE because it is not expected.
+9:        case 1:;
+9:		Consuming NUM because it is not expected.
+9:        case 1:;
+9:		Consuming COLON because it is not expected.
+9:        case 1:;
+9:		Syntax Error, expecting RPAREN but received SEMI
+9:        case 1:;
+9:		Syntax Error, expecting DEFAULT but received SEMI
+9:        case 1:;
+9:		Syntax Error, expecting COLON but received SEMI
+22:    branch foo())
+22:		Syntax Error, expecting LPAREN but received ID
+26:    branch foo())
+26:		Syntax Error, expecting LPAREN but received ID
+44:    branch(foo())
+44:		Syntax Error, expecting END but received BRANCH
+44:    branch(foo())
+44:		Syntax Error, expecting SEMI but received BRANCH
+56:}
+56:		Syntax Error, expecting END but received RCRLY
+56:}
+56:		Syntax Error, expecting SEMI but received RCRLY

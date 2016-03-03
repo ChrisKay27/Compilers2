@@ -17,7 +17,7 @@ public class Term extends SubExpression {
         sb.append('\n');
         for (int i = 0; i < tabs; i++)
             sb.append("    ");
-        sb.append(getClass().getSimpleName());
+        sb.append(getClass().getSimpleName() + " Line: " + getLine());
 
         factor.appendContents(sb, tabs + 1);
 

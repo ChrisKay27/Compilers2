@@ -36,7 +36,7 @@ public class IfStatement extends Statement {
         sb.append('\n');
         for (int i = 0; i < tabs; i++)
             sb.append("    ");
-        sb.append(getClass().getSimpleName());
+        sb.append(getClass().getSimpleName() + " Line: " + getLine());
 
         expression.appendContents(sb, tabs + 1);
         statement.appendContents(sb,tabs+1);

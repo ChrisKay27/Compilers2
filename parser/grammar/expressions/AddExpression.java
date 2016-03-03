@@ -27,7 +27,7 @@ public class AddExpression extends SubExpression {
         sb.append('\n');
         String tabsStr = getTabs(tabs);
         sb.append(tabsStr);
-        sb.append(getClass().getSimpleName());
+        sb.append(getClass().getSimpleName() + " Line: " + getLine());
 
         if(uminus)
             sb.append(" - ");
