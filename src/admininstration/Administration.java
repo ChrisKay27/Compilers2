@@ -120,7 +120,7 @@ public class Administration implements Administrator {
 
         ASTNode tree = parser.startParsing();
 
-        SemanticAnalyzer semAnal = new SemanticAnalyzer(tree,this::printErrorMessage);
+        SemanticAnalyzer semAnal = new SemanticAnalyzer(tree,this::printLineTrace,this::printErrorMessage);
 
         semAnal.startSemAnal((Declaration) tree);
 

@@ -8,6 +8,7 @@ import parser.grammar.ASTNode;
  */
 public abstract class SubExpression extends ASTNode {
     private Type type;
+    private boolean isStatic;
 
     protected SubExpression(int line) {
         super(line);
@@ -19,5 +20,13 @@ public abstract class SubExpression extends ASTNode {
 
     public void setType(Type type) {
         this.type = type;
+    }
+
+    public boolean isStatic() {
+        return isStatic;
+    }
+
+    public void setStatic(boolean isStatic) {
+        this.isStatic = isStatic;
     }
 }

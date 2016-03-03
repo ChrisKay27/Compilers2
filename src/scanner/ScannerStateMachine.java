@@ -222,7 +222,7 @@ public class ScannerStateMachine {
             if (newLineFound) {
                 newLineFound = false;
                 return Token.COMMENT_TOKEN;
-            } else if (Lexicon.isNewLine(c)) {
+            } else if (isNewLine(c)) {
                 newLineFound = true;
                 nextState = this;
             } else {
