@@ -1,0 +1,17 @@
+/*
+    Test cases for errors in the declaration production rule
+    Author: Carston Schilds
+    Date: 20-2-2016
+*/
+int 9 x;
+
+void void k(void){
+    ;
+}
+
+int foo(void){
+
+    int int y;
+
+    return x;
+}

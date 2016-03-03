@@ -1,0 +1,116 @@
+10:    y = 5;
+10:		Syntax Error, token:EQ is not expected here.
+10:    y = 5;
+10:		Consuming EQ because it is not expected.
+10:    y = 5;
+10:		Consuming NUM because it is not expected.
+10:    y = 5;
+10:		Syntax Error, expecting LPAREN but received SEMI
+10:    y = 5;
+10:		Syntax Error, expecting RPAREN but received SEMI
+11:    y := ;
+11:		Syntax Error, expecting ID but received SEMI
+14:    if y = 5 ){
+14:		Syntax Error, expecting SEMI but received IF
+14:    if y = 5 ){
+14:		Syntax Error, expecting LPAREN but received ID
+20:    if( y > 0 {
+20:		Syntax Error, expecting RPAREN but received LCRLY
+28:    {}
+28:		Expecting statement!
+34:        loop  end;
+34:		Expecting statement!
+56:    branch(y)
+56:		Syntax Error, expecting SEMI but received BRANCH
+60:    branch()
+60:		Syntax Error, token:RPAREN is not expected here.
+60:    branch()
+60:		Consuming RPAREN because it is not expected.
+61:        case 5: ;
+61:		Consuming CASE because it is not expected.
+61:        case 5: ;
+61:		Syntax Error, token:COLON is not expected here.
+61:        case 5: ;
+61:		Consuming COLON because it is not expected.
+61:        case 5: ;
+61:		Syntax Error, expecting RPAREN but received SEMI
+61:        case 5: ;
+61:		Syntax Error, expecting DEFAULT but received SEMI
+61:        case 5: ;
+61:		Syntax Error, expecting COLON but received SEMI
+64:    branch()
+64:		Syntax Error, token:RPAREN is not expected here.
+64:    branch()
+64:		Consuming RPAREN because it is not expected.
+65:        case 5 ;
+65:		Consuming CASE because it is not expected.
+65:        case 5 ;
+65:		Syntax Error, expecting RPAREN but received SEMI
+65:        case 5 ;
+65:		Syntax Error, expecting DEFAULT but received SEMI
+65:        case 5 ;
+65:		Syntax Error, expecting COLON but received SEMI
+68:    branch()
+68:		Syntax Error, token:RPAREN is not expected here.
+68:    branch()
+68:		Consuming RPAREN because it is not expected.
+69:        case : ;
+69:		Consuming CASE because it is not expected.
+69:        case : ;
+69:		Consuming COLON because it is not expected.
+69:        case : ;
+69:		Syntax Error, expecting ID but received SEMI
+69:        case : ;
+69:		Syntax Error, expecting RPAREN but received SEMI
+69:        case : ;
+69:		Syntax Error, expecting DEFAULT but received SEMI
+69:        case : ;
+69:		Syntax Error, expecting COLON but received SEMI
+72:    branch()
+72:		Syntax Error, token:RPAREN is not expected here.
+72:    branch()
+72:		Consuming RPAREN because it is not expected.
+73:        default:;
+73:		Consuming DEFAULT because it is not expected.
+73:        default:;
+73:		Consuming COLON because it is not expected.
+73:        default:;
+73:		Syntax Error, expecting ID but received SEMI
+73:        default:;
+73:		Syntax Error, expecting RPAREN but received SEMI
+73:        default:;
+73:		Syntax Error, expecting DEFAULT but received SEMI
+73:        default:;
+73:		Syntax Error, expecting COLON but received SEMI
+76:    branch()
+76:		Syntax Error, token:RPAREN is not expected here.
+76:    branch()
+76:		Consuming RPAREN because it is not expected.
+77:        default 5:;
+77:		Consuming DEFAULT because it is not expected.
+77:        default 5:;
+77:		Syntax Error, token:COLON is not expected here.
+77:        default 5:;
+77:		Consuming COLON because it is not expected.
+77:        default 5:;
+77:		Syntax Error, expecting RPAREN but received SEMI
+77:        default 5:;
+77:		Syntax Error, expecting DEFAULT but received SEMI
+77:        default 5:;
+77:		Syntax Error, expecting COLON but received SEMI
+84:    y
+84:		Syntax Error, expecting LPAREN but received ID
+101:        case 5:;
+101:		Syntax Error, token:CASE is not expected here.
+101:        case 5:;
+101:		Consuming CASE because it is not expected.
+101:        case 5:;
+101:		Consuming NUM because it is not expected.
+101:        case 5:;
+101:		Consuming COLON because it is not expected.
+101:        case 5:;
+101:		Syntax Error, expecting RPAREN but received SEMI
+101:        case 5:;
+101:		Syntax Error, expecting DEFAULT but received SEMI
+101:        case 5:;
+101:		Syntax Error, expecting COLON but received SEMI

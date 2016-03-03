@@ -1,0 +1,24 @@
+/*
+    Author: Chris Kaebe
+    Date: Feb 21, 2016
+*/
+
+void bar(){
+
+}
+
+int foo(){
+
+}
+
+int main(void){
+    foo(5);
+
+    bool x;
+    x := foo();
+
+    x := bar();
+
+    bar(2);
+}
+

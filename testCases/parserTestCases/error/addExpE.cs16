@@ -1,0 +1,37 @@
+-- Carston Schilds, Feb 21st 2016
+void main(void){
+    -- wrong assigment operator
+    x1 = x + a;
+    x2 = x - b;
+    x3 = x or c;
+    x4 = x || d;
+    x5 = x + y - z or a || b;
+
+    -- omitting second argument
+    x1 := x + ;
+    x2 := x - ;
+    x3 := x or ;
+    x4 := x || ;
+    x5 := x +  - z or  || b;
+
+    -- omitting closing paren
+    x1 := (x + a;
+    x2 := (x - b;
+    x3 := (x or c;
+    x4 := (x || d;
+    x5 := (x + y - z or a || b;
+
+    -- omitting opening paren
+    x1 := x + a);
+    x2 := x - b);
+    x3 := x or c);
+    x4 := x || d);
+    x5 := x + y - z or a || b);
+
+    -- omitting semi
+    x1 := x + a
+    x2 := x - b
+    x3 := x or c
+    x4 := x || d
+    x5 := x + y - z or a || b
+}

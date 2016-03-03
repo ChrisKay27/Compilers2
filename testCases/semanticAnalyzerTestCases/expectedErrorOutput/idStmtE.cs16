@@ -1,0 +1,40 @@
+5:     := y;
+5:		Syntax Error, token:ASSIGN is not expected here.
+5:     := y;
+5:		Consuming ASSIGN because it is not expected.
+5:     := y;
+5:		Syntax Error, expecting LPAREN but received SEMI
+5:     := y;
+5:		Syntax Error, expecting RPAREN but received SEMI
+6:    [1] := y;
+6:		Syntax Error, token:LSQR is not expected here.
+6:    [1] := y;
+6:		Consuming LSQR because it is not expected.
+6:    [1] := y;
+6:		Consuming NUM because it is not expected.
+6:    [1] := y;
+6:		Consuming RSQR because it is not expected.
+6:    [1] := y;
+6:		Consuming ASSIGN because it is not expected.
+6:    [1] := y;
+6:		Syntax Error, expecting LPAREN but received SEMI
+6:    [1] := y;
+6:		Syntax Error, expecting RPAREN but received SEMI
+7:    ();
+7:		Syntax Error, token:LPAREN is not expected here.
+7:    ();
+7:		Consuming LPAREN because it is not expected.
+7:    ();
+7:		Consuming RPAREN because it is not expected.
+10:    x[1]
+10:		Syntax Error, expecting LPAREN but received ID
+11:    foo
+11:		Syntax Error, expecting RPAREN but received ID
+11:    foo
+11:		Syntax Error, expecting SEMI but received ID
+12:}
+12:		Syntax Error, expecting LPAREN but received RCRLY
+12:}
+12:		Syntax Error, expecting RPAREN but received RCRLY
+12:}
+12:		Syntax Error, expecting SEMI but received RCRLY

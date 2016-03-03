@@ -1,0 +1,38 @@
+12:    x := x mod ;
+12:		Syntax Error, expecting ID but received SEMI
+15:    x := x * x // x;
+15:		Syntax Error, expecting SEMI but received ID
+15:    x := x * x // x;
+15:		Syntax Error, token:DIV is not expected here.
+15:    x := x * x // x;
+15:		Consuming DIV because it is not expected.
+16:    x := x mod mod mod mod x * x;
+16:		Syntax Error, token:MOD is not expected here.
+16:    x := x mod mod mod mod x * x;
+16:		Consuming MOD because it is not expected.
+16:    x := x mod mod mod mod x * x;
+16:		Consuming MOD because it is not expected.
+16:    x := x mod mod mod mod x * x;
+16:		Consuming MOD because it is not expected.
+17:    x := x / x ** x / 2 * 3 /+ 5 * x;
+17:		Syntax Error, token:MULT is not expected here.
+17:    x := x / x ** x / 2 * 3 /+ 5 * x;
+17:		Consuming MULT because it is not expected.
+17:    x := x / x ** x / 2 * 3 /+ 5 * x;
+17:		Syntax Error, expecting ID but received PLUS
+19:    y := true and; false && true ;
+19:		Syntax Error, expecting ID but received SEMI
+19:    y := true and; false && true ;
+19:		Syntax Error, token:BLIT is not expected here.
+19:    y := true and; false && true ;
+19:		Consuming BLIT because it is not expected.
+19:    y := true and; false && true ;
+19:		Consuming ANDTHEN because it is not expected.
+19:    y := true and; false && true ;
+19:		Consuming BLIT because it is not expected.
+21:    y := true and && and false;
+21:		Syntax Error, token:ANDTHEN is not expected here.
+21:    y := true and && and false;
+21:		Consuming ANDTHEN because it is not expected.
+21:    y := true and && and false;
+21:		Consuming AND because it is not expected.

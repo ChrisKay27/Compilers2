@@ -1,0 +1,14 @@
+-- Chris Kaebe, March 3, 2016
+
+void main(void){
+    int x, a;
+
+    x := -a;
+    x := b;
+    x := p < q;
+    x := p <= q;
+    x := p > q;
+    x := p >= q;
+    x := p = q;
+    x := p /= q;
+}

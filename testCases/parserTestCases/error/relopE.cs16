@@ -1,0 +1,17 @@
+/*
+    This tests var name
+    Author: Chris Kaebe
+    Date: Feb 21, 2016
+*/
+
+void main(int x){
+    int x,y;
+    bool b;
+    x:=1;
+    y:=2;b:=y<x;
+    b:=y<=;
+    b:=>=x;
+    b:=y<x;
+    b:=y/=+x;
+    b:=y>;x;
+}

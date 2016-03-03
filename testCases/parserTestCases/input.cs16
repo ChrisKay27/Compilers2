@@ -1,0 +1,42 @@
+/*
+    This test attempts at testing a wide range of inputs
+    Author: Chris Kaebe
+    Date: Jan 12, 2016
+*/
+
+int x;
+int y;
+
+/*
+    /*
+        Here is main
+    */
+*/
+void main(int args[]){
+
+    sout();
+    sout();
+
+    if( true ){
+        --test
+        sout( x - y );
+        sout( x / y );
+        sout( x * y );
+
+        --\n new line
+
+        if( x < y )
+            loop{
+                x := x - 1;
+                if( x < 0 )
+                    exit;
+                else
+                    continue;
+            }
+            end;
+
+    }
+    SystemExit(0);
+
+
+}

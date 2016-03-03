@@ -1,0 +1,56 @@
+-- Carston Schilds, Feb 21st 2016
+void main(void){
+    -- omitting right paren
+    branch(foo()
+        default:;
+    end;
+
+    branch(foo()
+        case 1:;
+        case 11:;
+        case 12:;
+        case 13:;
+        case 14:;
+        case 15:;
+        case 16:;
+        case 17:;
+        case 18:;
+        case 19:;
+        default:;
+    end;
+    -- omitting left paren
+    branch foo())
+        default:;
+    end;
+
+    branch foo())
+        case 1:;
+        case 11:;
+        case 12:;
+        case 13:;
+        case 14:;
+        case 15:;
+        case 16:;
+        case 17:;
+        case 18:;
+        case 19:;
+        default:;
+    end;
+
+    -- omitting end
+    branch(foo())
+        default:;
+
+    branch(foo())
+        case 1:;
+        case 11:;
+        case 12:;
+        case 13:;
+        case 14:;
+        case 15:;
+        case 16:;
+        case 17:;
+        case 18:;
+        case 19:;
+        default:;
+}

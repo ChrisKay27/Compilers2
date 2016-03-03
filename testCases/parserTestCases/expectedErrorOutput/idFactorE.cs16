@@ -1,0 +1,18 @@
+6:    x := ;
+6:		Syntax Error, expecting ID but received SEMI
+7:    x := [1];
+7:		Syntax Error, token:LSQR is not expected here.
+7:    x := [1];
+7:		Consuming LSQR because it is not expected.
+7:    x := [1];
+7:		Syntax Error, token:RSQR is not expected here.
+7:    x := [1];
+7:		Consuming RSQR because it is not expected.
+8:    x := ();
+8:		Syntax Error, token:RPAREN is not expected here.
+8:    x := ();
+8:		Consuming RPAREN because it is not expected.
+8:    x := ();
+8:		Syntax Error, expecting ID but received SEMI
+8:    x := ();
+8:		Syntax Error, expecting RPAREN but received SEMI

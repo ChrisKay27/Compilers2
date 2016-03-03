@@ -1,0 +1,18 @@
+14:    x := - not (x;
+14:		Syntax Error, expecting RPAREN but received SEMI
+15:    x := not +x;
+15:		Syntax Error, expecting ID but received PLUS
+18:    x := not ((((((((()))))))false;
+18:		Syntax Error, expecting ID but received RPAREN
+18:    x := not ((((((((()))))))false;
+18:		Syntax Error, token:BLIT is not expected here.
+18:    x := not ((((((((()))))))false;
+18:		Consuming BLIT because it is not expected.
+18:    x := not ((((((((()))))))false;
+18:		Syntax Error, expecting RPAREN but received SEMI
+18:    x := not ((((((((()))))))false;
+18:		Syntax Error, expecting RPAREN but received SEMI
+19:    x := not (((((((((false)))))));
+19:		Syntax Error, expecting RPAREN but received SEMI
+19:    x := not (((((((((false)))))));
+19:		Syntax Error, expecting RPAREN but received SEMI

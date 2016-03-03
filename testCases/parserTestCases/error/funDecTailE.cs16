@@ -1,0 +1,13 @@
+-- Carston Schilds, Feb 21st 2016
+
+-- omitting left paren
+bool foo2 void){;}
+int foo void){;}
+
+-- omitting right paren
+bool foo2(void {;}
+int foo(void {;}
+
+-- omitting statement
+bool foo2(void)
+int foo(void)

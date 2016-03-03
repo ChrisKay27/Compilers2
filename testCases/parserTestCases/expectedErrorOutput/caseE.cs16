@@ -1,0 +1,28 @@
+6:        default;
+6:		Syntax Error, expecting COLON but received SEMI
+15:        case 15;
+15:		Syntax Error, expecting COLON but received SEMI
+25:        default;
+25:		Syntax Error, expecting COLON but received SEMI
+29:        case true:;
+29:		Syntax Error, token:BLIT is not expected here.
+29:        case true:;
+29:		Consuming BLIT because it is not expected.
+29:        case true:;
+29:		Consuming COLON because it is not expected.
+29:        case true:;
+29:		Syntax Error, expecting NUM but received SEMI
+29:        case true:;
+29:		Syntax Error, expecting COLON but received SEMI
+46:        case foo():;
+46:		Syntax Error, expecting NUM but received ID
+46:        case foo():;
+46:		Syntax Error, expecting COLON but received ID
+46:        case foo():;
+46:		Syntax Error, token:COLON is not expected here.
+46:        case foo():;
+46:		Consuming COLON because it is not expected.
+59:    end;
+59:		Expecting statement!
+68:        case 16:;
+68:		Expecting statement!

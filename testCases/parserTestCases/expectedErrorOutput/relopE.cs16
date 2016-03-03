@@ -1,0 +1,16 @@
+12:    b:=y<=;
+12:		Syntax Error, expecting ID but received SEMI
+13:    b:=>=x;
+13:		Syntax Error, token:GTEQ is not expected here.
+13:    b:=>=x;
+13:		Consuming GTEQ because it is not expected.
+15:    b:=y/=+x;
+15:		Syntax Error, token:PLUS is not expected here.
+15:    b:=y/=+x;
+15:		Consuming PLUS because it is not expected.
+16:    b:=y>;x;
+16:		Syntax Error, expecting ID but received SEMI
+16:    b:=y>;x;
+16:		Syntax Error, expecting LPAREN but received SEMI
+16:    b:=y>;x;
+16:		Syntax Error, expecting RPAREN but received SEMI

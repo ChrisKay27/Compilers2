@@ -1,0 +1,10 @@
+8:;
+8:		Syntax Error, token:SEMI is not expected here.
+8:;
+8:		Consuming SEMI because it is not expected.
+36:    end;
+36:		Expecting statement!
+39:    x := ;
+39:		Syntax Error, expecting ID but received SEMI
+41:    };;;;;;;;;;;;;;;;;;;;;;;;
+41:		Expecting statement!

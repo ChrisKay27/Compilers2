@@ -1,0 +1,20 @@
+/* 
+ * 
+ * 
+ *
+ * Description:
+ * This file tests that the cs16 Scanner can properly
+ * tokenize nested comments.
+ */
+ 
+/* foo
+   /* bar */
+   bar
+   /* blab
+	* bla
+	* ba
+	*/
+*/
+
+-- Should get ID with index 0 and ENDFILE at line 20
+a
