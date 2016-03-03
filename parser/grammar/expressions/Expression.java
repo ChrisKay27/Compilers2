@@ -37,7 +37,7 @@ public class Expression extends SubExpression {
         sb.append('\n');
         for (int i = 0; i < tabs; i++)
             sb.append("    ");
-        sb.append(getClass().getSimpleName());
+        sb.append(getClass().getSimpleName() + " Line: " + getLine());
 
         addExp.appendContents(sb,tabs+1);
         if( relop != null ) {

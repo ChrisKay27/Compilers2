@@ -1,0 +1,22 @@
+/*
+    Author: Chris Kaebe
+    Date: March 3, 2016
+*/
+
+int main(void){
+    int y;
+
+    continue;
+    exit;
+
+    loop {
+        bool doop;
+        loop ; end;
+    }
+    {;}
+    end;
+
+    continue;
+    exit;
+
+}

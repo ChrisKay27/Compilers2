@@ -30,7 +30,7 @@ public class BranchStatement extends Statement {
         for (int i = 0; i < tabs; i++)
             sb.append("    ");
 
-        sb.append(getClass().getSimpleName());
+        sb.append(getClass().getSimpleName() + " Line: " + getLine());
         addexp.appendContents(sb, tabs+1);
         caseStmt.appendContents(sb, tabs+1);
         if (nextNode != null)

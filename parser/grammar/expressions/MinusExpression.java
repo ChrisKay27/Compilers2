@@ -10,7 +10,7 @@ public class MinusExpression extends SubExpression {
         sb.append('\n');
         for (int i = 0; i < tabs; i++)
             sb.append("    ");
-        sb.append(getClass().getSimpleName());
+        sb.append(getClass().getSimpleName() + " Line: " + getLine());
 
         if( nextNode != null )
             nextNode.appendContents(sb, tabs);

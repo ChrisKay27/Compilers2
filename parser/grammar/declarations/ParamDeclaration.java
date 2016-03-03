@@ -31,7 +31,7 @@ public class ParamDeclaration extends VarDeclaration {
         sb.append('\n');
         for (int i = 0; i < tabs; i++)
             sb.append("    ");
-        sb.append(getClass().getSimpleName());
+        sb.append(getClass().getSimpleName() + " Line: " + getLine());
         sb.append(' ');
         if( isReference )
             sb.append(" ref ");
@@ -44,4 +44,6 @@ public class ParamDeclaration extends VarDeclaration {
         if( nextNode != null )
             nextNode.appendContents(sb,tabs);
     }
+
+
 }

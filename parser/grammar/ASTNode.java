@@ -30,4 +30,9 @@ public abstract class ASTNode {
             sb.append("    ");
         return sb.toString();
     }
+
+
+    public int getLine() {
+        return 0;
+    }
 }

@@ -69,7 +69,7 @@ public class Administration implements Administrator {
         this.scanner = new Scanner(fileInput,this::printTokensOnCurrentLine,this::printLineTrace,this::printErrorMessage);
         scanner.setTraceEnabled(options.verbose);
 
-        this.parser = new Parser(this.scanner,this::printParserLineTrace,this::printErrorMessage);
+        this.parser = new Parser(this.scanner,this::printParserLineTrace,this::printErrorMessage,this::getLineNumber);
         parser.setTraceEnabled(options.verbose);
 
     }
@@ -331,5 +331,9 @@ public class Administration implements Administrator {
 
     public OutputHandler getOutputHandler() {
         return outputHandler;
+    }
+
+    private int getLineNumber(){
+        return lineNumber;
     }
 }

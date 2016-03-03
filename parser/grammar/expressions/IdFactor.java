@@ -33,7 +33,7 @@ public class IdFactor extends Factor {
         sb.append('\n');
         for (int i = 0; i < tabs; i++)
             sb.append("    ");
-        sb.append(getClass().getSimpleName());
+        sb.append(getClass().getSimpleName() + " Line: " + getLine());
 
         sb.append(idToken);
 

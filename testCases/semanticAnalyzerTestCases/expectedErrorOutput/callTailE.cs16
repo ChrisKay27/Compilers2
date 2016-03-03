@@ -1,0 +1,174 @@
+4:    foo(;
+4:		Syntax Error, expecting RPAREN but received SEMI
+5:    moo(1,2,3,4,5;
+5:		Syntax Error, expecting RPAREN but received SEMI
+6:    foo2(1,2,3,4,5,6,7,8,9,0,true,false,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30;
+6:		Syntax Error, expecting RPAREN but received SEMI
+8:    foo );
+8:		Syntax Error, token:RPAREN is not expected here.
+8:    foo );
+8:		Consuming RPAREN because it is not expected.
+8:    foo );
+8:		Syntax Error, expecting LPAREN but received SEMI
+8:    foo );
+8:		Syntax Error, expecting RPAREN but received SEMI
+9:    moo 1,2,3,4,5);
+9:		Syntax Error, token:NUM is not expected here.
+9:    moo 1,2,3,4,5);
+9:		Consuming NUM because it is not expected.
+9:    moo 1,2,3,4,5);
+9:		Consuming COMMA because it is not expected.
+9:    moo 1,2,3,4,5);
+9:		Consuming NUM because it is not expected.
+9:    moo 1,2,3,4,5);
+9:		Consuming COMMA because it is not expected.
+9:    moo 1,2,3,4,5);
+9:		Consuming NUM because it is not expected.
+9:    moo 1,2,3,4,5);
+9:		Consuming COMMA because it is not expected.
+9:    moo 1,2,3,4,5);
+9:		Consuming NUM because it is not expected.
+9:    moo 1,2,3,4,5);
+9:		Consuming COMMA because it is not expected.
+9:    moo 1,2,3,4,5);
+9:		Consuming NUM because it is not expected.
+9:    moo 1,2,3,4,5);
+9:		Consuming RPAREN because it is not expected.
+9:    moo 1,2,3,4,5);
+9:		Syntax Error, expecting LPAREN but received SEMI
+9:    moo 1,2,3,4,5);
+9:		Syntax Error, expecting RPAREN but received SEMI
+10:    foo2 1,2,3,4,5,6,7,8,9,0,true,false,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30);
+10:		Syntax Error, token:NUM is not expected here.
+10:    foo2 1,2,3,4,5,6,7,8,9,0,true,false,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30);
+10:		Consuming NUM because it is not expected.
+10:    foo2 1,2,3,4,5,6,7,8,9,0,true,false,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30);
+10:		Consuming COMMA because it is not expected.
+10:    foo2 1,2,3,4,5,6,7,8,9,0,true,false,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30);
+10:		Consuming NUM because it is not expected.
+10:    foo2 1,2,3,4,5,6,7,8,9,0,true,false,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30);
+10:		Consuming COMMA because it is not expected.
+10:    foo2 1,2,3,4,5,6,7,8,9,0,true,false,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30);
+10:		Consuming NUM because it is not expected.
+10:    foo2 1,2,3,4,5,6,7,8,9,0,true,false,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30);
+10:		Consuming COMMA because it is not expected.
+10:    foo2 1,2,3,4,5,6,7,8,9,0,true,false,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30);
+10:		Consuming NUM because it is not expected.
+10:    foo2 1,2,3,4,5,6,7,8,9,0,true,false,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30);
+10:		Consuming COMMA because it is not expected.
+10:    foo2 1,2,3,4,5,6,7,8,9,0,true,false,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30);
+10:		Consuming NUM because it is not expected.
+10:    foo2 1,2,3,4,5,6,7,8,9,0,true,false,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30);
+10:		Consuming COMMA because it is not expected.
+10:    foo2 1,2,3,4,5,6,7,8,9,0,true,false,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30);
+10:		Consuming NUM because it is not expected.
+10:    foo2 1,2,3,4,5,6,7,8,9,0,true,false,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30);
+10:		Consuming COMMA because it is not expected.
+10:    foo2 1,2,3,4,5,6,7,8,9,0,true,false,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30);
+10:		Consuming NUM because it is not expected.
+10:    foo2 1,2,3,4,5,6,7,8,9,0,true,false,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30);
+10:		Consuming COMMA because it is not expected.
+10:    foo2 1,2,3,4,5,6,7,8,9,0,true,false,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30);
+10:		Consuming NUM because it is not expected.
+10:    foo2 1,2,3,4,5,6,7,8,9,0,true,false,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30);
+10:		Consuming COMMA because it is not expected.
+10:    foo2 1,2,3,4,5,6,7,8,9,0,true,false,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30);
+10:		Consuming NUM because it is not expected.
+10:    foo2 1,2,3,4,5,6,7,8,9,0,true,false,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30);
+10:		Consuming COMMA because it is not expected.
+10:    foo2 1,2,3,4,5,6,7,8,9,0,true,false,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30);
+10:		Consuming NUM because it is not expected.
+10:    foo2 1,2,3,4,5,6,7,8,9,0,true,false,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30);
+10:		Consuming COMMA because it is not expected.
+10:    foo2 1,2,3,4,5,6,7,8,9,0,true,false,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30);
+10:		Consuming BLIT because it is not expected.
+10:    foo2 1,2,3,4,5,6,7,8,9,0,true,false,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30);
+10:		Consuming COMMA because it is not expected.
+10:    foo2 1,2,3,4,5,6,7,8,9,0,true,false,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30);
+10:		Consuming BLIT because it is not expected.
+10:    foo2 1,2,3,4,5,6,7,8,9,0,true,false,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30);
+10:		Consuming COMMA because it is not expected.
+10:    foo2 1,2,3,4,5,6,7,8,9,0,true,false,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30);
+10:		Consuming NUM because it is not expected.
+10:    foo2 1,2,3,4,5,6,7,8,9,0,true,false,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30);
+10:		Consuming COMMA because it is not expected.
+10:    foo2 1,2,3,4,5,6,7,8,9,0,true,false,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30);
+10:		Consuming NUM because it is not expected.
+10:    foo2 1,2,3,4,5,6,7,8,9,0,true,false,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30);
+10:		Consuming COMMA because it is not expected.
+10:    foo2 1,2,3,4,5,6,7,8,9,0,true,false,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30);
+10:		Consuming NUM because it is not expected.
+10:    foo2 1,2,3,4,5,6,7,8,9,0,true,false,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30);
+10:		Consuming COMMA because it is not expected.
+10:    foo2 1,2,3,4,5,6,7,8,9,0,true,false,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30);
+10:		Consuming NUM because it is not expected.
+10:    foo2 1,2,3,4,5,6,7,8,9,0,true,false,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30);
+10:		Consuming COMMA because it is not expected.
+10:    foo2 1,2,3,4,5,6,7,8,9,0,true,false,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30);
+10:		Consuming NUM because it is not expected.
+10:    foo2 1,2,3,4,5,6,7,8,9,0,true,false,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30);
+10:		Consuming COMMA because it is not expected.
+10:    foo2 1,2,3,4,5,6,7,8,9,0,true,false,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30);
+10:		Consuming NUM because it is not expected.
+10:    foo2 1,2,3,4,5,6,7,8,9,0,true,false,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30);
+10:		Consuming COMMA because it is not expected.
+10:    foo2 1,2,3,4,5,6,7,8,9,0,true,false,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30);
+10:		Consuming NUM because it is not expected.
+10:    foo2 1,2,3,4,5,6,7,8,9,0,true,false,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30);
+10:		Consuming COMMA because it is not expected.
+10:    foo2 1,2,3,4,5,6,7,8,9,0,true,false,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30);
+10:		Consuming NUM because it is not expected.
+10:    foo2 1,2,3,4,5,6,7,8,9,0,true,false,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30);
+10:		Consuming COMMA because it is not expected.
+10:    foo2 1,2,3,4,5,6,7,8,9,0,true,false,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30);
+10:		Consuming NUM because it is not expected.
+10:    foo2 1,2,3,4,5,6,7,8,9,0,true,false,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30);
+10:		Consuming COMMA because it is not expected.
+10:    foo2 1,2,3,4,5,6,7,8,9,0,true,false,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30);
+10:		Consuming NUM because it is not expected.
+10:    foo2 1,2,3,4,5,6,7,8,9,0,true,false,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30);
+10:		Consuming COMMA because it is not expected.
+10:    foo2 1,2,3,4,5,6,7,8,9,0,true,false,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30);
+10:		Consuming NUM because it is not expected.
+10:    foo2 1,2,3,4,5,6,7,8,9,0,true,false,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30);
+10:		Consuming COMMA because it is not expected.
+10:    foo2 1,2,3,4,5,6,7,8,9,0,true,false,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30);
+10:		Consuming NUM because it is not expected.
+10:    foo2 1,2,3,4,5,6,7,8,9,0,true,false,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30);
+10:		Consuming COMMA because it is not expected.
+10:    foo2 1,2,3,4,5,6,7,8,9,0,true,false,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30);
+10:		Consuming NUM because it is not expected.
+10:    foo2 1,2,3,4,5,6,7,8,9,0,true,false,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30);
+10:		Consuming COMMA because it is not expected.
+10:    foo2 1,2,3,4,5,6,7,8,9,0,true,false,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30);
+10:		Consuming NUM because it is not expected.
+10:    foo2 1,2,3,4,5,6,7,8,9,0,true,false,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30);
+10:		Consuming COMMA because it is not expected.
+10:    foo2 1,2,3,4,5,6,7,8,9,0,true,false,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30);
+10:		Consuming NUM because it is not expected.
+10:    foo2 1,2,3,4,5,6,7,8,9,0,true,false,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30);
+10:		Consuming COMMA because it is not expected.
+10:    foo2 1,2,3,4,5,6,7,8,9,0,true,false,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30);
+10:		Consuming NUM because it is not expected.
+10:    foo2 1,2,3,4,5,6,7,8,9,0,true,false,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30);
+10:		Consuming COMMA because it is not expected.
+10:    foo2 1,2,3,4,5,6,7,8,9,0,true,false,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30);
+10:		Consuming NUM because it is not expected.
+10:    foo2 1,2,3,4,5,6,7,8,9,0,true,false,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30);
+10:		Consuming COMMA because it is not expected.
+10:    foo2 1,2,3,4,5,6,7,8,9,0,true,false,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30);
+10:		Consuming NUM because it is not expected.
+10:    foo2 1,2,3,4,5,6,7,8,9,0,true,false,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30);
+10:		Consuming COMMA because it is not expected.
+10:    foo2 1,2,3,4,5,6,7,8,9,0,true,false,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30);
+10:		Consuming NUM because it is not expected.
+10:    foo2 1,2,3,4,5,6,7,8,9,0,true,false,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30);
+10:		Consuming COMMA because it is not expected.
+10:    foo2 1,2,3,4,5,6,7,8,9,0,true,false,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30);
+10:		Consuming NUM because it is not expected.
+10:    foo2 1,2,3,4,5,6,7,8,9,0,true,false,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30);
+10:		Consuming RPAREN because it is not expected.
+10:    foo2 1,2,3,4,5,6,7,8,9,0,true,false,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30);
+10:		Syntax Error, expecting LPAREN but received SEMI
+10:    foo2 1,2,3,4,5,6,7,8,9,0,true,false,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30);
+10:		Syntax Error, expecting RPAREN but received SEMI

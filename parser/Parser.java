@@ -55,6 +55,7 @@ public class Parser {
 
     private final Scanner scanner;
     private final Consumer<String> errorOutput;
+    private final Supplier<Integer> getLineNumber;
     private final Consumer<String> lineTraceOutput;
     private List<Token> tokens;
 
@@ -64,10 +65,11 @@ public class Parser {
     private boolean syntaxError;
 
 
-    public Parser(Scanner scanner, Consumer<String> lineTraceOutput, Consumer<String> errorOutput) {
+    public Parser(Scanner scanner, Consumer<String> lineTraceOutput, Consumer<String> errorOutput, Supplier<Integer> getLineNumber) {
         this.scanner = scanner;
         this.lineTraceOutput = lineTraceOutput;
         this.errorOutput = errorOutput;
+        this.getLineNumber = getLineNumber;
         tokens = new ArrayList<>();
     }
 

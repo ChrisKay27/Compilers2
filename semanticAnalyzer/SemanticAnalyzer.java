@@ -1,5 +1,6 @@
 package semanticAnalyzer;
 
+import parser.TokenType;
 import parser.Type;
 import parser.grammar.ASTNode;
 import parser.grammar.declarations.Declaration;
@@ -8,14 +9,14 @@ import parser.grammar.declarations.ParamDeclaration;
 import parser.grammar.declarations.VarDeclaration;
 import parser.grammar.expressions.*;
 import parser.grammar.statements.*;
+import scanner.Token;
 import util.WTFException;
 
 import java.util.List;
+import java.util.Stack;
 import java.util.function.Consumer;
 
-import static parser.Type.BOOL;
-import static parser.Type.ERROR;
-import static parser.Type.INT;
+import static parser.Type.*;
 
 /**
  * Created by Carston on 2/27/2016.
@@ -26,9 +27,15 @@ public class SemanticAnalyzer implements SemAnalInter {
     private SymbolTable symbolTable;
     private Consumer<String> error;
 
-    private FuncDeclaration currentFuncDecl;
     private boolean foundError;
     private boolean traceEnabled;
+
+    private FuncDeclaration currentFuncDecl;
+
+    //Keeps track of any loops that we are currently in (as we look through the tree) to see if an exit or continue is not
+    //inside of a loop
+    private Stack<LoopStatement> currentLoop = new Stack<>();
+
     public void setTraceEnabled(boolean traceEnabled) {
         this.traceEnabled = traceEnabled;
     }
@@ -42,6 +49,13 @@ public class SemanticAnalyzer implements SemAnalInter {
 
 
     public void startSemAnal(Declaration AST) {
+
+        //Library functions
+        addDeclaration(new FuncDeclaration(INT,new Token(TokenType.ID,0),null,null));
+        addDeclaration(new FuncDeclaration(Type.VOID,new Token(TokenType.ID,1),new ParamDeclaration(INT,new Token(TokenType.ID,4),false,false),null));
+        addDeclaration(new FuncDeclaration(Type.BOOL,new Token(TokenType.ID,2),null,null));
+        addDeclaration(new FuncDeclaration(Type.VOID,new Token(TokenType.ID,3),new ParamDeclaration(BOOL,new Token(TokenType.ID,4),false,false),null));
+
 
         Declaration n = AST;
         do {
@@ -212,9 +226,13 @@ public class SemanticAnalyzer implements SemAnalInter {
 
     public void analyze(LoopStatement AST) {
 		System.out.println("analyze LoopStatement");
+        currentLoop.push(AST);
+
         Statement statement = AST.getStatement();
         loopConstraints(statement);
         analyze(statement);
+
+        currentLoop.pop();
     }
 
     private void loopConstraints(Statement statement) {
@@ -248,12 +266,22 @@ public class SemanticAnalyzer implements SemAnalInter {
 
     public void analyze(ExitStatement AST) {
 		System.out.println("analyze ExitStatement");
+        if(! isInsideLoop() ){
+            error.accept("Exit statement not within loop");
+            foundError = true;
+        }
+    }
 
+    private boolean isInsideLoop() {
+        return !currentLoop.empty();
     }
 
     public void analyze(ContinueStatement AST) {
 		System.out.println("analyze ContinueStatement");
-
+        if(! isInsideLoop() ){
+            error.accept("Continue statement not within loop");
+            foundError = true;
+        }
     }
 
     public void analyze(ReturnStatement AST){
@@ -269,7 +297,6 @@ public class SemanticAnalyzer implements SemAnalInter {
 
     public void analyze(NullStatement AST){
 		System.out.println("analyze NullStatement");
-
     }
 
     public void analyze(BranchStatement AST) {
@@ -447,11 +474,14 @@ public class SemanticAnalyzer implements SemAnalInter {
 
 
 
+    private Declaration errorDeclaration = new Declaration(Type.ERROR,null);
+
     private Declaration getDeclaration(int id) {
         SymbolTableEntry d = symbolTable.get(id);
 
         if( d == null ){
             error.accept("No declaration for this id: " + id);
+            return errorDeclaration;
         }
         return (Declaration) d.getNode();
     }
@@ -480,4 +510,6 @@ public class SemanticAnalyzer implements SemAnalInter {
         //Everything is fine, return the type
         return t;
     }
+
+
 }
