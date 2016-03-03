@@ -2,13 +2,11 @@ package parser.grammar.expressions;
 
 import parser.TokenType;
 import parser.Type;
-import parser.grammar.ASTNode;
-import parser.grammar.expressions.AddExpression;
 
 /**
  * Created by Chris on 1/30/2016.
  */
-public class Expression extends Subexpression {
+public class Expression extends SubExpression {
     private final AddExpression addExp;
     private final TokenType relop;
     private final AddExpression addExp2;

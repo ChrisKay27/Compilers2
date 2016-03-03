@@ -12,6 +12,17 @@ public class LiteralBool extends NidFactor {
         return bool;
     }
 
+    @Override
+    public void appendContents(StringBuilder sb, int tabs) {
+        sb.append('\n');
+        for (int i = 0; i < tabs; i++)
+            sb.append("    ");
+        sb.append(getClass().getSimpleName()).append(" VALUE(").append(this.toString()).append(')');
+
+        if (nextNode != null)
+            nextNode.appendContents(sb, tabs);
+    }
+
     public String toString(){
         if(bool == 1) return ""+true;
         if(bool == 0) return ""+false;

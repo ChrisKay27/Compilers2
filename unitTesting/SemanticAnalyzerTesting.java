@@ -1,10 +1,12 @@
-package testCases;
+package unitTesting;
 
 import admininstration.Options;
 import admininstration.TestAdmin;
 import util.WTFException;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -14,7 +16,7 @@ import static java.lang.System.out;
 /**
  * Created by chris_000 on 2/21/2016.
  */
-public class ParserTest {
+public class SemanticAnalyzerTesting {
 
     private static final String TEST_CASE_PATH = "src/testCases/parserTestCases/correct/";
     private static final String ERROR_TEST_CASE_PATH = "src/testCases/parserTestCases/error/";
@@ -28,7 +30,7 @@ public class ParserTest {
     private boolean traceEnabled;
 
     //
-    public ParserTest(String testFileName, List<String> expectedErrorMessages, Options options, boolean errorFile) {
+    public SemanticAnalyzerTesting(String testFileName, List<String> expectedErrorMessages, Options options, boolean errorFile) {
         this.testFileName = testFileName;
         this.expectedErrorMessages = expectedErrorMessages;
         this.options = options;
@@ -79,7 +81,7 @@ public class ParserTest {
     public static boolean runAll(Options options) {
         options.unitTesting = true;
         boolean res = true;
-        for (ParserTest test : getTestCases(options)) {
+        for (SemanticAnalyzerTesting test : getTestCases(options)) {
 
             out.println("\n\n-------------------------------------\n");
             out.println("Running "+(test.errorFile?"error ":"")+"test: " + test.testFileName);
@@ -91,8 +93,8 @@ public class ParserTest {
     }
 
 
-    public static List<ParserTest> getTestCases(Options options) {
-        List<ParserTest> testCases = new ArrayList<>();
+    public static List<SemanticAnalyzerTesting> getTestCases(Options options) {
+        List<SemanticAnalyzerTesting> testCases = new ArrayList<>();
 
         File correctFolder = new File(TEST_CASE_PATH);
         File[] correctFiles = correctFolder.listFiles();
@@ -101,7 +103,7 @@ public class ParserTest {
             for(File f : correctFiles) {
                 String testFileName = f.getName();
                 List<String> expectedOutput = new ArrayList<>();
-                ParserTest ts = new ParserTest(testFileName, expectedOutput, options, false);
+                SemanticAnalyzerTesting ts = new SemanticAnalyzerTesting(testFileName, expectedOutput, options, false);
                 testCases.add(ts);
             }
         }
@@ -116,7 +118,7 @@ public class ParserTest {
                 String testFileName = f.getName();
                 List<String> expectedOutput = getExpectedOutput(f,expectedErrorOutputFiles);
 
-                ParserTest ts = new ParserTest(testFileName, expectedOutput, options, true);
+                SemanticAnalyzerTesting ts = new SemanticAnalyzerTesting(testFileName, expectedOutput, options, true);
                 testCases.add(ts);
 //                System.out.println("Adding error file test: " + f.getName());
             }

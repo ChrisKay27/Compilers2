@@ -827,11 +827,11 @@ public class Parser {
     private Term term(Set<TokenType> synch) {
         if (traceEnabled) lineTraceOutput.accept("\t\tEntering term");
 
-        Subexpression factor = factor(union(synch, FIRSTofMultop));
+        SubExpression factor = factor(union(synch, FIRSTofMultop));
         Term result = new Term(factor);
         TokenType tempMultOp = null;
-        Subexpression tempFactor = null;
-        Subexpression current = result;
+        SubExpression tempFactor = null;
+        SubExpression current = result;
         MultOpFactor next;
 
         while (FIRSTofMultop.contains(lookahead)) {
@@ -852,10 +852,10 @@ public class Parser {
      * @param synch - Set of tokens collected during parsing which represents valid next tokens, used for error recovery purposes
      * @return
      */
-    private Subexpression factor(Set<TokenType> synch) {
+    private SubExpression factor(Set<TokenType> synch) {
         if (traceEnabled) lineTraceOutput.accept("\t\tEntering factor");
 
-        Subexpression factor;
+        SubExpression factor;
         if (FIRSTofNid_factor.contains(lookahead)) {
             factor = nid_factor(synch);
         } else {
@@ -872,10 +872,10 @@ public class Parser {
      * @param synch - Set of tokens collected during parsing which represents valid next tokens, used for error recovery purposes
      * @return
      */
-    private Subexpression nid_factor(Set<TokenType> synch) {
+    private SubExpression nid_factor(Set<TokenType> synch) {
         if (traceEnabled) lineTraceOutput.accept("\t\tEntering nid-factor");
 
-        Subexpression nidFactor = null;
+        SubExpression nidFactor = null;
         switch (lookahead) {
             case NOT:
                 match(NOT, union(synch, FIRSTofFactor));

@@ -3,7 +3,7 @@ package parser.grammar.expressions;
 /**
  * Created by Chris on 1/30/2016.
  */
-public class MinusExpression extends Subexpression {
+public class MinusExpression extends SubExpression {
 
     @Override
     public void appendContents(StringBuilder sb , int tabs) {

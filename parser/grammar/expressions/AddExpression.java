@@ -1,12 +1,9 @@
 package parser.grammar.expressions;
 
-import parser.TokenType;
-import parser.grammar.ASTNode;
-
 /**
  * Created by Chris on 1/30/2016.
  */
-public class AddExpression extends Subexpression {
+public class AddExpression extends SubExpression {
     private final boolean uminus;
     private final Term term;
 
@@ -37,5 +34,9 @@ public class AddExpression extends Subexpression {
 
         if( nextNode != null )
             nextNode.appendContents(sb, tabs);
+    }
+
+    public AddOpTerm getNextNode(){
+        return (AddOpTerm) super.getNextNode();
     }
 }

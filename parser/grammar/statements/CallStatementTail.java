@@ -1,5 +1,6 @@
 package parser.grammar.statements;
 
+import parser.Type;
 import parser.grammar.ASTNode;
 import parser.grammar.expressions.Expression;
 
@@ -23,5 +24,9 @@ public class CallStatementTail extends StatementTail {
             return;
         sb.append("Arguments: ");
         call_tail.appendContents(sb,tabs+1);
+    }
+
+    public Type getType(){
+        return call_tail.getType();
     }
 }

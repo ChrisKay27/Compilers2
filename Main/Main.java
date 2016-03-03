@@ -2,8 +2,7 @@ package Main;
 
 import admininstration.Administration;
 import admininstration.Options;
-import testCases.Test;
-import testCases.TestScanner;
+import unitTesting.Test;
 
 import static java.lang.System.out;
 

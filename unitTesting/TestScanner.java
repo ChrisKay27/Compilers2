@@ -1,4 +1,4 @@
-package testCases;
+package unitTesting;
 
 import admininstration.Options;
 import admininstration.TestAdmin;
@@ -9,8 +9,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-
-import static Main.Main.*;
 
 /**
  * Concept test cases class, perhaps how the test cases are structured needs some work

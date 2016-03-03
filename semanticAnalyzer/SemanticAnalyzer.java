@@ -10,6 +10,7 @@ import parser.grammar.expressions.*;
 import parser.grammar.statements.*;
 import util.WTFException;
 
+import java.util.List;
 import java.util.function.Consumer;
 
 import static parser.Type.BOOL;
@@ -184,7 +185,7 @@ public class SemanticAnalyzer implements SemAnalInter {
 
     public void analyze(CallStatementTail AST) {
 		System.out.println("analyze CallStatementTail");
-       analyze(AST.getCall_tail());
+        analyze(AST.getCall_tail());
     }
 
 
@@ -304,13 +305,25 @@ public class SemanticAnalyzer implements SemAnalInter {
 
     public Type analyze(Expression AST){
 		System.out.println("analyze Expression");
+
         Type t = analyze(AST.getAddExp());
-        Type t2 = analyze(AST.getAddExp2());
-        if( t != t2 ) {
-            foundError = true;
-            error.accept("Expression type mismatch");
-            AST.setType(ERROR);
-        }else
+
+        if( AST.getAddExp2() != null ) {
+            Type t2 = analyze(AST.getAddExp2());
+
+            if (t == ERROR || t2 == ERROR) {
+                AST.setType(ERROR);
+            } else {
+                final List<Type> operandTypes = AST.getRelop().getOperandTypes();
+                if (t != t2 || (!operandTypes.contains(t) || !operandTypes.contains(t2))) {
+                    foundError = true;
+                    error.accept("Expression type mismatch");
+                    AST.setType(ERROR);
+                } else
+                    AST.setType(t);
+            }
+        }
+        else
             AST.setType(t);
         return AST.getType();
     }
@@ -320,68 +333,66 @@ public class SemanticAnalyzer implements SemAnalInter {
 		System.out.println("analyze AddExpression");
         Type t = analyze(AST.getTerm());
 
-        AddExpression next = (AddExpression) AST.getNextNode();
+        if( t != INT && AST.isUminus()){
+            t = ERROR;
+            foundError = true;
+            error.accept("Cannot urinary minus a boolean!");
+        }
+
+        AddOpTerm next = AST.getNextNode();
         while(next != null){
             Type t2 = analyze(next);
 
-            if( t != t2 && t != ERROR) {
-                foundError = true;
-                t = ERROR;
-                error.accept("Add Expression type mismatch");
-            }
+            AST.setType(typeCheck(t,t2,next.getAddOp().getOperandTypes()));
 
-            next = (AddExpression) AST.getNextNode();
+            next = AST.getNextNode();
         }
         AST.setType(t);
         return t;
     }
 
+
     public Type analyze(Term AST){
 		System.out.println("analyze Term");
         Type t = analyze(AST.getFactor());
 
-        Factor next = (Factor) AST.getNextNode();
+        MultOpFactor next = AST.getNextNode();
         while(next != null){
             Type t2 = analyze(next);
 
-            if( t != t2 && t != ERROR) {
-                foundError = true;
-                t = ERROR;
-                error.accept("Add Expression type mismatch");
-            }
-            next = (Factor) AST.getNextNode();
+            AST.setType(typeCheck(t,t2,next.getMultOp().getOperandTypes()));
+
+            next = AST.getNextNode();
         }
         return t;
     }
 
-    public Type analyze(Subexpression AST){
-		System.out.println("analyze Subexpression"); //Nothing to analyze here
+    public Type analyze(SubExpression AST){
+		System.out.println("analyze SubExpression"); //Nothing to analyze here
 
         if( AST instanceof AddExpression )
             return analyze((AddExpression) AST);
-		if( AST instanceof AddOpTerm )
+		else if( AST instanceof AddOpTerm )
 			return analyze(((AddOpTerm) AST).getTerm());
-		if( AST instanceof Expression )
+		else if( AST instanceof Expression )
 			return analyze((Expression) AST);
-		if( AST instanceof IdFactor )
+		else if( AST instanceof IdFactor )
             return analyze((IdFactor) AST);
-        if( AST instanceof LiteralBool )
+        else if( AST instanceof LiteralBool )
             return analyze((LiteralBool) AST);
-        if( AST instanceof LiteralNum )
+        else if( AST instanceof LiteralNum )
 			return analyze((LiteralNum) AST);
-		if( AST instanceof MinusExpression )
+		else if( AST instanceof MinusExpression )
 			return INT;//analyze((MinusExpression) AST);
-		if( AST instanceof MultOpFactor )
+		else if( AST instanceof MultOpFactor )
 			return analyze((MultOpFactor) AST);
-        if( AST instanceof NotNidFactor )
+        else if( AST instanceof NotNidFactor )
             return analyze((NotNidFactor) AST);
-		if( AST instanceof Term )
+		else if( AST instanceof Term )
 			return analyze((Term) AST);
 
         return ERROR;
     }
-
-
 
 
     public Type analyze(LiteralBool AST){
@@ -410,9 +421,17 @@ public class SemanticAnalyzer implements SemAnalInter {
     public Type analyze(IdFactor AST){
         System.out.println("analyze IdFactor");
         AST.setDecl(getDeclaration(AST.getIdToken().getAttrValue()));
-        analyze(AST.getIdTail());
+
+        if( AST.getIdTail() instanceof CallStatementTail )
+            analyze((CallStatementTail) AST.getIdTail());
+
+        else if(AST.getIdTail() instanceof AddExpression)
+            analyze((AddExpression) AST.getIdTail());
+
         return AST.getDecl().getType();
     }
+
+
 
 
     private void enteringCompoundStmt() {
@@ -432,10 +451,9 @@ public class SemanticAnalyzer implements SemAnalInter {
         SymbolTableEntry d = symbolTable.get(id);
 
         if( d == null ){
-            error.accept("");
+            error.accept("No declaration for this id: " + id);
         }
-
-        return null;
+        return (Declaration) d.getNode();
     }
 
     public void addDeclaration(Declaration d) {
@@ -445,5 +463,21 @@ public class SemanticAnalyzer implements SemAnalInter {
     @Override
     public void analyze(ASTNode AST) {
 		System.out.println("analyze ASTNode");        
+    }
+
+
+    public Type typeCheck(Type t, Type t2, List<Type> operandTypes){
+        //If any of them are already ERROR then we don't report the error because it has already been reported.
+        if( t == ERROR || t2 == ERROR )
+            return ERROR;
+
+        //If the types do not match or the operand types available do not contain one of these operators then report error
+        if( t != t2 || (!operandTypes.contains(t) || !operandTypes.contains(t2))) {
+            foundError = true;
+            error.accept("Expression type mismatch");
+            return ERROR;
+        }
+        //Everything is fine, return the type
+        return t;
     }
 }

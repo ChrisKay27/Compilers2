@@ -1,24 +1,23 @@
 package parser.grammar.expressions;
 
 import parser.TokenType;
-import parser.grammar.ASTNode;
 
 /**
  * Created by Carston on 2/21/2016.
  */
-public class MultOpFactor extends Subexpression {
+public class MultOpFactor extends SubExpression {
 
     private final TokenType addOp;
-    private final Subexpression factor;
+    private final SubExpression factor;
 
-    public MultOpFactor(TokenType addOp, Subexpression term) {
+    public MultOpFactor(TokenType addOp, SubExpression term) {
         this.addOp = addOp;
         this.factor = term;
     }
 
     public TokenType getMultOp() { return addOp; }
 
-    public Subexpression getFactor() { return factor; }
+    public SubExpression getFactor() { return factor; }
 
     @Override
     public void appendContents(StringBuilder sb, int tabs) {

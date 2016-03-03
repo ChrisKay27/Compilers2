@@ -1,15 +1,13 @@
 package parser.grammar.expressions;
 
-import parser.grammar.ASTNode;
-
 /**
  * Created by Chris on 2/12/2016.
  */
 public class NotNidFactor extends NidFactor {
 
-    private final Subexpression factor;
+    private final SubExpression factor;
 
-    public NotNidFactor(Subexpression factor) {
+    public NotNidFactor(SubExpression factor) {
         this.factor = factor;
     }
 
@@ -24,7 +22,7 @@ public class NotNidFactor extends NidFactor {
             nextNode.appendContents(sb, tabs + 2);
     }
 
-    public Subexpression getFactor() {
+    public SubExpression getFactor() {
         return factor;
     }
 }

@@ -11,6 +11,17 @@ public class LiteralNum extends NidFactor {
         return num;
     }
 
+    @Override
+    public void appendContents(StringBuilder sb, int tabs) {
+        sb.append('\n');
+        for (int i = 0; i < tabs; i++)
+            sb.append("    ");
+        sb.append(getClass().getSimpleName()).append(" VALUE(").append(this.toString()).append(')');
+
+        if (nextNode != null)
+            nextNode.appendContents(sb, tabs);
+    }
+
     public String toString(){
         return "" +this.num ;
     }

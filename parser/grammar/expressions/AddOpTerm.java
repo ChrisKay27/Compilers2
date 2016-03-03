@@ -1,12 +1,11 @@
 package parser.grammar.expressions;
 
 import parser.TokenType;
-import parser.grammar.ASTNode;
 
 /**
  * Created by Carston on 2/21/2016.
  */
-public class AddOpTerm extends Subexpression {
+public class AddOpTerm extends SubExpression {
 
     private final TokenType addOp;
 
@@ -29,7 +28,7 @@ public class AddOpTerm extends Subexpression {
         sb.append(tabsStr);
         sb.append(getClass().getSimpleName());
 
-        sb.append(" " + addOp + " ");
+        sb.append(" ").append(addOp).append(" ");
         term.appendContents(sb, tabs + 1);
         if( nextNode != null )
             nextNode.appendContents(sb, tabs);

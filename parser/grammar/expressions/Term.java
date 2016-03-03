@@ -3,11 +3,11 @@ package parser.grammar.expressions;
 /**
  * Created by Chris on 2/12/2016.
  */
-public class Term extends Subexpression {
+public class Term extends SubExpression {
 
-    private final Subexpression factor;
+    private final SubExpression factor;
 
-    public Term(Subexpression factor) {
+    public Term(SubExpression factor) {
         this.factor = factor;
     }
 
@@ -24,7 +24,11 @@ public class Term extends Subexpression {
             nextNode.appendContents(sb, tabs);
     }
 
-    public Subexpression getFactor() {
+    public SubExpression getFactor() {
         return factor;
+    }
+
+    public MultOpFactor getNextNode(){
+        return (MultOpFactor) super.getNextNode();
     }
 }
