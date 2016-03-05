@@ -111,11 +111,13 @@ public class SemanticAnalyzer implements SemAnalInter {
                 returnFound = true;
                 ReturnStatement returnStatement = (ReturnStatement) statement;
                 if (returnStatement.getType() != type) {
+                    foundError = true;
                     error.accept(statement.getLine(),"The returned value must match the return type of the function.");
                 }
             }
         }
         if (!returnFound && type != Type.VOID) {
+            foundError = true;
             error.accept(currentFuncDecl.getLine(),"No return statement found.");
         }
     }

@@ -1,4 +1,5 @@
 -- Chris Kaebe, March 3, 2016
+
 int main(void){
 
    loop{
@@ -8,4 +9,6 @@ int main(void){
             exit;
         continue;
    }end;
+
+   return -1;
 }

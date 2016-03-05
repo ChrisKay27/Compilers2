@@ -137,6 +137,15 @@ public class Administration implements Administrator {
         boolean passed = semAnal.startSemAnal((Declaration) tree);
         if(passed)
             printCompilationResults(tree);
+        else{
+            //If no tree was returned then the compiling failed
+            out.println("\n-------------------------------------\n");
+            out.println("\tCompile Failed\n");
+
+            //And we print the error messages to the user
+            if( !options.unitTesting )
+                outputHandler.printErrorOutputs(out::println);
+        }
     }
 
     public void printCompilationResults(ASTNode tree){
@@ -220,7 +229,7 @@ public class Administration implements Administrator {
      * Prints error messages from the scanner or parser to the appropriate output
      */
     public void printErrorMessage(int lineNumber, String msg){
-        String errorMsg = (lineNumber) + ":" + fileLines.get(lineNumber) + (lineNumber) + ":" +msg;
+        String errorMsg = (lineNumber) + ": " + fileLines.get(lineNumber) + (lineNumber) + ": " +msg;
         if( !options.unitTesting && !options.quiet )
             outputHandler.printErrorMessage(errorMsg);
         outputHandler.addErrorMessage(errorMsg);
