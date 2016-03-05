@@ -15,11 +15,9 @@ int main(void){
     bool b, bar, y;
     int x;
     int a[5];
-    int b;
 
     x := 2;
     y := true;
-    b := 2;
 
     foo(x+x, y, a[2], bar);
     fred();

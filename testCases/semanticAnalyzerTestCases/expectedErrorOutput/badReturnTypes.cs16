@@ -1,3 +1,5 @@
+11: int foo(void){
+11: Duplicate definition of foo
 8:     return 1;
 8: Error, return type does not match functions type.
 7: bool foo(void){

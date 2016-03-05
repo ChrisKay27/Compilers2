@@ -3,6 +3,13 @@
     Date: Feb 21, 2016
 */
 
+int foo(void){
+return 2;
+}
+
+int foo(void){
+return 1;
+}
 
 int main(void){
 return 2;
@@ -10,4 +17,4 @@ return 2;
 
 int main(void){
 return 1;
- }
+}

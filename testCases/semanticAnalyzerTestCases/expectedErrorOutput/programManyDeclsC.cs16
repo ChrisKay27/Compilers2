@@ -1,2 +1,182 @@
+19: void f(int x){
+19: Duplicate definition of f
+22: void f(int x){
+22: Duplicate definition of f
+25: void f(int x){
+25: Duplicate definition of f
+28: void f(int x){
+28: Duplicate definition of f
+31: void f(int x){
+31: Duplicate definition of f
+34: void f(int x){
+34: Duplicate definition of f
+37: void f(int x){
+37: Duplicate definition of f
+41: void f(int x){
+41: Duplicate definition of f
+44: void f(int x){
+44: Duplicate definition of f
+47: void f(int x){
+47: Duplicate definition of f
+50: void f(int x){
+50: Duplicate definition of f
+53: void f(int x){
+53: Duplicate definition of f
+58: void f(int x){
+58: Duplicate definition of f
+61: void f(int x){
+61: Duplicate definition of f
+64: void f(int x){
+64: Duplicate definition of f
+67: void f(int x){
+67: Duplicate definition of f
+70: void f(int x){
+70: Duplicate definition of f
+73: void f(int x){
+73: Duplicate definition of f
+76: void f(int x){
+76: Duplicate definition of f
+80: void f(int x){
+80: Duplicate definition of f
+83: void f(int x){
+83: Duplicate definition of f
+86: void f(int x){
+86: Duplicate definition of f
+89: void f(int x){
+89: Duplicate definition of f
+92: void f(int x){
+92: Duplicate definition of f
+95: void f(int x){
+95: Duplicate definition of f
+98: void f(int x){
+98: Duplicate definition of f
+101: void f(int x){
+101: Duplicate definition of f
+104: void f(int x){
+104: Duplicate definition of f
+107: void f(int x){
+107: Duplicate definition of f
+110: void f(int x){
+110: Duplicate definition of f
+113: void f(int x){
+113: Duplicate definition of f
+116: void f(int x){
+116: Duplicate definition of f
+119: void f(int x){
+119: Duplicate definition of f
+122: void f(int x){
+122: Duplicate definition of f
+125: void f(int x){
+125: Duplicate definition of f
+128: void f(int x){
+128: Duplicate definition of f
+131: void f(int x){
+131: Duplicate definition of f
+134: void f(int x){
+134: Duplicate definition of f
+137: void f(int x){
+137: Duplicate definition of f
+140: void f(int x){
+140: Duplicate definition of f
+143: void f(int x){
+143: Duplicate definition of f
+146: void f(int x){
+146: Duplicate definition of f
+149: void f(int x){
+149: Duplicate definition of f
+152: void f(int x){
+152: Duplicate definition of f
+155: void f(int x){
+155: Duplicate definition of f
+158: void f(int x){
+158: Duplicate definition of f
+161: void f(int x){
+161: Duplicate definition of f
+164: void f(int x){
+164: Duplicate definition of f
+167: void f(int x){
+167: Duplicate definition of f
+170: void f(int x){
+170: Duplicate definition of f
+173: void f(int x){
+173: Duplicate definition of f
+176: void f(int x){
+176: Duplicate definition of f
+179: void f(int x){
+179: Duplicate definition of f
+182: void f(int x){
+182: Duplicate definition of f
+185: void f(int x){
+185: Duplicate definition of f
+188: void f(int x){
+188: Duplicate definition of f
+191: void f(int x){
+191: Duplicate definition of f
+194: void f(int x){
+194: Duplicate definition of f
+197: void f(int x){
+197: Duplicate definition of f
+200: void f(int x){
+200: Duplicate definition of f
+203: void f(int x){
+203: Duplicate definition of f
+206: void f(int x){
+206: Duplicate definition of f
+209: void f(int x){
+209: Duplicate definition of f
+212: void f(int x){
+212: Duplicate definition of f
+215: void f(int x){
+215: Duplicate definition of f
+218: void f(int x){
+218: Duplicate definition of f
+221: void f(int x){
+221: Duplicate definition of f
+224: void f(int x){
+224: Duplicate definition of f
+227: void f(int x){
+227: Duplicate definition of f
+230: void f(int x){
+230: Duplicate definition of f
+233: void f(int x){
+233: Duplicate definition of f
+236: void f(int x){
+236: Duplicate definition of f
+239: void f(int x){
+239: Duplicate definition of f
+242: void f(int x){
+242: Duplicate definition of f
+245: void f(int x){
+245: Duplicate definition of f
+248: void f(int x){
+248: Duplicate definition of f
+251: void f(int x){
+251: Duplicate definition of f
+254: void f(int x){
+254: Duplicate definition of f
+257: void f(int x){
+257: Duplicate definition of f
+260: void f(int x){
+260: Duplicate definition of f
+263: void f(int x){
+263: Duplicate definition of f
+266: void f(int x){
+266: Duplicate definition of f
+269: void f(int x){
+269: Duplicate definition of f
+272: void f(int x){
+272: Duplicate definition of f
+275: void f(int x){
+275: Duplicate definition of f
+278: void f(int x){
+278: Duplicate definition of f
+281: void f(int x){
+281: Duplicate definition of f
+284: void f(int x){
+284: Duplicate definition of f
+287: void f(int x){
+287: Duplicate definition of f
+290: void f(int x){
+290: Duplicate definition of f
 290: void f(int x){
 290: Function main must be the last function declared in the source file.

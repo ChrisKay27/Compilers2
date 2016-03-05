@@ -4,22 +4,21 @@
 */
 
 void bar(void){
-;
+    ;
 }
 
 int foo(void){
-;
+    return -1;
 }
 
 int main(void){
-    foo(5);
-
     bool x;
+
+    foo(5);
     x := foo();
-
     x := bar();
-
     bar(2);
+
     return 123456789;
 }
 
