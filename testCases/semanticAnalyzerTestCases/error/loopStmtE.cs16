@@ -4,7 +4,7 @@
 */
 
 int main(void){
-    int y;
+    int y, banana;
 
     continue;
     exit;
@@ -19,4 +19,5 @@ int main(void){
     continue;
     exit;
 
+    return banana;
 }

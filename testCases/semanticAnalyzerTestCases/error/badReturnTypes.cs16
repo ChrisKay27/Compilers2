@@ -12,6 +12,9 @@ int foo(void){
     return true;
 }
 
+void boo(int x){
+    return x;
+}
 void main(void){
     int x;
     if( x = 1 )

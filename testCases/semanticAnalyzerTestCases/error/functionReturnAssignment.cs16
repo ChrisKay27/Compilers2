@@ -27,7 +27,7 @@ bool isFat(bool isWoman){
     }
 }
 
-void foo(){
+void foo(void){
 ;
 }
 int main(bool isWoman){

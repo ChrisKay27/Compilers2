@@ -140,7 +140,10 @@ public class SemanticAnalyzer implements SemAnalInter {
     }
 
     private void mainFunctionConstraints(FuncDeclaration function) {
-        if (function != null && "main".equals(function.getID().name)) {
+        if( function == null ){
+            error.accept(0,"No main function in file");
+        }
+        else if ("main".equals(function.getID().name)) {
             if (function.getType() != Type.INT) {
                 error.accept(function.getLine(), "Function main must have a return type of int.");
             }

@@ -4,11 +4,11 @@
 */
 
 void bar(){
-
+;
 }
 
 int foo(){
-
+;
 }
 
 int main(void){
@@ -20,5 +20,6 @@ int main(void){
     x := bar();
 
     bar(2);
+    return 123456789;
 }
 
