@@ -1,0 +1,34 @@
+8:     return 1;
+8: Error, return type does not match functions type.
+7: bool foo(void){
+7: No return statement found.
+12:     return true;
+12: Error, return type does not match functions type.
+11: int foo(void){
+11: No return statement found.
+16:     return x;
+16: Error, return type does not match functions type.
+21:         return true;
+21: Error, return type does not match functions type.
+23:         return false;
+23: Error, return type does not match functions type.
+29:         return 1;
+29: Error, return type does not match functions type.
+30:     if(x=2) return x;
+30: Error, return type does not match functions type.
+31:     if(x=2) return -x;
+31: Error, return type does not match functions type.
+32:     if(x=2) return 1;
+32: Error, return type does not match functions type.
+33:     if(x=2) return x+1;
+33: Error, return type does not match functions type.
+34:     if(x=2) return x+x;
+34: Error, return type does not match functions type.
+35:     if(x=2) return x*x;
+35: Error, return type does not match functions type.
+36:     if(x=2) return x-x;
+36: Error, return type does not match functions type.
+37:     if(x=2) return x;
+37: Error, return type does not match functions type.
+26: void main(void){
+26: Function main must have a return type of int.

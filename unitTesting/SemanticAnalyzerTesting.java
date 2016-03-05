@@ -4,9 +4,7 @@ import admininstration.Options;
 import admininstration.TestAdmin;
 import util.WTFException;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -69,7 +67,6 @@ public class SemanticAnalyzerTesting {
             if( passed )
                 System.out.println(testFileName+" passed.\n");
             else {
-
                 System.out.println(testFileName + " failed.\n");
 
                 System.out.println("Was expecting error output:");
@@ -125,6 +122,7 @@ public class SemanticAnalyzerTesting {
         if( errorFiles != null ){
             for(File f : errorFiles) {
                 String testFileName = f.getName();
+
                 List<String> expectedOutput = getExpectedOutput(f,expectedErrorOutputFiles);
 
                 SemanticAnalyzerTesting ts = new SemanticAnalyzerTesting(testFileName, expectedOutput, options, true);
@@ -137,11 +135,11 @@ public class SemanticAnalyzerTesting {
     }
 
     public static List<String> getExpectedOutput(File f,File[] expectedErrorOutputFiles){
-        if( expectedErrorOutputFiles == null || expectedErrorOutputFiles.length ==0) {
-            List<String> expectOutput = new ArrayList<>();
-//            expectOutput.add(":D");
-            return expectOutput;
-        }
+//        if( f == null || expectedErrorOutputFiles == null || expectedErrorOutputFiles.length ==0) {
+//            List<String> expectOutput = new ArrayList<>();
+////            expectOutput.add(":D");
+//            return expectOutput;
+//        }
 
         for(File errorLog : expectedErrorOutputFiles){
             if( f.getName().equals(errorLog.getName())){
@@ -162,7 +160,11 @@ public class SemanticAnalyzerTesting {
                 return error;
             }
         }
-        throw new WTFException("Could not find output file for this test case! (" + f.getName());
+        List<String> expectOutput = new ArrayList<>();
+//            expectOutput.add(":D");
+        return expectOutput;
+
+        //throw new WTFException("Could not find output file for this test case! (" + f.getName());
     }
 }
 

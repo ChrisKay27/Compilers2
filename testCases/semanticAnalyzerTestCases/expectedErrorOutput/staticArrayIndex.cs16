@@ -1,0 +1,4 @@
+10:     y := z[x];
+10: Non static expression in array index
+6: int main(void){
+6: No return statement found.

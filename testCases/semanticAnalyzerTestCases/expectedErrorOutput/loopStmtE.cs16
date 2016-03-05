@@ -1,0 +1,8 @@
+9:     continue;
+9: Continue statement not within loop
+10:     exit;
+10: Exit statement not within loop
+19:     continue;
+19: Continue statement not within loop
+20:     exit;
+20: Exit statement not within loop

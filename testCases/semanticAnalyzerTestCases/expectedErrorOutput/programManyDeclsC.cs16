@@ -1,0 +1,2 @@
+290: void f(int x){
+290: Function main must be the last function declared in the source file.

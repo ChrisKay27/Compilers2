@@ -75,14 +75,12 @@ public class Scanner {
         symbolTable.put("writeint" ,1);
         symbolTable.put("readbool" ,2);
         symbolTable.put("writebool",3);
-        symbolTable.put("x",4);
 
         reverseSymbolTable[0] = "readint";
         reverseSymbolTable[1] = "writeint";
         reverseSymbolTable[2] = "readbool";
         reverseSymbolTable[3] = "writebool";
-        reverseSymbolTable[4] = "x";
-        symbolCount = 5;
+        symbolCount = 4;
 
         ssm = new ScannerStateMachine(errorOutput);
     }
