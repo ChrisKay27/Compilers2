@@ -42,10 +42,10 @@ public class Scanner {
         keywords.put("void", new Token(TokenType.VOID, null));
         keywords.put("true", new Token(TokenType.BLIT, 1));
         keywords.put("false", new Token(TokenType.BLIT, 0));
-        keywords.put("readint", new Token(TokenType.ID, 0));
-        keywords.put("writeint", new Token(TokenType.ID, 1));
-        keywords.put("readbool", new Token(TokenType.ID, 2));
-        keywords.put("writebool", new Token(TokenType.ID, 3));
+//        keywords.put("readint", new Token(TokenType.ID, 0));
+//        keywords.put("writeint", new Token(TokenType.ID, 1));
+//        keywords.put("readbool", new Token(TokenType.ID, 2));
+//        keywords.put("writebool", new Token(TokenType.ID, 3));
     }
 
     private Supplier<Integer> reader;
@@ -76,6 +76,13 @@ public class Scanner {
         symbolTable.put("readbool" ,2);
         symbolTable.put("writebool",3);
         symbolTable.put("x",4);
+
+        reverseSymbolTable[0] = "readint";
+        reverseSymbolTable[1] = "writeint";
+        reverseSymbolTable[2] = "readbool";
+        reverseSymbolTable[3] = "writebool";
+        reverseSymbolTable[4] = "x";
+        symbolCount = 5;
 
         ssm = new ScannerStateMachine(errorOutput);
     }

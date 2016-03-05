@@ -87,7 +87,6 @@ public class SemanticAnalyzer implements SemAnalInter {
                 lastFunction = (FuncDeclaration) current;
             }
 
-
             current = (Declaration) current.getNextNode();
         }
         while (current != null);
@@ -142,7 +141,7 @@ public class SemanticAnalyzer implements SemAnalInter {
     }
 
     private void mainFunctionConstraints(FuncDeclaration function) {
-        if (function.getID().name.equals("main")) {
+        if (function != null && "main".equals(function.getID().name)) {
             if (function.getType() != Type.INT) {
                 error.accept(function.getLine(), "Function main must have a return type of int.");
             }
@@ -238,38 +237,48 @@ public class SemanticAnalyzer implements SemAnalInter {
     }
     private void callConstraints(IdStatement idStatement) {
         FuncDeclaration function = (FuncDeclaration) idStatement.getDecl();
-        Expression args = (Expression) ((CallStatementTail) idStatement.getId_stmt_tail()).getCall_tail();
-        ParamDeclaration currentParam = function.getParams();
-        Expression currentArg = args;
-        int counter = 0;
-        while (currentArg != null && currentParam != null) {
-            counter++;
-            if (currentArg.getType() != currentParam.getType()) {
-                if (currentArg.getType() != Type.ERROR)
-                    error.accept(idStatement.getLine(), idStatement.getIdToken().name +
-                            ", Argument #" + counter + " : Expected argument of type " + currentParam.getType()
-                            + ", received argument of type " + currentArg.getType());
-                else {}
+
+        if (idStatement.getId_stmt_tail() instanceof CallStatementTail) {
+
+            Expression args = (Expression) ((CallStatementTail) idStatement.getId_stmt_tail()).getCall_tail();
+            ParamDeclaration currentParam = function.getParams();
+            Expression currentArg = args;
+            int counter = 0;
+            while (currentArg != null && currentParam != null) {
+                counter++;
+                if (currentArg.getType() != currentParam.getType()) {
+                    if (currentArg.getType() != Type.ERROR)
+                        error.accept(idStatement.getLine(), idStatement.getIdToken().name +
+                                ", Argument #" + counter + " : Expected argument of type " + currentParam.getType()
+                                + ", received argument of type " + currentArg.getType());
+                    else {
+                    }
+                }
+
+                if (currentParam.getNextNode() instanceof ParamDeclaration) {
+                    currentParam = (ParamDeclaration) currentParam.getNextNode();
+                } else {
+                    currentParam = null;
+                }
+
+                if (currentArg.getNextNode() instanceof Expression) {
+                    currentArg = (Expression) currentArg.getNextNode();
+                } else {
+                    currentArg = null;
+                }
             }
 
-            if (currentParam.getNextNode() instanceof ParamDeclaration) {
-                currentParam = (ParamDeclaration) currentParam.getNextNode();
-            } else {
-                currentParam = null;
-            }
-
-            if (currentArg.getNextNode() instanceof Expression) {
-                currentArg = (Expression) currentArg.getNextNode();
-            } else {
-                currentArg = null;
+            if (currentArg == null && currentParam != null) {
+                error.accept(idStatement.getLine(), "Function call " + idStatement.getIdToken().name
+                        + " has not enough arguments provided.");
+            } else if (currentParam == null && currentArg != null) {
+                error.accept(idStatement.getLine(), "Function call " + idStatement.getIdToken().name
+                        + " has too many arguments provided.");
             }
         }
-        if (currentArg == null && currentParam != null) {
-            error.accept(idStatement.getLine(), "Function call " + idStatement.getIdToken().name
-                    + " has not enough arguments provided.");
-        } else if (currentParam == null && currentArg != null) {
-            error.accept(idStatement.getLine(), "Function call " + idStatement.getIdToken().name
-                    + " has too many arguments provided.");
+        else{
+            AssignStatementTail assignStatementTail = (AssignStatementTail) idStatement.getId_stmt_tail();
+            analyze(assignStatementTail);
         }
     }
 

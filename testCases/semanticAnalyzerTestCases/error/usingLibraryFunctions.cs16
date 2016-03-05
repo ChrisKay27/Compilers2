@@ -7,6 +7,20 @@
 
 int main(void){
     int x;
-    x :=
+    readint();
+    x := readbool();
+
+    writebool();
+    writebool(x);
+    x := writebool(false);
+    writebool(true);
+
+
+
+    writeint(true);
+    writeint(false);
+    writeint(1);
+
+    return 1;
 }
 

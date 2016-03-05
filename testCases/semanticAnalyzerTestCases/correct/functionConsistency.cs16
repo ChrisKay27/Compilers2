@@ -21,9 +21,10 @@ int main(void){
     y := true;
     b := 2;
 
-    foo(x+x, not y, a[2], bar);
+    foo(x+x, y, a[2], bar);
     fred();
     writebool(b);
     writebool(bar);
+
     return -1;
 }
