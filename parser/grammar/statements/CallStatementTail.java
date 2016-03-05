@@ -8,6 +8,7 @@ import parser.grammar.expressions.Expression;
  * Created by Chris on 2/12/2016.
  */
 public class CallStatementTail extends StatementTail {
+
     private final Expression call_tail;
 
     public CallStatementTail(int line, Expression call_tail) {

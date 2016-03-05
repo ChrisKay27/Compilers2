@@ -1,5 +1,8 @@
 -- Chris Kaebe, March 3 2016
 
+void fred(void){
+    writebool(true);
+}
 
 void foo(int x, ref bool b, int ab, ref bool bar){
 
@@ -9,15 +12,17 @@ void foo(int x, ref bool b, int ab, ref bool bar){
 }
 
 int main(void){
-    bool b, bar;
+    bool b, bar, y;
     int x;
     int a[5];
     int b;
 
     x := 2;
+    y := true;
     b := 2;
 
-    foo(x+x, not y, (a[b]), bar);
+    foo(x+x, not y, a[2], bar);
+    fred();
     writebool(b);
     writebool(bar);
     return -1;

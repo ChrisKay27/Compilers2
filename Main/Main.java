@@ -13,7 +13,7 @@ import static java.lang.System.out;
  * Date -  1/13/2016.
  */
 public class Main {
-
+    // help
     public static final String HELP_MENU = "-h", HELP_MENU2 = "-help";
     public static final String LEXICAL_PHASE = "-l", LEXICAL_PHASE2 = "-lex";
     public static final String PARSER_PHASE = "-p", PARSER_PHASE2 = "-parse";

@@ -77,9 +77,8 @@ public class SymbolTable {
         }
     }
 
-
     public SymbolTableEntry get(int id) {
-        if (index.size() <= 0) return null;
+        if (!index.containsKey(id)) return null;
         return index.get(id);
     }
 

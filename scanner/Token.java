@@ -47,7 +47,8 @@ public class Token {
             return false;
         }
         if( t.attrValue == attrValue ) {
-            return true;}
+            return true;
+        }
 
 
         return attrValue != null && attrValue.equals(t.attrValue);
