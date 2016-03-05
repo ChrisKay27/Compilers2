@@ -8,7 +8,7 @@ void foo(int x, ref bool b, int ab, ref bool bar){
 
 }
 
-void main(void){
+int main(void){
     bool b, bar;
     int x;
     x := 2;
@@ -19,5 +19,5 @@ void main(void){
     foo(x+x, not y, (a[b]), bar);
     writebool(b);
     writebool(bar);
-
+    return -1;
 }

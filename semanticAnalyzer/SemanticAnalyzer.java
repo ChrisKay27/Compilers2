@@ -406,14 +406,12 @@ public class SemanticAnalyzer implements SemAnalInter {
         }
 
         AddOpTerm next = AST.getNextNode();
-        while(next != null){
+        if(next != null){
             Type t2 = analyze(next);
 
             AST.setType(typeCheck(t,t2,next.getAddOp().getOperandTypes()));
 
             isStatic &= next.isStatic();
-
-            next = AST.getNextNode();
         }
 
         AST.setStatic(isStatic);
@@ -430,15 +428,13 @@ public class SemanticAnalyzer implements SemAnalInter {
 
         boolean isStatic = AST.getFactor().isStatic();
 
-        MultOpFactor next = AST.getNextNode();
-        while(next != null){
+        MultOpFactor next = (MultOpFactor) AST.getFactor().getNextNode();
+        if(next != null){
             Type t2 = analyze(next);
 
             AST.setType(typeCheck(t,t2,next.getMultOp().getOperandTypes()));
 
             isStatic &= next.isStatic();
-
-            next = AST.getNextNode();
         }
 
         AST.setStatic(isStatic);
@@ -478,7 +474,6 @@ public class SemanticAnalyzer implements SemAnalInter {
 
         else if( AST instanceof Expression)
             return analyze((Expression) AST);
-
 
 
         return ERROR;

@@ -4,7 +4,8 @@ int main(void){
     int x, a;--, b, p, q;
 
     x := -a;
-    x := b;
+    x := x + 1;
+   -- x := b;
    -- x := p < q;
    -- x := p <= q;
    -- x := p > q;
