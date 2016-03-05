@@ -27,11 +27,12 @@ public class AddExpression extends SubExpression {
         sb.append('\n');
         String tabsStr = getTabs(tabs);
         sb.append(tabsStr);
-        sb.append(getLine() + ":" + getClass().getSimpleName());
+        sb.append(getLine()).append(":").append(getClass().getSimpleName());
 
         if(uminus)
             sb.append(" - ");
 
+        sb.append(tabsStr).append("Type:").append(getType());
         term.appendContents(sb, tabs + 1);
 
         if( nextNode != null )

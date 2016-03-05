@@ -119,6 +119,7 @@ public class Administration implements Administrator {
     private void parserCompile() throws IOException {
         ASTNode tree = parser.startParsing();
 
+        printASTTree(tree);
         printCompilationResults(tree);
     }
 
@@ -135,7 +136,7 @@ public class Administration implements Administrator {
             return;
         }
 
-        printCompilationResults(tree);
+        printASTTree(tree);
 
         printLineTrace("\n  ----  Parsing Phase Complete  ----\n\n");
         printLineTrace("  ----  Starting Semantics Phase  ----\n\n");
@@ -155,12 +156,15 @@ public class Administration implements Administrator {
         }
     }
 
-    public void printCompilationResults(ASTNode tree){
+    public void printASTTree(ASTNode tree){
         //if a tree was returned we decide to print it or not based on a program argument
         if( tree != null && options.printAST ){
             printLineTrace("\n\n---- Abstract Syntax Tree ----\n\n");
             printLineTrace(tree.toString());
         }
+    }
+
+    public void printCompilationResults(ASTNode tree){
 
         if(tree != null ) {
             //If it returned a tree we report success
