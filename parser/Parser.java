@@ -586,16 +586,19 @@ public class Parser {
             Token IDToken = lookaheadToken;
             match(ID, union(synch, FIRSTofVar_dec_tail));
 
-            var_dec_tail(union(union(synch, FIRSTofStatement), FIRSTofNonvoid_specifier));
+            final VarDecTail varDecTail = var_dec_tail(union(union(synch, FIRSTofStatement), FIRSTofNonvoid_specifier));
 
-            Declaration tempDec2 = new Declaration(line, decType, IDToken);
+            Declaration tempDec2 = varDecTail.toVarDeclarations(line,decType,IDToken);
             if (firstDec == null) {
                 firstDec = tempDec2;
-                tempDec = tempDec2;
+                tempDec = tempDec2.getLastNextNode();
             } else {
                 tempDec.setNextNode(tempDec2);
-                tempDec = tempDec2;
+                tempDec = tempDec2.getLastNextNode();
             }
+           // tempDec.setNextNode(varDecTail.toVarDeclarations(line,decType,IDToken));
+
+
         }
 
         Statement first = null;

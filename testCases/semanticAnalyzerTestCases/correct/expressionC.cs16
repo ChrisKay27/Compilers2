@@ -1,7 +1,9 @@
 -- Chris Kaebe, March 3, 2016
 
 int main(void){
-    int x, a;--, b, p, q;
+    int x, a, b, p, q;
+    bool c,d,e;
+    int sam,I,Am;
 
     x := -a;
     x := x + 1;

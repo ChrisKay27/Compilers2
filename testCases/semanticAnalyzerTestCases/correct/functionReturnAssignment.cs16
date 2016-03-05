@@ -27,7 +27,7 @@ bool isFat(bool isWoman){
     }
 }
 
-int main(bool isWoman){
+int main(void){
     int wiggerness;
     bool isAFatty;
     isAFatty := isFat(isWoman);

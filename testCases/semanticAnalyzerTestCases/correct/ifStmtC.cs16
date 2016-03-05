@@ -1,7 +1,7 @@
 -- Carston Schilds, Feb 21st 2016
 
 int main(void) {
-
+    bool e1,e2;
 if (e1) if (e2) ; else ;
 
 if (e1) {if (e2) ; else ;}

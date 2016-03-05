@@ -72,8 +72,9 @@ public class SemanticAnalyzer implements SemAnalInter {
         Declaration current = AST;
         FuncDeclaration lastFunction = null;
         do {
+            current.setLevel(0);
             addDeclaration(current);
-            current = (Declaration) current.getNextNode();
+            current = current.getNextNode();
         }
         while (current != null);
 
@@ -180,7 +181,13 @@ public class SemanticAnalyzer implements SemAnalInter {
 
     public void analyze(VarDeclaration AST) {
         output.accept(AST.getLine() + ": analyze VarDeclaration\n");
-        //Dec already added in first sweep phase
+
+        if( AST.getLevel() != 0 ){
+            while(AST != null){
+                addDeclaration(AST);
+                AST = (VarDeclaration) AST.getNextNode();
+            }
+        }
     }
 
     public void analyze(Statement AST) {
@@ -209,7 +216,7 @@ public class SemanticAnalyzer implements SemAnalInter {
 
     public void analyze(IdStatement AST) {
         output.accept(AST.getLine() + ": analyze IdStatement\n");
-        AST.setDecl(getDeclaration(AST.getIdToken().getAttrValue()));
+        AST.setDecl(getDeclaration(AST.getLine(),AST.getIdToken().getAttrValue()));
         analyze(AST.getId_stmt_tail());
 
         Declaration d = AST.getDecl();
@@ -327,7 +334,7 @@ public class SemanticAnalyzer implements SemAnalInter {
         Declaration d = AST.getDeclarations();
         while (d != null) {
             addDeclaration(d);
-            d = (Declaration) d.getNextNode();
+            d = d.getNextNode();
         }
 
         Statement stmt = AST.getStatements();
@@ -593,7 +600,7 @@ public class SemanticAnalyzer implements SemAnalInter {
 
         AST.setStatic(false);
 
-        AST.setDecl(getDeclaration(AST.getIdToken().getAttrValue()));
+        AST.setDecl(getDeclaration(AST.getLine(), AST.getIdToken().getAttrValue()));
 
         if (AST.getIdTail() instanceof CallStatementTail)
             analyze((CallStatementTail) AST.getIdTail());
@@ -620,11 +627,11 @@ public class SemanticAnalyzer implements SemAnalInter {
         symbolTable.leaveFrame();
     }
 
-    private Declaration getDeclaration(int id) {
+    private Declaration getDeclaration(int line,int id) {
         SymbolTableEntry d = symbolTable.get(id);
 
         if (d == null) {
-            regError.accept("No declaration for this id: " + id);
+            error.accept(line, "No declaration for this id: " + id);
             return errorDeclaration;
         }
 

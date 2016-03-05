@@ -3,11 +3,12 @@
 */
 int main(void){
     int x1 ,x ,y;
+    bool a, b;
+
     x := 1;
     y := 2;
     x1 := x + y;
 
-    bool a, b;
     a := true;
     b := false;
 

@@ -19,5 +19,5 @@ int main(void){
     y := true;
     y := true and false;
     y := true && true;
-
+    return 1;
 }

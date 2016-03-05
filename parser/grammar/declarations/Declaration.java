@@ -11,6 +11,7 @@ public class Declaration extends ASTNode {
 
     protected final Type type;
     protected final Token ID;
+    private int level = -1;
 
 
     public Declaration(int line, Type type, Token ID) {
@@ -38,4 +39,28 @@ public class Declaration extends ASTNode {
             nextNode.appendContents(sb, tabs);
     }
 
+    @Override
+    public Declaration getNextNode() {
+        return (Declaration) super.getNextNode();
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
+    public Declaration getLastNextNode() {
+        Declaration d = getNextNode();
+        if( d == null )
+            return this;
+        Declaration tmp = d.getNextNode();
+        while( tmp != null ){
+            d = tmp;
+            tmp = tmp.getNextNode();
+        }
+        return d;
+    }
 }

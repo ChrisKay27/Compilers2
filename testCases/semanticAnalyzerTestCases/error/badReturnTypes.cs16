@@ -15,6 +15,14 @@ int foo(void){
 void boo(int x){
     return x;
 }
+
+void moo(void){
+    if( true )
+        return true;
+    else
+        return false;
+}
+
 void main(void){
     int x;
     if( x = 1 )

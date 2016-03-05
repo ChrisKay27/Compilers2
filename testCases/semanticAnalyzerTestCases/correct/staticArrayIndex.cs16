@@ -10,5 +10,5 @@ int main(void){
     y := z[-3];
     a := z;
     z[3] := y;
-
+    return x;
 }
