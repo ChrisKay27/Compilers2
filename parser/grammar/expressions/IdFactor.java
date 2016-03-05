@@ -33,10 +33,9 @@ public class IdFactor extends Factor {
         sb.append('\n');
         for (int i = 0; i < tabs; i++)
             sb.append("    ");
-        sb.append(getLine() + ":" + getClass().getSimpleName());
-
+        sb.append(getLine()).append(":").append(getClass().getSimpleName()).append(" ");
         sb.append(idToken);
-
+        sb.append('\n').append(getTabs(tabs)).append("Type:").append(getType());
         if( idTail != null )
             idTail.appendContents(sb,tabs+1);
 
@@ -50,6 +49,7 @@ public class IdFactor extends Factor {
 
     public void setDecl(Declaration decl) {
         this.decl = decl;
+        setType(decl.getType());
     }
 
 

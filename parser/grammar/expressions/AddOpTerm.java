@@ -27,8 +27,8 @@ public class AddOpTerm extends SubExpression {
         sb.append('\n');
         String tabsStr = getTabs(tabs);
         sb.append(tabsStr);
-        sb.append(getLine() + ":" + getClass().getSimpleName());
-
+        sb.append(getLine()).append(":").append(getClass().getSimpleName());
+        sb.append('\n').append(tabsStr).append("Type:").append(getType());
         sb.append(" ").append(addOp).append(" ");
         term.appendContents(sb, tabs + 1);
         if( nextNode != null )

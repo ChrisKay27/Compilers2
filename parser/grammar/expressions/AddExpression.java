@@ -32,7 +32,7 @@ public class AddExpression extends SubExpression {
         if(uminus)
             sb.append(" - ");
 
-        sb.append(tabsStr).append("Type:").append(getType());
+        sb.append('\n').append(tabsStr).append("Type:").append(getType());
         term.appendContents(sb, tabs + 1);
 
         if( nextNode != null )

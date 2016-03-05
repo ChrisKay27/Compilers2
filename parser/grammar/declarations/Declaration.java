@@ -34,7 +34,8 @@ public class Declaration extends ASTNode {
         for (int i = 0; i < tabs; i++)
             sb.append("    ");
 
-        sb.append(getLine() + ":" + getClass().getSimpleName()).append(' ').append(type).append(' ').append(ID);
+        sb.append(getLine()).append(":").append(getClass().getSimpleName()).append(' ').append(type).append(' ').append(ID);
+        sb.append('\n').append(getTabs(tabs)).append("Type:").append(getType());
         if( nextNode != null )
             nextNode.appendContents(sb, tabs);
     }

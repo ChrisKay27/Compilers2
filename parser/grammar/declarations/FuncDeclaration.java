@@ -33,7 +33,7 @@ public class FuncDeclaration extends Declaration {
         for (int i = 0; i < tabs; i++)
             sb.append("    ");
         sb.append(getClass().getSimpleName()).append(' ').append(getType()).append(' ').append(getID());
-
+        sb.append('\n').append(getTabs(tabs)).append("Type:").append(getType());
         if( params != null )
             params.appendContents(sb,tabs+1);
 

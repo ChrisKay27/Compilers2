@@ -39,11 +39,13 @@ public class Expression extends SubExpression {
         sb.append('\n');
         for (int i = 0; i < tabs; i++)
             sb.append("    ");
-        sb.append(getLine() + ":" + getClass().getSimpleName());
+
+        sb.append(getLine()).append(":").append(getClass().getSimpleName());
+        sb.append('\n').append(getTabs(tabs)).append("Type:").append(getType());
 
         addExp.appendContents(sb,tabs+1);
         if( relop != null ) {
-            sb.append('\n').append(getTabs(tabs)).append(getLine() + ":" + "Relop => " + relop);
+            sb.append('\n').append(getTabs(tabs)).append(getLine()).append(":").append("Relop => ").append(relop);
             addExp2.appendContents(sb, tabs + 1);
         }
         if( nextNode != null )
