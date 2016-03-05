@@ -5,7 +5,7 @@
 */
 
 int x;
-bool isWoman,isMan;
+bool isWoman, isMan;
 
 int isAWigger(bool isWhite, bool isGangster){
     if( isWhite && isGangster)

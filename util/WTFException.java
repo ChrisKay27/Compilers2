@@ -7,6 +7,7 @@ import java.io.FileNotFoundException;
  */
 public class WTFException extends RuntimeException{
     public WTFException() {
+
     }
 
     public WTFException(String message) {

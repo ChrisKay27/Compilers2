@@ -10,7 +10,6 @@ import parser.grammar.declarations.VarDeclaration;
 import parser.grammar.expressions.*;
 import parser.grammar.statements.*;
 import scanner.Token;
-import util.WTFException;
 
 import java.util.List;
 import java.util.Stack;
@@ -34,6 +33,7 @@ public class SemanticAnalyzer implements SemAnalInter {
 
     private FuncDeclaration currentFuncDecl;
     private static Declaration errorDeclaration = new Declaration(-1, Type.ERROR, null);
+    private boolean returnStatementFound;
 
     //Keeps track of any loops that we are currently in (as we look through the tree) to see if an exit or continue is not
     //inside of a loop
@@ -110,48 +110,27 @@ public class SemanticAnalyzer implements SemAnalInter {
     }
 
     private void functionConstraints(FuncDeclaration node) {
-        Statement statement = node.getBody();
-        Type type = node.getType();
-        ReturnStatement returnStatement = findReturn(statement);
-        if ((returnStatement == null) && type != Type.VOID) {
+        if ((!returnStatementFound) && node.getType() != Type.VOID) {
             foundError = true;
             error.accept(currentFuncDecl.getLine(), "No return statement found.");
         }
-
-        if (returnStatement != null)
-            if (returnStatement.getType() != type) {
-                foundError = true;
-                error.accept(statement.getLine(), "The returned value must match the return type of the function.");
-            }
-
-    }
-
-    private ReturnStatement findReturn(Statement statement) {
-        ReturnStatement returnStatement = null;
-        while (statement != null) {
-            if (statement instanceof CompoundStatement) {
-                returnStatement = findReturn(((CompoundStatement) statement).getStatements());
-            }
-            statement = (Statement) statement.getNextNode();
-            if (statement instanceof ReturnStatement) {
-                returnStatement = (ReturnStatement) statement;
-            }
-        }
-        return returnStatement;
     }
 
     private void mainFunctionConstraints(FuncDeclaration function) {
-        if( function == null ){
-            error.accept(0,"No main function in file");
-        }
-        else if ("main".equals(function.getID().name)) {
+        if (function == null) {
+            foundError = true;
+            error.accept(0, "No main function in file");
+        } else if ("main".equals(function.getID().name)) {
             if (function.getType() != Type.INT) {
+                foundError = true;
                 error.accept(function.getLine(), "Function main must have a return type of int.");
             }
             if (function.getParams().getType() != Type.VOID && !(function.getParams().getNextNode() instanceof ParamDeclaration)) {
+                foundError = true;
                 error.accept(function.getLine(), "Function main must have no parameters.");
             }
         } else {
+            foundError = true;
             error.accept(function.getLine(), "Function main must be the last function declared in the source file.");
         }
     }
@@ -159,9 +138,12 @@ public class SemanticAnalyzer implements SemAnalInter {
     private void enteringFuncDeclaration(FuncDeclaration AST) {
         output.accept(AST.getLine() + ": enteringFuncDeclaration\n");
         enteringCompoundStmt();
-        if (currentFuncDecl != null)
-            throw new WTFException("No functions are allowed to be inside other functions");
+        if (currentFuncDecl != null) {
+            foundError = true;
+            error.accept(AST.getLine(), "No functions are allowed to be inside other functions");
+        }
         currentFuncDecl = AST;
+        this.returnStatementFound = false;
     }
 
     private void leavingFuncDeclaration() {
@@ -221,9 +203,10 @@ public class SemanticAnalyzer implements SemAnalInter {
 
         Declaration d = AST.getDecl();
         if (d instanceof FuncDeclaration) {
-            if ((AST.getId_stmt_tail() instanceof AssignStatementTail))
+            if ((AST.getId_stmt_tail() instanceof AssignStatementTail)) {
+                foundError = true;
                 error.accept(AST.getLine(), d.getID() + " is a function declaration and it is being assigned to.");
-            else
+            } else
                 callConstraints(AST);
         }
 
@@ -231,14 +214,17 @@ public class SemanticAnalyzer implements SemAnalInter {
         if (d instanceof VarDeclaration) {
             VarDeclaration varDec = (VarDeclaration) d;
 
-            if (AST.getId_stmt_tail() instanceof CallStatementTail)
+            if (AST.getId_stmt_tail() instanceof CallStatementTail) {
+                foundError = true;
                 error.accept(AST.getLine(), d.getID() + " is a var declaration and its being called as a function.");
-            else {
+            } else {
                 AssignStatementTail assignTail = (AssignStatementTail) AST.getId_stmt_tail();
 
                 //If we are trying to index this variable and it is not an array...
-                if (assignTail.getAddExpression() != null && !varDec.isAnArray())
+                if (assignTail.getAddExpression() != null && !varDec.isAnArray()) {
+                    foundError = true;
                     error.accept(AST.getLine(), d.getID() + " is not an array and we are trying to index it.");
+                }
 
                 //TODO have to check if an array is being assigned to an array!
             }
@@ -254,11 +240,12 @@ public class SemanticAnalyzer implements SemAnalInter {
         while (currentArg != null && currentParam != null) {
             counter++;
             if (currentArg.getType() != currentParam.getType()) {
-                if (currentArg.getType() != Type.ERROR)
+                if (currentArg.getType() != Type.ERROR) {
+                    foundError = true;
                     error.accept(idStatement.getLine(), idStatement.getIdToken().name +
                             ", Argument #" + counter + " : Expected argument of type " + currentParam.getType()
                             + ", received argument of type " + currentArg.getType());
-                else {
+                } else {
 
                 }
             }
@@ -277,9 +264,11 @@ public class SemanticAnalyzer implements SemAnalInter {
         }
 
         if (currentArg == null && currentParam != null) {
+            foundError = true;
             error.accept(idStatement.getLine(), "Function call " + idStatement.getIdToken().name
                     + " has not enough arguments provided.");
         } else if (currentParam == null && currentArg != null) {
+            foundError = true;
             error.accept(idStatement.getLine(), "Function call " + idStatement.getIdToken().name
                     + " has too many arguments provided.");
         }
@@ -410,10 +399,17 @@ public class SemanticAnalyzer implements SemAnalInter {
         output.accept(AST.getLine() + ": analyze ReturnStatement\n");
         analyze(AST.getReturnValue());
 
-        if (currentFuncDecl == null)
+        if (currentFuncDecl == null) {
+            foundError = true;
             error.accept(AST.getLine(), "Error, return statement not within function.");
-        if (AST.getReturnValue().getType() != currentFuncDecl.getType())
+        }
+
+        if (AST.getReturnValue().getType() != currentFuncDecl.getType()) {
+            foundError = true;
             error.accept(AST.getLine(), "Error, return type does not match functions type.");
+        } else {
+            returnStatementFound = true;
+        }
     }
 
     public void analyze(NullStatement AST) {
@@ -631,6 +627,7 @@ public class SemanticAnalyzer implements SemAnalInter {
         SymbolTableEntry d = symbolTable.get(id);
 
         if (d == null) {
+            foundError = true;
             error.accept(line, "No declaration for this id: " + id);
             return errorDeclaration;
         }
