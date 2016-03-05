@@ -332,7 +332,7 @@ public class TestScanner {
 //        boolean printAST;
 //
 //        try {
-//            errorLogFilePath = getTrailingFilePath(args, ERROR, ERROR2);
+//            errorLogFilePath = getTrailingFilePath(args, UNIV, ERROR2);
 //            outputFilePath = getTrailingFilePath(args, OUTPUT, OUTPUT2);
 //            quietEnabled = hasOption(args, QUIET);
 //            verboseEnabled = hasOption(args, VERBOSE, VERBOSE2);

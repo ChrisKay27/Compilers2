@@ -44,7 +44,7 @@ public class Main {
         boolean quietEnabled;
         boolean verboseEnabled;
         boolean help;
-        boolean tuplePhase, lexicalPhase, semanticPhase, parsePhase, compilePhase;
+        boolean tuplePhase, lexicalPhase, semanticPhase = true, parsePhase, compilePhase;
         boolean printAST;
 
         try {
@@ -71,6 +71,9 @@ public class Main {
             return;
         }
 
+        if( !lexicalPhase && !parsePhase && !tuplePhase && !compilePhase )
+            semanticPhase = true;
+
         Options options = new Options(quietEnabled, verboseEnabled, tuplePhase, parsePhase, compilePhase, lexicalPhase,
                 semanticPhase, outputFilePath, errorLogFilePath, srcFilePath, printAST);
 
@@ -89,11 +92,11 @@ public class Main {
 
     /**
      * Gets the file path for either the error log file or compiler output file and returns it.
-     * ERROR | ERROR2 => error log file path
+     * UNIV | ERROR2 => error log file path
      * OUTPUT | OUTPUT2 => compiler output file path
      *
      * @param args  - String[] args from the command line arguments
-     * @param flag1 - Either ERROR, or OUTPUT
+     * @param flag1 - Either UNIV, or OUTPUT
      * @param flag2 - Either ERROR2, or OUTPUT2
      * @return String - the file path to either the error log file or compiler output file
      */

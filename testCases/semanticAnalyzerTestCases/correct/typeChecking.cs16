@@ -17,4 +17,5 @@ int main(void){
 
     b := y /= x;
     b := y > x;
+    return 0;
 }

@@ -138,7 +138,7 @@ public class ScannerStateMachine {
 
     /**
      * Reached when an illegal character is read
-     * Returns an ERROR token with value equal to the string so far
+     * Returns an UNIV token with value equal to the string so far
      */
     final State error = new State() {
         public Token consume(char c) {
@@ -383,7 +383,7 @@ public class ScannerStateMachine {
      * Reached after receiving a '|' from the init state
      * If a '|' is received, return to this state
      * if the string so far is '||' return a ORLESE token
-     * Otherwise return an ERROR token
+     * Otherwise return an UNIV token
      */
 	final State orElse = new State() {
 
@@ -418,7 +418,7 @@ public class ScannerStateMachine {
      * Reached after receiving a ':' from the init state
      * If a '=' is received, return to this state
      * if the string so far is ':=' return a ASSIGN token
-     * Otherwise return an ERROR token
+     * Otherwise return an UNIV token
      */
 	final State colonEq = new State() {
         public Token consume(char c) {
@@ -445,7 +445,7 @@ public class ScannerStateMachine {
      * Reached after receiving a '&' from the init state
      * If a '&' is received, return to this state
      * if the string so far is '&&' return a ANDTHEN token
-     * Otherwise return an ERROR token
+     * Otherwise return an UNIV token
      */
 	final State andThen = new State() {
         public Token consume(char c) {

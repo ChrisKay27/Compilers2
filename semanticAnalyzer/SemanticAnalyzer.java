@@ -32,7 +32,7 @@ public class SemanticAnalyzer implements SemAnalInter {
     private boolean traceEnabled;
 
     private FuncDeclaration currentFuncDecl;
-    private static Declaration errorDeclaration = new Declaration(-1, Type.ERROR, null);
+    private static Declaration errorDeclaration = new Declaration(-1, Type.UNIV, null);
     private boolean returnStatementFound;
 
     //Keeps track of any loops that we are currently in (as we look through the tree) to see if an exit or continue is not
@@ -240,7 +240,7 @@ public class SemanticAnalyzer implements SemAnalInter {
         while (currentArg != null && currentParam != null) {
             counter++;
             if (currentArg.getType() != currentParam.getType()) {
-                if (currentArg.getType() != Type.ERROR) {
+                if (currentArg.getType() != Type.UNIV) {
                     foundError = true;
                     error.accept(idStatement.getLine(), idStatement.getIdToken().name +
                             ", Argument #" + counter + " : Expected argument of type " + currentParam.getType()
@@ -263,7 +263,8 @@ public class SemanticAnalyzer implements SemAnalInter {
             }
         }
 
-        if (currentArg == null && currentParam != null) {
+        if (currentArg == null && currentParam != null && currentParam != ParamDeclaration.voidParam ) {
+
             foundError = true;
             error.accept(idStatement.getLine(), "Function call " + idStatement.getIdToken().name
                     + " has not enough arguments provided.");
@@ -462,14 +463,14 @@ public class SemanticAnalyzer implements SemAnalInter {
 
             isStatic &= AST.getAddExp2().isStatic();
 //
-//            if (t == ERROR || t2 == ERROR) {
-//                AST.setType(ERROR);
+//            if (t == UNIV || t2 == UNIV) {
+//                AST.setType(UNIV);
 //            } else {
 //                final List<Type> operandTypes = AST.getRelop().getOperandTypes();
 //                if (t != t2 || (!operandTypes.contains(t) || !operandTypes.contains(t2))) {
 //                    foundError = true;
 //                    error.accept(AST.getLine(),"Expression type mismatch");
-//                    AST.setType(ERROR);
+//                    AST.setType(UNIV);
 //                } else
 //                    AST.setType(t);
 //            }
@@ -489,7 +490,7 @@ public class SemanticAnalyzer implements SemAnalInter {
         boolean isStatic = AST.getTerm().isStatic();
 
         if (t == BOOL && AST.isUminus()) {
-            t = ERROR;
+            t = UNIV;
             foundError = true;
             error.accept(AST.getLine(), "Cannot urinary minus a boolean!");
         }
@@ -564,7 +565,7 @@ public class SemanticAnalyzer implements SemAnalInter {
             return analyze((Expression) AST);
 
 
-        return ERROR;
+        return UNIV;
     }
 
     public Type analyze(LiteralBool AST) {
@@ -587,7 +588,7 @@ public class SemanticAnalyzer implements SemAnalInter {
 
         Type t = analyze(AST.getFactor());
         if (t != BOOL)
-            return ERROR;
+            return UNIV;
         return BOOL;
     }
 
@@ -650,15 +651,15 @@ public class SemanticAnalyzer implements SemAnalInter {
 
 
     public Type typeCheck(Type t, Type t2, List<Type> operandTypes) {
-        //If any of them are already ERROR then we don't report the error because it has already been reported.
-        if (t == ERROR || t2 == ERROR)
-            return ERROR;
+        //If any of them are already UNIV then we don't report the error because it has already been reported.
+        if (t == UNIV || t2 == UNIV)
+            return UNIV;
 
         //If the types do not match or the operand types available do not contain one of these operators then report error
         if (t != t2 || (!operandTypes.contains(t) || !operandTypes.contains(t2))) {
             foundError = true;
             regError.accept("Expression type mismatch");
-            return ERROR;
+            return UNIV;
         }
         //Everything is fine, return the type
         return t;
