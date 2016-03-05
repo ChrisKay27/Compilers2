@@ -1,5 +1,5 @@
 -- Chris Kaebe, March 3, 2016
-void main(void){
+int main(void){
 
    loop{
         int x;

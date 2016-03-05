@@ -14,6 +14,7 @@ import util.WTFException;
 
 import java.util.List;
 import java.util.Stack;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 import static parser.Type.*;
@@ -23,10 +24,13 @@ import static parser.Type.*;
  */
 public class SemanticAnalyzer implements SemAnalInter {
 
+
     private ASTNode astRoot;
     private SymbolTable symbolTable;
     private final Consumer<String> output;
-    private Consumer<String> error;
+
+    private BiConsumer<Integer, String> error;
+    private final Consumer<String> regError;
 
     private boolean foundError;
     private boolean traceEnabled;
@@ -41,16 +45,17 @@ public class SemanticAnalyzer implements SemAnalInter {
         this.traceEnabled = traceEnabled;
     }
 
-    public SemanticAnalyzer(ASTNode astRoot, Consumer<String> output, Consumer<String> error){
+    public SemanticAnalyzer(ASTNode astRoot, Consumer<String> output,Consumer<String> error, BiConsumer<Integer,String> lineError){
         this.astRoot = astRoot;
         this.output = output;
-        this.error = error;
+        this.regError = error;
+        this.error = lineError;
 
         this.symbolTable = new SymbolTable();
     }
 
 
-    public void startSemAnal(Declaration AST) {
+    public boolean startSemAnal(Declaration AST) {
 
         //Library functions
         addDeclaration(new FuncDeclaration(0,INT,new Token(TokenType.ID,0),null,null));
@@ -77,6 +82,7 @@ public class SemanticAnalyzer implements SemAnalInter {
         }
         while (n != null);
 
+        return !foundError;
     }
 
 //    public void analyze(ASTNode AST) {
@@ -85,7 +91,7 @@ public class SemanticAnalyzer implements SemAnalInter {
 //    }
 
     public void analyze(FuncDeclaration AST){
-        System.out.println("analyze FuncDeclaration");
+        output.accept( AST.getLine() + ": analyze FuncDeclaration\n");
 
         enteringFuncDeclaration(AST);
 
@@ -105,31 +111,31 @@ public class SemanticAnalyzer implements SemAnalInter {
                 returnFound = true;
                 ReturnStatement returnStatement = (ReturnStatement) statement;
                 if (returnStatement.getType() != type) {
-                    error.accept("The returned value must match the return type of the function.");
+                    error.accept(statement.getLine(),"The returned value must match the return type of the function.");
                 }
             }
         }
         if (!returnFound && type != Type.VOID) {
-            error.accept("No return statement found.");
+            error.accept(currentFuncDecl.getLine(),"No return statement found.");
         }
     }
 
 
     private void enteringFuncDeclaration(FuncDeclaration AST) {
-        System.out.println("enteringFuncDeclaration");
+        output.accept( AST.getLine() + ": enteringFuncDeclaration\n");
         enteringCompoundStmt();
         if( currentFuncDecl != null )
             throw new WTFException("No functions are allowed to be inside other functions");
         currentFuncDecl = AST;
     }
     private void leavingFuncDeclaration() {
-        output.accept("leavingFuncDeclaration");
+        output.accept( "  leavingFuncDeclaration\n");
         currentFuncDecl = null;
         leavingCompoundStmt();
     }
 
     public void analyze(ParamDeclaration AST) {
-		output.accept("analyze ParamDeclaration");
+		output.accept( AST.getLine() + ": analyze ParamDeclaration\n");
         while (AST != null) {
             if( AST.getType() != VOID)
                 addDeclaration(AST);
@@ -139,12 +145,12 @@ public class SemanticAnalyzer implements SemAnalInter {
 
 
     public void analyze(VarDeclaration AST) {
-		output.accept("analyze VarDeclaration");
+		output.accept( AST.getLine() + ": analyze VarDeclaration\n");
         //Dec already added in first sweep phase
     }
 
     public void analyze(Statement AST) {
-		output.accept("analyze Statement");
+		output.accept( AST.getLine() + ": analyze Statement\n");
         if( AST instanceof IdStatement)
             analyze((IdStatement) AST);
         if( AST instanceof IfStatement)
@@ -168,14 +174,14 @@ public class SemanticAnalyzer implements SemAnalInter {
     }
 
     public void analyze(IdStatement AST) {
-		output.accept("analyze IdStatement");
+		output.accept( AST.getLine() + ": analyze IdStatement\n");
         AST.setDecl(getDeclaration(AST.getIdToken().getAttrValue()));
         analyze(AST.getId_stmt_tail());
 
         Declaration d = AST.getDecl();
         if( d instanceof FuncDeclaration) {
             if ((AST.getId_stmt_tail() instanceof AssignStatementTail))
-                error.accept(d.getID() + " is a function declaration and it is being assigned to.");
+                error.accept(AST.getLine(),d.getID() + " is a function declaration and it is being assigned to.");
         }
 
 
@@ -183,13 +189,13 @@ public class SemanticAnalyzer implements SemAnalInter {
             VarDeclaration varDec = (VarDeclaration) d;
 
             if(AST.getId_stmt_tail() instanceof CallStatementTail)
-                error.accept(d.getID() + " is a var declaration and its being called as a function.");
+                error.accept(AST.getLine(),d.getID() + " is a var declaration and its being called as a function.");
             else{
                 AssignStatementTail assignTail = (AssignStatementTail) AST.getId_stmt_tail();
 
                 //If we are trying to index this variable and it is not an array...
                 if( assignTail.getAddExpression() != null && !varDec.isAnArray() )
-                    error.accept(d.getID()+" is not an array and we are trying to index it.");
+                    error.accept(AST.getLine(),d.getID()+" is not an array and we are trying to index it.");
 
                 //TODO have to check if an array is being assigned to an array!
             }
@@ -197,7 +203,7 @@ public class SemanticAnalyzer implements SemAnalInter {
     }
 
     public void analyze(StatementTail AST){
-		output.accept("analyze StatementTail");
+		output.accept( AST.getLine() + ": analyze StatementTail\n");
         if( AST instanceof AssignStatementTail)
             analyze((AssignStatementTail) AST);
         else if( AST instanceof CallStatementTail)
@@ -205,14 +211,14 @@ public class SemanticAnalyzer implements SemAnalInter {
     }
 
     public void analyze(AssignStatementTail AST) {
-		output.accept("analyze AssignStatementTail");
+		output.accept( AST.getLine() + ": analyze AssignStatementTail\n");
         if (AST.getAddExpression() != null)
             analyze(AST.getAddExpression());
         analyze(AST.getExp());
     }
 
     public void analyze(IfStatement AST) {
-		output.accept("analyze IfStatement");
+		output.accept( AST.getLine() + ": analyze IfStatement\n");
         analyze(AST.getExpression());
         analyze(AST.getStatement());
         Statement elseStatement = AST.getElseStatement();
@@ -220,13 +226,13 @@ public class SemanticAnalyzer implements SemAnalInter {
     }
 
     public void analyze(CallStatementTail AST) {
-		output.accept("analyze CallStatementTail");
+		output.accept( AST.getLine() + ": analyze CallStatementTail\n");
         analyze(AST.getCall_tail());
     }
 
 
     public void analyze(CompoundStatement AST) {
-		output.accept("analyze CompoundStatement");
+		output.accept( AST.getLine() + ": analyze CompoundStatement\n");
         enteringCompoundStmt();
 
         Declaration d = AST.getDeclarations();
@@ -247,7 +253,7 @@ public class SemanticAnalyzer implements SemAnalInter {
 
 
     public void analyze(LoopStatement AST) {
-		output.accept("analyze LoopStatement");
+		output.accept( AST.getLine() + ": analyze LoopStatement\n");
         currentLoop.push(AST);
 
         Statement statement = AST.getStatement();
@@ -287,9 +293,9 @@ public class SemanticAnalyzer implements SemAnalInter {
 
 
     public void analyze(ExitStatement AST) {
-		output.accept("analyze ExitStatement");
-        if(! isInsideLoop() ){
-            error.accept("Exit statement not within loop");
+		output.accept( AST.getLine() + ": analyze ExitStatement\n");
+        if( !isInsideLoop() ){
+            error.accept(AST.getLine(),"Exit statement not within loop");
             foundError = true;
         }
     }
@@ -299,30 +305,29 @@ public class SemanticAnalyzer implements SemAnalInter {
     }
 
     public void analyze(ContinueStatement AST) {
-		output.accept("analyze ContinueStatement");
-        if(! isInsideLoop() ){
-            error.accept("Continue statement not within loop");
+		output.accept( AST.getLine() + ": analyze ContinueStatement\n");
+        if( !isInsideLoop() ){
+            error.accept(AST.getLine(),"Continue statement not within loop");
             foundError = true;
         }
     }
 
     public void analyze(ReturnStatement AST){
-		output.accept("analyze ReturnStatement");
+		output.accept( AST.getLine() + ": analyze ReturnStatement\n");
         analyze(AST.getReturnValue());
 
         if( currentFuncDecl == null )
-            error.accept("Error, return statement not within function.");
+            error.accept(AST.getLine(),"Error, return statement not within function.");
         if(AST.getReturnValue().getType() != currentFuncDecl.getType())
-            error.accept("Error, return type does not match functions type.");
-
+            error.accept(AST.getLine(),"Error, return type does not match functions type.");
     }
 
     public void analyze(NullStatement AST){
-		output.accept("analyze NullStatement");
+		output.accept( AST.getLine() + ": analyze NullStatement\n");
     }
 
     public void analyze(BranchStatement AST) {
-		output.accept("analyze BranchStatement");
+		output.accept( AST.getLine() + ": analyze BranchStatement\n");
         branchConstraints(AST.getCaseStmt());
         analyze(AST.getAddexp());
         analyze(AST.getCaseStmt());
@@ -353,7 +358,7 @@ public class SemanticAnalyzer implements SemAnalInter {
     }
 
     public Type analyze(Expression AST){
-		output.accept("analyze Expression");
+		output.accept( AST.getLine() + ": analyze Expression\n");
 
         Type t = analyze(AST.getAddExp());
         AST.setType(t);
@@ -373,7 +378,7 @@ public class SemanticAnalyzer implements SemAnalInter {
 //                final List<Type> operandTypes = AST.getRelop().getOperandTypes();
 //                if (t != t2 || (!operandTypes.contains(t) || !operandTypes.contains(t2))) {
 //                    foundError = true;
-//                    error.accept("Expression type mismatch");
+//                    error.accept(AST.getLine(),"Expression type mismatch");
 //                    AST.setType(ERROR);
 //                } else
 //                    AST.setType(t);
@@ -387,17 +392,17 @@ public class SemanticAnalyzer implements SemAnalInter {
 
 
     public Type analyze(AddExpression AST){
-		output.accept("analyze AddExpression");
+		output.accept( AST.getLine() + ": analyze AddExpression\n");
 
         Type t = analyze(AST.getTerm());
         AST.setType(t);
 
         boolean isStatic = AST.getTerm().isStatic();
 
-        if( t != INT && AST.isUminus()){
+        if( t == BOOL && AST.isUminus()){
             t = ERROR;
             foundError = true;
-            error.accept("Cannot urinary minus a boolean!");
+            error.accept(AST.getLine(),"Cannot urinary minus a boolean!");
         }
 
         AddOpTerm next = AST.getNextNode();
@@ -418,7 +423,7 @@ public class SemanticAnalyzer implements SemAnalInter {
 
 
     public Type analyze(Term AST){
-		output.accept("analyze Term");
+		output.accept( AST.getLine() + ": analyze Term\n");
 
         Type t = analyze(AST.getFactor());
         AST.setType(t);
@@ -442,7 +447,7 @@ public class SemanticAnalyzer implements SemAnalInter {
     }
 
     public Type analyze(SubExpression AST){
-		output.accept("analyze SubExpression"); //Nothing to analyze here
+		output.accept( AST.getLine() + ": analyze SubExpression\n"); //Nothing to analyze here
 
         if( AST instanceof IdFactor)
             return analyze((IdFactor) AST);
@@ -481,21 +486,21 @@ public class SemanticAnalyzer implements SemAnalInter {
 
 
     public Type analyze(LiteralBool AST){
-		output.accept("analyze LiteralBool"); //Nothing to analyze here
+		output.accept( AST.getLine() + ": analyze LiteralBool\n"); //Nothing to analyze here
         return BOOL;
     }
     public Type analyze(LiteralNum AST){
-		output.accept("analyze LiteralNum"); //Nothing to analyze here
+		output.accept( AST.getLine() + ": analyze LiteralNum\n"); //Nothing to analyze here
         return INT;
     }
 
     public Type analyze(MultOpFactor AST){
-		output.accept("analyze MultOpFactor");
+		output.accept( AST.getLine() + ": analyze MultOpFactor\n");
         return analyze(AST.getFactor());
     }
 
     public Type analyze(NotNidFactor AST){
-		output.accept("analyze NotNidFactor");
+		output.accept( AST.getLine() + ": analyze NotNidFactor\n");
         
         Type t = analyze(AST.getFactor());
         if( t != BOOL )
@@ -504,7 +509,7 @@ public class SemanticAnalyzer implements SemAnalInter {
     }
 
     public Type analyze(IdFactor AST){
-        output.accept("analyze IdFactor");
+        output.accept( AST.getLine() + ": analyze IdFactor\n");
 
         AST.setStatic(false);
 
@@ -518,7 +523,7 @@ public class SemanticAnalyzer implements SemAnalInter {
             
             if(! ((AddExpression) AST.getIdTail()).isStatic() ){
                 foundError = true;
-                error.accept(AST.getLine()+": Non static expression in array index");
+                error.accept(AST.getLine(),AST.getLine()+": Non static expression in array index");
             }
         }
 
@@ -529,13 +534,13 @@ public class SemanticAnalyzer implements SemAnalInter {
 
 
     private void enteringCompoundStmt() {
-        output.accept("enteringCompoundStmt");
+        output.accept("  enteringCompoundStmt\n");
         symbolTable.enterFrame();
     }
 
 
     private void leavingCompoundStmt() {
-        output.accept("leavingCompoundStmt");
+        output.accept( "  leavingCompoundStmt\n");
         symbolTable.leaveFrame();
     }
 
@@ -546,7 +551,7 @@ public class SemanticAnalyzer implements SemAnalInter {
         SymbolTableEntry d = symbolTable.get(id);
 
         if( d == null ){
-            error.accept("No declaration for this id: " + id);
+            regError.accept("No declaration for this id: " + id);
             return errorDeclaration;
         }
         return (Declaration) d.getNode();
@@ -558,7 +563,7 @@ public class SemanticAnalyzer implements SemAnalInter {
 
     @Override
     public void analyze(ASTNode AST) {
-		output.accept("analyze ASTNode");        
+		output.accept( AST.getLine() + ": analyze ASTNode\n");        
     }
 
 
@@ -570,7 +575,7 @@ public class SemanticAnalyzer implements SemAnalInter {
         //If the types do not match or the operand types available do not contain one of these operators then report error
         if( t != t2 || (!operandTypes.contains(t) || !operandTypes.contains(t2))) {
             foundError = true;
-            error.accept("Expression type mismatch");
+            regError.accept("Expression type mismatch");
             return ERROR;
         }
         //Everything is fine, return the type

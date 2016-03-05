@@ -26,19 +26,24 @@ public class Administration implements Administrator {
     }
     // end development
 
-    private Supplier<Integer> fileInput;
-    private java.util.Scanner fileScanner;
 
     private BufferedWriter errorWriter, outputWriter;
     private final Options options;
     protected OutputHandler outputHandler = new OutputHandler(err::println);
 
-    protected Scanner scanner;
-    protected Parser parser;
-
+    private Supplier<Integer> fileInput;
+    private java.util.Scanner fileScanner;
+    private List<String> fileLines = new ArrayList<>();
     private String currentLine;
     private String currentLineFeed;
     private String lastLine;
+    //Keeping track of the current line number
+    private int lineNumber = 0;
+
+    protected Scanner scanner;
+    protected Parser parser;
+
+
 
     /**
      * @param options Used to specify which phase to parse to, the volume level of the compile (verbose or quiet), and
@@ -47,6 +52,9 @@ public class Administration implements Administrator {
     public Administration(Options options) throws IOException, UnrecognizedSourceCodeException {
 
         this.options = options;
+
+        //There is no code at line 0
+        fileLines.add("");
 
         //initializes the error and output file writers
         if( options.errorFilePath != null )
@@ -120,9 +128,14 @@ public class Administration implements Administrator {
 
         ASTNode tree = parser.startParsing();
 
-        SemanticAnalyzer semAnal = new SemanticAnalyzer(tree,this::printLineTrace,this::printErrorMessage);
+        printCompilationResults(tree);
 
-        semAnal.startSemAnal((Declaration) tree);
+        printLineTrace("\n  ----  Parsing Phase Complete  ----\n\n");
+        printLineTrace("  ----  Starting Semantics Phase  ----\n\n");
+        SemanticAnalyzer semAnal = new SemanticAnalyzer(tree,this::printLineTrace,this::printErrorMessage,this::printErrorMessage);
+
+        boolean passed = semAnal.startSemAnal((Declaration) tree);
+
 
         printCompilationResults(tree);
     }
@@ -198,14 +211,22 @@ public class Administration implements Administrator {
      * Prints error messages from the scanner or parser to the appropriate output
      */
     public void printErrorMessage(String msg){
-        String errorMsg = (lineNumber) + ":" + currentLine + (lineNumber) + ":" +msg;
+        String errorMsg = (lineNumber) + ": " + currentLine + (lineNumber) + ":" +msg;
         if( !options.unitTesting && !options.quiet )
             outputHandler.printErrorMessage(errorMsg);
         outputHandler.addErrorMessage(errorMsg);
     }
 
-    //Keeping track of the line number
-    private int lineNumber = 0;
+    /**
+     * Prints error messages from the scanner or parser to the appropriate output
+     */
+    public void printErrorMessage(int lineNumber, String msg){
+        String errorMsg = (lineNumber) + ":" + fileLines.get(lineNumber) + (lineNumber) + ":" +msg;
+        if( !options.unitTesting && !options.quiet )
+            outputHandler.printErrorMessage(errorMsg);
+        outputHandler.addErrorMessage(errorMsg);
+    }
+
     /**
      * initializes the buffered reader to the source code file
      * if the file does not have the .cs16 file extension then this method throws an UnrecognizedSourceCodeException
@@ -234,6 +255,9 @@ public class Administration implements Administrator {
                 currentLine = currentLineFeed;
                 lineNumber = 1;
 
+                //Keeps track of the lines in the file for error output
+                fileLines.add(currentLine);
+
                 if(options.verbose && !curLine.trim().isEmpty() )
                     printLineTrace("\n" + lineNumber+": " + curLine);
 
@@ -244,6 +268,10 @@ public class Administration implements Administrator {
                              currentLineFeed = currLine + '\n';
                              currentLine = currentLineFeed;
                              lineNumber++;
+
+                             //Keeps track of the lines in the file for error output
+                             fileLines.add(currentLine);
+
                              if(options.verbose && !currLine.trim().isEmpty() )
                                  printLineTrace("\n" + lineNumber+": " + currLine);
 
