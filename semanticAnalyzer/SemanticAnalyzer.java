@@ -637,7 +637,10 @@ public class SemanticAnalyzer implements SemAnalInter {
     }
 
     public void addDeclaration(Declaration d) {
-        symbolTable.push(new SymbolTableEntry(d.getID().getAttrValue(), d));
+        boolean duplicateDefiniton = symbolTable.push(new SymbolTableEntry(d.getID().getAttrValue(), d));
+        if(duplicateDefiniton == false) {
+            error.accept(d.getLine(), "Duplicate definition of " + d.getID().name);
+        }
     }
 
     @Override
