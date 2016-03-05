@@ -6,6 +6,11 @@
 
 int main(void){
     x:=5;
-    int x;
+    {
+        int x;
+        ;
+    }
+
+    return 1;
 }
 

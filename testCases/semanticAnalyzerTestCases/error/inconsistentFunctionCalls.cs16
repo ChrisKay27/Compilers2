@@ -3,11 +3,11 @@
     Date: Feb 21, 2016
 */
 
-void bar(){
+void bar(void){
 
 }
 
-int foo(){
+int foo(void){
 
 }
 
