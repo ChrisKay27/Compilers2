@@ -24,7 +24,6 @@ import static parser.Type.*;
  */
 public class SemanticAnalyzer implements SemAnalInter {
 
-
     private final Consumer<String> output;
     private final Consumer<String> regError;
     private ASTNode astRoot;
@@ -44,7 +43,7 @@ public class SemanticAnalyzer implements SemAnalInter {
         this.traceEnabled = traceEnabled;
     }
 
-    public SemanticAnalyzer(ASTNode astRoot, Consumer<String> output,Consumer<String> error, BiConsumer<Integer,String> lineError){
+    public SemanticAnalyzer(ASTNode astRoot, Consumer<String> output, Consumer<String> error, BiConsumer<Integer, String> lineError) {
         this.astRoot = astRoot;
         this.output = output;
         this.regError = error;
@@ -145,7 +144,7 @@ public class SemanticAnalyzer implements SemAnalInter {
             if (function.getType() != Type.INT) {
                 error.accept(function.getLine(), "Function main must have a return type of int.");
             }
-            if (function.getParams() != null) {
+            if (function.getParams().getType() != Type.VOID && !(function.getParams().getNextNode() instanceof ParamDeclaration)) {
                 error.accept(function.getLine(), "Function main must have no parameters.");
             }
         } else {
@@ -214,8 +213,8 @@ public class SemanticAnalyzer implements SemAnalInter {
         if (d instanceof FuncDeclaration) {
             if ((AST.getId_stmt_tail() instanceof AssignStatementTail))
                 error.accept(AST.getLine(), d.getID() + " is a function declaration and it is being assigned to.");
-
-            callConstraints(AST);
+            else
+                callConstraints(AST);
         }
 
 
@@ -235,56 +234,50 @@ public class SemanticAnalyzer implements SemAnalInter {
             }
         }
     }
+
     private void callConstraints(IdStatement idStatement) {
         FuncDeclaration function = (FuncDeclaration) idStatement.getDecl();
+        Expression args = (Expression) ((CallStatementTail) idStatement.getId_stmt_tail()).getCall_tail();
+        ParamDeclaration currentParam = function.getParams();
+        Expression currentArg = args;
+        int counter = 0;
+        while (currentArg != null && currentParam != null) {
+            counter++;
+            if (currentArg.getType() != currentParam.getType()) {
+                if (currentArg.getType() != Type.ERROR)
+                    error.accept(idStatement.getLine(), idStatement.getIdToken().name +
+                            ", Argument #" + counter + " : Expected argument of type " + currentParam.getType()
+                            + ", received argument of type " + currentArg.getType());
+                else {
 
-        if (idStatement.getId_stmt_tail() instanceof CallStatementTail) {
-
-            Expression args = (Expression) ((CallStatementTail) idStatement.getId_stmt_tail()).getCall_tail();
-            ParamDeclaration currentParam = function.getParams();
-            Expression currentArg = args;
-            int counter = 0;
-            while (currentArg != null && currentParam != null) {
-                counter++;
-                if (currentArg.getType() != currentParam.getType()) {
-                    if (currentArg.getType() != Type.ERROR)
-                        error.accept(idStatement.getLine(), idStatement.getIdToken().name +
-                                ", Argument #" + counter + " : Expected argument of type " + currentParam.getType()
-                                + ", received argument of type " + currentArg.getType());
-                    else {
-                    }
-                }
-
-                if (currentParam.getNextNode() instanceof ParamDeclaration) {
-                    currentParam = (ParamDeclaration) currentParam.getNextNode();
-                } else {
-                    currentParam = null;
-                }
-
-                if (currentArg.getNextNode() instanceof Expression) {
-                    currentArg = (Expression) currentArg.getNextNode();
-                } else {
-                    currentArg = null;
                 }
             }
 
-            if (currentArg == null && currentParam != null) {
-                error.accept(idStatement.getLine(), "Function call " + idStatement.getIdToken().name
-                        + " has not enough arguments provided.");
-            } else if (currentParam == null && currentArg != null) {
-                error.accept(idStatement.getLine(), "Function call " + idStatement.getIdToken().name
-                        + " has too many arguments provided.");
+            if (currentParam.getNextNode() instanceof ParamDeclaration) {
+                currentParam = (ParamDeclaration) currentParam.getNextNode();
+            } else {
+                currentParam = null;
+            }
+
+            if (currentArg.getNextNode() instanceof Expression) {
+                currentArg = (Expression) currentArg.getNextNode();
+            } else {
+                currentArg = null;
             }
         }
-        else{
-            AssignStatementTail assignStatementTail = (AssignStatementTail) idStatement.getId_stmt_tail();
-            analyze(assignStatementTail);
+
+        if (currentArg == null && currentParam != null) {
+            error.accept(idStatement.getLine(), "Function call " + idStatement.getIdToken().name
+                    + " has not enough arguments provided.");
+        } else if (currentParam == null && currentArg != null) {
+            error.accept(idStatement.getLine(), "Function call " + idStatement.getIdToken().name
+                    + " has too many arguments provided.");
         }
     }
 
-    public void analyze(StatementTail AST){
-		output.accept( AST.getLine() + ": analyze StatementTail\n");
-        if( AST instanceof AssignStatementTail)
+    public void analyze(StatementTail AST) {
+        output.accept(AST.getLine() + ": analyze StatementTail\n");
+        if (AST instanceof AssignStatementTail)
             analyze((AssignStatementTail) AST);
         else if (AST instanceof CallStatementTail)
             analyze((CallStatementTail) AST);
@@ -521,7 +514,7 @@ public class SemanticAnalyzer implements SemAnalInter {
         if (next != null) {
             Type t2 = analyze(next);
 
-            AST.setType(typeCheck(t,t2,next.getMultOp().getOperandTypes()));
+            AST.setType(typeCheck(t, t2, next.getMultOp().getOperandTypes()));
 
             isStatic &= next.isStatic();
         }
@@ -663,6 +656,5 @@ public class SemanticAnalyzer implements SemAnalInter {
         //Everything is fine, return the type
         return t;
     }
-
 
 }

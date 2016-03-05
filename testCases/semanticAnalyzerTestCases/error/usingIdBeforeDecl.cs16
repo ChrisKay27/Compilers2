@@ -3,9 +3,10 @@
     Date: Feb 21, 2016
 */
 
-
 int main(void){
-    x:=5;
-    int x;
+    x := 5;
+    {
+        int x;
+    }
+    return x;
 }
-
