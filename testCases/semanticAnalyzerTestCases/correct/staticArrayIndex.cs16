@@ -1,12 +1,14 @@
 /*
-    This tests var name
     Author: Chris Kaebe
     Date: Feb 21, 2016
 */
 
-int x[4], y[-5];
-
-void main(int x){
+int main(void){
     int x, y, z[5],a[x];
-    ;
+
+    x := -x;
+    y := z[-3];
+    a := z;
+    z[3] := y;
+
 }

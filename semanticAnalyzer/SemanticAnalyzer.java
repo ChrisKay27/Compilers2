@@ -229,6 +229,7 @@ public class SemanticAnalyzer implements SemAnalInter {
 
     public void analyze(CallStatementTail AST) {
 		output.accept( AST.getLine() + ": analyze CallStatementTail\n");
+
         analyze(AST.getCall_tail());
     }
 

@@ -4,16 +4,17 @@
 void foo(int x, ref bool b, int ab, ref bool bar){
 
     if( x = ab ) b := true;
-    else bar := true
+    else bar := true;
 
 }
 
 int main(void){
     bool b, bar;
     int x;
-    x := 2;
     int a[5];
     int b;
+
+    x := 2;
     b := 2;
 
     foo(x+x, not y, (a[b]), bar);

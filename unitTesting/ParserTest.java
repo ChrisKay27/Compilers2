@@ -43,18 +43,26 @@ public class ParserTest {
             admin.compile();
 
             List<String> errorLog = new ArrayList<>();
+            List<String> shrunkErrorLog = new ArrayList<>();
 
             //Get the error log entries in the correct format...
             admin.getOutputHandler().getErrorLog().forEach(line -> {
-                line = line.replaceAll("( |\\t)","");
+                //Collect the actual lines
                 String[] lines = line.split("\n");
                 Collections.addAll(errorLog, lines);
+
+                //Collect the lines with whitespace removed for comparison...
+                line = line.replaceAll("( |\\t)","");
+                lines = line.split("\n");
+                Collections.addAll(shrunkErrorLog, lines);
             });
 
+            List<String> shrunkExpectedErrorMessages = new ArrayList<>();
+            expectedErrorMessages.forEach(line-> shrunkExpectedErrorMessages.add(line.replaceAll("( |\\t)","")));
 
 //            System.out.println("Error log size:" + errorLog.size());
 
-            boolean passed = errorLog.equals(expectedErrorMessages);
+            boolean passed = shrunkErrorLog.equals(shrunkExpectedErrorMessages);
             if( passed )
                 System.out.println(testFileName+" passed.\n");
             else {
@@ -137,7 +145,8 @@ public class ParserTest {
 
 //                        System.out.println(line);
 //                        System.out.println(line.replaceAll("( |\\t)",""));
-                        error.add(line.replaceAll("( |\\t)",""));
+                        error.add(line);
+
                     });
                     r.close();
                 } catch (Exception e) {

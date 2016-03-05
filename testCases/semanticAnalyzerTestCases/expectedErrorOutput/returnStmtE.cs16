@@ -1,4 +1,0 @@
-12:    if(x=2) return
-12:		Syntax Error, expecting SEMI but received IF
-13:    if(x=2) return x+1;
-13:		Syntax Error, expecting SEMI but received IF

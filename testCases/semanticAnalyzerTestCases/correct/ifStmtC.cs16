@@ -8,4 +8,5 @@ if (e1) {if (e2) ; else ;}
 
 if (e1) {if (e2) ;} else ;
 
+    return -1;
 }

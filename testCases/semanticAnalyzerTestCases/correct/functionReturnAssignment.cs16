@@ -1,0 +1,39 @@
+/*
+
+    Author: Chris Kaebe
+    Date: Feb 21, 2016
+*/
+
+int x;
+bool isWoman,isMan;
+
+int isAWigger(bool isWhite, bool isGangster){
+    if( isWhite && isGangster)
+        return 1;
+    return 0;
+}
+
+bool isFat(bool isWoman){
+    int height;
+
+    {
+        bool isPregnant;
+        int age;
+
+        if( isWoman )
+            return true;
+        else
+            return false;
+    }
+}
+
+int main(bool isWoman){
+    int wiggerness;
+    bool isAFatty;
+    isAFatty := isFat(isWoman);
+
+    wiggerness := isAWigger(true, true);
+
+    return wiggerness;
+}
+

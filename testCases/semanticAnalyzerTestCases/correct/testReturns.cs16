@@ -1,0 +1,53 @@
+-- Chris Kaebe, March 3, 2016
+int y;
+bool b;
+
+int foo(void){
+    y := y+1;
+    return y; --return a global variable
+}
+
+int foo2(void){
+    int x;
+    x := 1;
+    return x; --return a local variable
+}
+
+int foo3(int z){
+    z := z+1;
+    return z; --return a parameter variable
+}
+
+
+bool boo(void){
+    b := y > 5;
+    return b; --return a global variable
+}
+
+bool boo2(void){
+    bool x;
+    x := true;
+    return x; --return a local variable
+}
+
+bool boo3(bool c){
+    c := not c;
+    return c; --return a parameter variable
+}
+
+
+
+int main(void){
+    int l;
+    bool f;
+
+    l := foo();
+    l := foo();
+    l := foo(1);
+
+    f := boo();
+    f := boo();
+    f := boo(true);
+   --Return with a negative
+   return -1;
+}

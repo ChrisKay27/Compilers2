@@ -18,13 +18,14 @@ import static java.lang.System.out;
  */
 public class SemanticAnalyzerTesting {
 
-    private static final String TEST_CASE_PATH = "src/testCases/parserTestCases/correct/";
-    private static final String ERROR_TEST_CASE_PATH = "src/testCases/parserTestCases/error/";
-    private static final String ERROR_MESSAGES_TEST_CASE_PATH = "src/testCases/parserTestCases/expectedErrorOutput/";
+    private static final String TEST_CASE_PATH = "src/testCases/semanticAnalyzerTestCases/correct/";
+    private static final String ERROR_TEST_CASE_PATH = "src/testCases/semanticAnalyzerTestCases/error/";
+    private static final String ERROR_MESSAGES_TEST_CASE_PATH = "src/testCases/semanticAnalyzerTestCases/expectedErrorOutput/";
 
     private final List<String> expectedErrorMessages;
     private final Options options;
     private final boolean errorFile;
+
     protected String testFileName;
     private TestAdmin admin;
     private boolean traceEnabled;
@@ -45,18 +46,26 @@ public class SemanticAnalyzerTesting {
             admin.compile();
 
             List<String> errorLog = new ArrayList<>();
+            List<String> shrunkErrorLog = new ArrayList<>();
 
             //Get the error log entries in the correct format...
             admin.getOutputHandler().getErrorLog().forEach(line -> {
-                line = line.replaceAll("( |\\t)","");
+                //Collect the actual lines
                 String[] lines = line.split("\n");
                 Collections.addAll(errorLog, lines);
+
+                //Collect the lines with whitespace removed for comparison...
+                line = line.replaceAll("( |\\t)","");
+                lines = line.split("\n");
+                Collections.addAll(shrunkErrorLog, lines);
             });
 
+            List<String> shrunkExpectedErrorMessages = new ArrayList<>();
+            expectedErrorMessages.forEach(line-> shrunkExpectedErrorMessages.add(line.replaceAll("( |\\t)","")));
 
 //            System.out.println("Error log size:" + errorLog.size());
 
-            boolean passed = errorLog.equals(expectedErrorMessages);
+            boolean passed = shrunkErrorLog.equals(shrunkExpectedErrorMessages);
             if( passed )
                 System.out.println(testFileName+" passed.\n");
             else {
@@ -128,18 +137,22 @@ public class SemanticAnalyzerTesting {
     }
 
     public static List<String> getExpectedOutput(File f,File[] expectedErrorOutputFiles){
+        if( expectedErrorOutputFiles == null || expectedErrorOutputFiles.length ==0) {
+            List<String> expectOutput = new ArrayList<>();
+//            expectOutput.add(":D");
+            return expectOutput;
+        }
+
         for(File errorLog : expectedErrorOutputFiles){
             if( f.getName().equals(errorLog.getName())){
-//                System.out.println("Found error log file for " + f.getName());
+
                 List<String> error = new ArrayList<>();
 
                 try {
                     BufferedReader r = new BufferedReader(new FileReader(errorLog));
                     r.lines().forEach(line -> {
-
-//                        System.out.println(line);
-//                        System.out.println(line.replaceAll("( |\\t)",""));
-                        error.add(line.replaceAll("( |\\t)",""));
+                        error.add(line);
+                        //error.add(line.replaceAll("( |\\t)",""));
                     });
                     r.close();
                 } catch (Exception e) {

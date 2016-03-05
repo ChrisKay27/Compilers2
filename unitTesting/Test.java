@@ -7,6 +7,7 @@ import static Main.Main.PRINT_AST;
 import static Main.Main.hasOption;
 
 /**
+ *
  * Created by chris_000 on 2/21/2016.
  */
 public class Test {
@@ -58,6 +59,7 @@ public class Test {
         if( parsePhase )
             System.out.println("\nParser tests results: " + ParserTest.runAll(options));
 
-
+        if( semanticPhase )
+            System.out.println("\nSemantic tests results: " + SemanticAnalyzerTesting.runAll(options));
     }
 }

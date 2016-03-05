@@ -128,6 +128,13 @@ public class Administration implements Administrator {
 
         ASTNode tree = parser.startParsing();
 
+        if( tree == null ){
+            out.println("\n-------------------------------------\n");
+            out.println("\tCompile Failed at Parser phase\n");
+
+            return;
+        }
+
         printCompilationResults(tree);
 
         printLineTrace("\n  ----  Parsing Phase Complete  ----\n\n");
@@ -135,7 +142,7 @@ public class Administration implements Administrator {
         SemanticAnalyzer semAnal = new SemanticAnalyzer(tree,this::printLineTrace,this::printErrorMessage,this::printErrorMessage);
 
         boolean passed = semAnal.startSemAnal((Declaration) tree);
-        if(passed)
+        if(passed || options.unitTesting )
             printCompilationResults(tree);
         else{
             //If no tree was returned then the compiling failed

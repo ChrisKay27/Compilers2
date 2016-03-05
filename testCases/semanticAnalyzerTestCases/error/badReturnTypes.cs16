@@ -1,10 +1,18 @@
 /*
     This tests var name
     Author: Chris Kaebe
-    Date: Feb 21, 2016
+    Date: March 4, 2016
 */
 
-int main(void){
+bool foo(void){
+    return 1;
+}
+
+int foo(void){
+    return true;
+}
+
+void main(void){
     int x;
     if( x = 1 )
         return 1;
