@@ -57,4 +57,8 @@ public class Token {
     public int getAttrValue() {
         return (int) attrValue;
     }
+
+    public String getName() {
+        return name;
+    }
 }

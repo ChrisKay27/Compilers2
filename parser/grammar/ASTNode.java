@@ -51,7 +51,8 @@ public abstract class ASTNode {
     public void setCode(String code) {
         this.code = code;
     }
-    public void appendCode(String append){
+    public ASTNode appendCode(String append){
         code = code + '\n' + append;
+        return this;
     }
 }

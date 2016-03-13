@@ -7,6 +7,7 @@ import parser.grammar.declarations.Declaration;
 import scanner.Scanner;
 import scanner.Token;
 import semanticAnalyzer.SemanticAnalyzer;
+import tupleGeneration.QuadrupleGenerator;
 
 import java.io.*;
 import java.nio.charset.Charset;
@@ -92,7 +93,7 @@ public class Administration implements Administrator {
             //fullCompile();
         }
         else if(options.tuplePhase){
-            //tupleCompile();
+            tupleCompile();
         }
          else if(options.semanticPhase){
             semanticCompile();
@@ -146,6 +147,41 @@ public class Administration implements Administrator {
         if( passed || options.unitTesting ) {
             printASTTree(tree);
             printCompilationResults(tree);
+        }else{
+            //If no tree was returned then the compiling failed
+            out.println("\n-------------------------------------\n");
+            out.println("\tCompile Failed\n");
+
+            //And we print the error messages to the user
+            if( !options.unitTesting )
+                outputHandler.printErrorOutputs(out::println);
+        }
+    }
+
+    private void tupleCompile() throws IOException {
+
+        ASTNode tree = parser.startParsing();
+
+        if( tree == null ){
+            out.println("\n-------------------------------------\n");
+            out.println("\tCompile Failed at Parser phase\n");
+
+            return;
+        }
+
+        printASTTree(tree);
+
+        printLineTrace("\n  ----  Parsing Phase Complete  ----\n\n");
+        printLineTrace("  ----  Starting Semantics Phase  ----\n\n");
+        SemanticAnalyzer semAnal = new SemanticAnalyzer(tree,this::printLineTrace,this::printErrorMessage,this::printErrorMessage);
+
+        boolean passed = semAnal.startSemAnal((Declaration) tree);
+        if( passed || options.unitTesting ) {
+            printASTTree(tree);
+            printCompilationResults(tree);
+
+            new QuadrupleGenerator(tree,this::printLineTrace,this::printErrorMessage,this::printErrorMessage).startCodeGeneration((Declaration) tree);
+
         }else{
             //If no tree was returned then the compiling failed
             out.println("\n-------------------------------------\n");
