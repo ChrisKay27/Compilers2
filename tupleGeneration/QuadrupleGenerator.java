@@ -31,6 +31,7 @@ public class QuadrupleGenerator {
 
     private int labelCounter;
 
+
     //Keeps track of any loops that we are currently in (as we look through the tree) to see if an exit or continue is not
     //inside of a loop
     private Stack<LoopStatement> currentLoop = new Stack<>();
