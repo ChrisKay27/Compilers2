@@ -8,6 +8,7 @@ import parser.Type;
  * Created by Chris on 1/30/2016.
  */
 public class ReturnStatement extends Statement {
+
     private final Expression returnValue;
 
     public ReturnStatement(int line, Expression returnValue) {
