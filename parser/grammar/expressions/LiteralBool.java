@@ -24,6 +24,10 @@ public class LiteralBool extends NidFactor {
             nextNode.appendContents(sb, tabs);
     }
 
+    public int getValue(){
+        return bool;
+    }
+
     public String toString(){
         if(bool == 1) return ""+true;
         if(bool == 0) return ""+false;

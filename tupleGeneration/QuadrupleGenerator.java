@@ -304,13 +304,13 @@ public class QuadrupleGenerator {
         output.accept(AST.getLine() + ": generating code for Term\n");
 
         generate(AST.getFactor());
-        //TODO do something with this
+        AST.setCode(AST.getFactor().getCode());
 
 
         MultOpFactor next = (MultOpFactor) AST.getFactor().getNextNode();
         if (next != null) {
             generate(next);
-
+            AST.appendCode(next.getCode());
             //TODO do something with this
         }
 
@@ -318,8 +318,6 @@ public class QuadrupleGenerator {
 
     public void generate(SubExpression AST) {
         output.accept(AST.getLine() + ": generating code for SubExpression\n"); //Nothing to analyze here
-//TODO do something with this
-
 
         if (AST instanceof IdFactor)
             generate((IdFactor) AST);
@@ -330,9 +328,10 @@ public class QuadrupleGenerator {
         else if (AST instanceof LiteralNum)
             generate((LiteralNum) AST);
 
-        else if (AST instanceof AddOpTerm)
+        else if (AST instanceof AddOpTerm) {
             generate(((AddOpTerm) AST).getTerm());
-
+            AST.setCode(((AddOpTerm) AST).getTerm()+"");
+        }
         else if (AST instanceof MinusExpression){
 
         }
@@ -352,54 +351,50 @@ public class QuadrupleGenerator {
 
         else if (AST instanceof Expression)
             generate((Expression) AST);
-//TODO do something with this
+
+
+        //TODO do something with this
 
     }
 
     public void generate(LiteralBool AST) {
         output.accept(AST.getLine() + ": generating code for LiteralBool\n"); //Nothing to analyze here
-        //TODO do something with this
+        AST.setCode(AST.getValue()+"");
     }
 
     public void generate(LiteralNum AST) {
         output.accept(AST.getLine() + ": generating code for LiteralNum\n"); //Nothing to analyze here
-        //TODO do something with this
+        AST.setCode(AST.getNum()+"");
     }
 
     public void generate(MultOpFactor AST) {
         output.accept(AST.getLine() + ": generating code for MultOpFactor\n");
         generate(AST.getFactor());
-        //TODO do something with this
+        AST.setCode(AST.getFactor().getCode());
     }
 
     public void generate(NotNidFactor AST) {
         output.accept(AST.getLine() + ": generating code for NotNidFactor\n");
 
         generate(AST.getFactor());
-        //TODO do something with this
-            
-        
+        AST.setCode(AST.getFactor().getCode());
     }
 
     public void generate(IdFactor AST) {
         output.accept(AST.getLine() + ": generating code for IdFactor\n");
-//TODO do something with this
 
         if (AST.getIdTail() instanceof CallStatementTail)
             generate((CallStatementTail) AST.getIdTail());
 
-        else if (AST.getIdTail() instanceof AddExpression) {
+        else if (AST.getIdTail() instanceof AddExpression)
             generate((AddExpression) AST.getIdTail());
-//TODO do something with this
 
-        }
-
-        
+        AST.setCode(AST.getIdTail().getCode());
     }
 
 
     public void generate(ASTNode AST) {
-//TODO do something with this
+        //TODO do something with this
         output.accept(AST.getLine() + ": generating code for ASTNode\n");
 
     }

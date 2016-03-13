@@ -43,4 +43,15 @@ public abstract class ASTNode {
     public int getLine() {
         return this.line;
     }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+    public void appendCode(String append){
+        code = code + append;
+    }
 }
