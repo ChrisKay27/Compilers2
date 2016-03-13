@@ -30,11 +30,9 @@ public class QuadrupleGenerator {
     private boolean returnStatementFound;
 
     private int labelCounter;
+    private int tempCounter;
 
 
-    //Keeps track of any loops that we are currently in (as we look through the tree) to see if an exit or continue is not
-    //inside of a loop
-    private Stack<LoopStatement> currentLoop = new Stack<>();
 
     public void setTraceEnabled(boolean traceEnabled) {
         this.traceEnabled = traceEnabled;
@@ -263,19 +261,26 @@ public class QuadrupleGenerator {
 
     public void generate(BranchStatement AST) {
         output.accept(AST.getLine() + ": generating code for BranchStatement\n");
-        //TODO 
+        //TODO
+        int labNum = labelCounter++;
         generate(AST.getAddexp());
-        generate(AST.getCaseStmt());
+
+        generate(labNum,AST.getCaseStmt());
+        AST.appendCode("lab L"+labNum);
         //TODO jump to end of case?
     }
 
     
-    public void generate(CaseStatement statement) {
+    public void generate(int labNumber, CaseStatement statement) {
 
+        int NUM = statement.getNumberToken().getAttrValue();
+        statement.setCode("iff " + NUM);
         generate(statement.getStatement()); // statement for this case
+        statement.appendCode(statement.getStatement().getCode());
+        statement.appendCode("goto L"+labNumber);
 
         generate(statement.getNextNode()); // next case in branch statement
-
+        statement.appendCode(statement.getStatement().getCode());
     }
 
     public void generate(Expression AST) {
@@ -404,7 +409,9 @@ public class QuadrupleGenerator {
 
     }
 
-
+    public String getNewTemp(){
+        return "t" + tempCounter;
+    }
 
 
 }

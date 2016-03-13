@@ -9,7 +9,7 @@ public abstract class ASTNode {
     protected ASTNode nextNode;
     protected int line;
 
-    protected String code;
+    protected String code = "";
 
     protected ASTNode(int line) {
         this.line = line;
@@ -52,6 +52,6 @@ public abstract class ASTNode {
         this.code = code;
     }
     public void appendCode(String append){
-        code = code + append;
+        code = code + '\n' + append;
     }
 }
