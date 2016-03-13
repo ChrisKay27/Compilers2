@@ -232,7 +232,6 @@ public class QuadrupleGenerator {
 
     }
 
-
     public void generate(ExitStatement AST) {
         output.accept(AST.getLine() + ": generating code for ExitStatement\n");
         //TODO add jump to label?
@@ -246,13 +245,18 @@ public class QuadrupleGenerator {
 
     public void generate(ReturnStatement AST) {
         output.accept(AST.getLine() + ": generating code for ReturnStatement\n");
-        //TODO put the return value code somewhere in the return statements code?
-        generate(AST.getReturnValue());
+        String temp = generate(AST.getReturnValue());
+        if (AST.getReturnValue() == null) {
+            AST.setCode("ret " + currentFuncDecl.getNumberOfParameters() + ",-,-");
+        } else {
+            AST.setCode(AST.getReturnValue().getCode());
+            AST.appendCode("retv " + currentFuncDecl.getNumberOfParameters() + "," + temp + ",-");
+        }
     }
 
     public void generate(NullStatement AST) {
         output.accept(AST.getLine() + ": generating code for NullStatement\n");
-        //TODO no-op?
+        AST.setCode("");
     }
 
 
@@ -443,7 +447,6 @@ public class QuadrupleGenerator {
     public void generate(ASTNode AST) {
         //TODO do something with this
         output.accept(AST.getLine() + ": generating code for ASTNode\n");
-
     }
 
     public String getNewTemp() {
