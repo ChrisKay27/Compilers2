@@ -36,7 +36,7 @@ public class Test {
             compilePhase = hasOption(args, COMPILE_PHASE, COMPILE_PHASE2);
             printAST = hasOption(args, PRINT_AST);
         } catch (Exception e) {
-            System.err.println("Error parsing parameters, try -t Path/To/File.cs16 -e Path/To/FileLogFile.txt");
+            System.err.println("Error parsing parameters.");
             System.exit(2);
             return;
         }

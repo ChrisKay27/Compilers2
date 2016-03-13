@@ -143,7 +143,7 @@ public class Administration implements Administrator {
         SemanticAnalyzer semAnal = new SemanticAnalyzer(tree,this::printLineTrace,this::printErrorMessage,this::printErrorMessage);
 
         boolean passed = semAnal.startSemAnal((Declaration) tree);
-        if(passed || options.unitTesting ) {
+        if( passed || options.unitTesting ) {
             printASTTree(tree);
             printCompilationResults(tree);
         }else{
