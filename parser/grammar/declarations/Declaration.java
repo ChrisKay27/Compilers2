@@ -11,7 +11,8 @@ public class Declaration extends ASTNode {
 
     protected final Type type;
     protected final Token ID;
-    private int level = -1;
+    protected int level = -1;
+    protected int displacement;
 
 
     public Declaration(int line, Type type, Token ID) {
@@ -29,14 +30,14 @@ public class Declaration extends ASTNode {
     }
 
     @Override
-    public void appendContents(StringBuilder sb , int tabs) {
+    public void appendContents(StringBuilder sb, int tabs) {
         sb.append('\n');
         for (int i = 0; i < tabs; i++)
             sb.append("    ");
 
         sb.append(getLine()).append(":").append(getClass().getSimpleName()).append(' ').append(type).append(' ').append(ID);
         sb.append('\n').append(getTabs(tabs)).append("Type:").append(getType());
-        if( nextNode != null )
+        if (nextNode != null)
             nextNode.appendContents(sb, tabs);
     }
 
@@ -45,20 +46,22 @@ public class Declaration extends ASTNode {
         return (Declaration) super.getNextNode();
     }
 
-    public void setLevel(int level) {
-        this.level = level;
-    }
+    public void setLevel(int level) { this.level = level; }
+
+    public void setDisplacement(int displacement) { this.displacement = displacement; }
 
     public int getLevel() {
         return level;
     }
 
+    public int getDisplacement() { return this.displacement; }
+
     public Declaration getLastNextNode() {
         Declaration d = getNextNode();
-        if( d == null )
+        if (d == null)
             return this;
         Declaration tmp = d.getNextNode();
-        while( tmp != null ){
+        while (tmp != null) {
             d = tmp;
             tmp = tmp.getNextNode();
         }
