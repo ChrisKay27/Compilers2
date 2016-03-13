@@ -29,6 +29,8 @@ public class QuadrupleGenerator {
     private static Declaration errorDeclaration = new Declaration(-1, Type.UNIV, null);
     private boolean returnStatementFound;
 
+    private int labelCounter;
+
     //Keeps track of any loops that we are currently in (as we look through the tree) to see if an exit or continue is not
     //inside of a loop
     private Stack<LoopStatement> currentLoop = new Stack<>();
@@ -268,19 +270,22 @@ public class QuadrupleGenerator {
 
     
     public void generate(CaseStatement statement) {
+
         generate(statement.getStatement()); // statement for this case
+
         generate(statement.getNextNode()); // next case in branch statement
-        //TODO 
+
     }
 
     public void generate(Expression AST) {
         output.accept(AST.getLine() + ": generating code for Expression\n");
 
         generate(AST.getAddExp());
-        //TODO do something with this add expressions code
+        AST.setCode(AST.getAddExp().getCode());
        
         if (AST.getAddExp2() != null) {
-            //TODO do something with this add expressions code
+            generate(AST.getAddExp2());
+            AST.appendCode(AST.getAddExp2().getCode());
         }
        
     }
@@ -289,13 +294,13 @@ public class QuadrupleGenerator {
         output.accept(AST.getLine() + ": generating code for AddExpression\n");
 
         generate(AST.getTerm());
-        //TODO do something with this
+        AST.setCode(AST.getTerm().getCode());
 
 
         AddOpTerm next = AST.getNextNode();
         if (next != null) {
             generate(next);
-//TODO do something with this
+            AST.appendCode(next.getCode());
         }
 
     }
@@ -311,7 +316,6 @@ public class QuadrupleGenerator {
         if (next != null) {
             generate(next);
             AST.appendCode(next.getCode());
-            //TODO do something with this
         }
 
     }
