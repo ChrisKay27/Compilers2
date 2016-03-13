@@ -12,6 +12,8 @@ public class FuncDeclaration extends Declaration {
 
     private final ParamDeclaration params;
     private final CompoundStatement body;
+    protected int numberOfParameters;
+    protected int numberOfLocals;
 
     public FuncDeclaration(int line, Type type, Token ID, ParamDeclaration params, CompoundStatement body) {
         super(line, type, ID);
@@ -26,6 +28,11 @@ public class FuncDeclaration extends Declaration {
     public CompoundStatement getBody() {
         return body;
     }
+
+    public void setNumberOfParameters(int numberOfParameters) {this.numberOfParameters = numberOfParameters;}
+    public void setNumberOfLocals(int numberOfLocals) {this.numberOfLocals = numberOfLocals;}
+    public int getNumberOfParameters(){return this.numberOfParameters;}
+    public int getNumberOfLocals(){return this.numberOfLocals;}
 
     @Override
     public void appendContents(StringBuilder sb , int tabs) {
