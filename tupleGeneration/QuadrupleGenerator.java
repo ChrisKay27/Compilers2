@@ -253,7 +253,6 @@ public class QuadrupleGenerator {
         currentLoopEndLabels.pop();
     }
 
-
     public void generate(ExitStatement AST) {
         output.accept(AST.getLine() + ": generating code for ExitStatement\n");
         AST.appendCode("goto -,-," + currentLoopEndLabels.peek());
@@ -267,22 +266,18 @@ public class QuadrupleGenerator {
 
     public void generate(ReturnStatement AST) {
         output.accept(AST.getLine() + ": generating code for ReturnStatement\n");
-
-
-        if( AST.getReturnValue() == null )
-            AST.appendCode("retv " + AST.getFuncDecl().getNumberOfParameters() + ",-,-");
-        else {
-            String temp = generate(AST.getReturnValue());
-            AST.appendCode(AST.getReturnValue().getCode());
-            AST.appendCode("retv " + AST.getFuncDecl().getNumberOfParameters() + ","+temp+",-");
+        String temp = generate(AST.getReturnValue());
+        if (AST.getReturnValue() == null) {
+            AST.setCode("ret " + currentFuncDecl.getNumberOfParameters() + ",-,-");
+        } else {
+            AST.setCode(AST.getReturnValue().getCode());
+            AST.appendCode("retv " + currentFuncDecl.getNumberOfParameters() + "," + temp + ",-");
         }
-
-
     }
 
     public void generate(NullStatement AST) {
         output.accept(AST.getLine() + ": generating code for NullStatement\n");
-        //TODO no-op?
+        AST.setCode("");
     }
 
 
@@ -297,7 +292,7 @@ public class QuadrupleGenerator {
         AST.appendCode("lab " + endBranchLabel);
     }
 
-    
+
     public void generate(String endBranchLabel, String thisCasesStartLabel, String branchConditionTemp, CaseStatement statement) {
         //Create label for next case statement
         String nextLabel = getNewLabel();
@@ -384,6 +379,8 @@ public class QuadrupleGenerator {
             String temp2 = generate(next);
 
             AST.appendCode(next.getCode());
+
+
         }
 
         return temp;
@@ -481,7 +478,6 @@ public class QuadrupleGenerator {
     public void generate(ASTNode AST) {
         //TODO do something with this
         output.accept(AST.getLine() + ": generating code for ASTNode\n");
-
     }
 
     public String getNewTemp() {
