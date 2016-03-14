@@ -1,8 +1,9 @@
 package parser.grammar.statements;
 
 
-import parser.grammar.expressions.Expression;
 import parser.Type;
+import parser.grammar.declarations.FuncDeclaration;
+import parser.grammar.expressions.Expression;
 
 /**
  * Created by Chris on 1/30/2016.
@@ -10,6 +11,7 @@ import parser.Type;
 public class ReturnStatement extends Statement {
 
     private final Expression returnValue;
+    private FuncDeclaration funcDecl;
 
     public ReturnStatement(int line, Expression returnValue) {
         super(line);
@@ -22,5 +24,13 @@ public class ReturnStatement extends Statement {
 
     public Type getType() {
         return returnValue.getType();
+    }
+
+    public FuncDeclaration getFuncDecl() {
+        return funcDecl;
+    }
+
+    public void setFuncDecl(FuncDeclaration funcDecl) {
+        this.funcDecl = funcDecl;
     }
 }

@@ -2,6 +2,7 @@ package parser.grammar.statements;
 
 import parser.Type;
 import parser.grammar.ASTNode;
+import parser.grammar.declarations.FuncDeclaration;
 import parser.grammar.expressions.Expression;
 
 /**
@@ -10,6 +11,7 @@ import parser.grammar.expressions.Expression;
 public class CallStatementTail extends StatementTail {
 
     private final Expression call_tail;
+    private FuncDeclaration funcDecl;
 
     public CallStatementTail(int line, Expression call_tail) {
         super(line);
@@ -30,5 +32,13 @@ public class CallStatementTail extends StatementTail {
 
     public Type getType(){
         return call_tail.getType();
+    }
+
+    public void setFuncDecl(FuncDeclaration funcDecl) {
+        this.funcDecl = funcDecl;
+    }
+
+    public FuncDeclaration getFuncDecl() {
+        return funcDecl;
     }
 }

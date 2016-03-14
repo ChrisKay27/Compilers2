@@ -1,0 +1,14 @@
+-- Chris Kaebe, March 3, 2016
+
+int main(void){
+
+   loop{
+        int x;
+        x := x + 1;
+        if( x >= 10)
+            exit;
+        continue;
+   }end;
+
+   return -1;
+}

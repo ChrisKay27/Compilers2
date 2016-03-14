@@ -14,6 +14,7 @@ public class FuncDeclaration extends Declaration {
     private final CompoundStatement body;
     protected int numberOfParameters;
     protected int numberOfLocals;
+    private boolean hasReturnValue;
 
     public FuncDeclaration(int line, Type type, Token ID, ParamDeclaration params, CompoundStatement body) {
         super(line, type, ID);
@@ -33,6 +34,14 @@ public class FuncDeclaration extends Declaration {
     public void setNumberOfLocals(int numberOfLocals) {this.numberOfLocals = numberOfLocals;}
     public int getNumberOfParameters(){return this.numberOfParameters;}
     public int getNumberOfLocals(){return this.numberOfLocals;}
+
+    public boolean hasReturnValue(){
+        return hasReturnValue;
+    }
+
+    public void setHasReturnValue(boolean hasReturnValue) {
+        this.hasReturnValue = hasReturnValue;
+    }
 
     @Override
     public void appendContents(StringBuilder sb , int tabs) {

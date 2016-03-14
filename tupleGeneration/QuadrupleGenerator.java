@@ -4,11 +4,13 @@ import parser.Type;
 import parser.grammar.ASTNode;
 import parser.grammar.declarations.Declaration;
 import parser.grammar.declarations.FuncDeclaration;
+import parser.grammar.declarations.ParamDeclaration;
 import parser.grammar.declarations.VarDeclaration;
 import parser.grammar.expressions.*;
 import parser.grammar.statements.*;
 import util.WTFException;
 
+import java.util.Stack;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
@@ -22,7 +24,6 @@ public class QuadrupleGenerator {
     private ASTNode astRoot;
     private BiConsumer<Integer, String> error;
     private boolean foundError;
-    private boolean traceEnabled;
 
     private FuncDeclaration currentFuncDecl;
     private static Declaration errorDeclaration = new Declaration(-1, Type.UNIV, null);
@@ -31,10 +32,10 @@ public class QuadrupleGenerator {
     private int numberOfGlobals;
     private int labelCounter;
     private int tempCounter;
+    private Stack<String> currentLoopStartLabels = new Stack<>();
+    private Stack<String> currentLoopEndLabels = new Stack<>();
 
-    public void setTraceEnabled(boolean traceEnabled) {
-        this.traceEnabled = traceEnabled;
-    }
+
 
     public QuadrupleGenerator(ASTNode astRoot, Consumer<String> output, Consumer<String> error, BiConsumer<Integer, String> lineError) {
         this.astRoot = astRoot;
@@ -86,6 +87,7 @@ public class QuadrupleGenerator {
 
         generate(AST.getBody());
         AST.appendCode(AST.getBody().getCode());
+        leavingFuncDeclaration();
     }
 
 //    // I don't think we need to generate any code for param declarations
@@ -97,18 +99,12 @@ public class QuadrupleGenerator {
 //        }
 //    }
 
-//    // I don't think we need to generate any code for variable declarations either
-//    public void generate(VarDeclaration AST) {
-//        output.accept(AST.getLine() + ": generating code for VarDeclaration\n");
-//        VarDeclaration current = AST, prev = current;
-//        if (AST.getLevel() != 0) {
-//            while (AST != null) {
-//                //TODO do something with this param dec
-//                prev = current;
-//                current = (VarDeclaration) current.getNextNode();
-//            }
-//        }
-//    }
+    private void leavingFuncDeclaration() {
+        output.accept("  leavingFuncDeclaration\n");
+        currentFuncDecl = null;
+    }
+
+
 
     public void generate(Statement AST) {
         output.accept(AST.getLine() + ": generating code for Statement\n");
@@ -186,21 +182,38 @@ public class QuadrupleGenerator {
     public String generate(CallStatementTail AST) {
         output.accept(AST.getLine() + ": generating code for CallStatementTail\n");
 
+        String temp = getNewTemp();
+
+        if(AST.getFuncDecl().hasReturnValue())
+            AST.appendCode("rval -,-,"+temp);
+
         if (AST.getCall_tail() != null) {
+
             Expression expression = (Expression) AST.getCall_tail();
             Expression current = expression;
+
+            ParamDeclaration pdec = AST.getFuncDecl().getParams();
+
             while (current != null) {
 
-                generate(current);
+                String temp2 = generate(current);
+
+                if( pdec.isReference())
+                    AST.appendCode("arga " + temp2+",-,-");
+                else
+                    AST.appendCode("arg " + temp2+",-,-");
 
                 if (current.getNextNode() instanceof Expression) {
                     current = (Expression) current.getNextNode();
+                    pdec = (ParamDeclaration) pdec.getNextNode();
                 } else {
                     current = null;
                 }
             }
         }
-        String temp = null;
+
+        AST.appendCode("call " + AST.getFuncDecl().getID().getName() + ",-,-");
+
         return temp;
     }
 
@@ -208,46 +221,63 @@ public class QuadrupleGenerator {
         output.accept(AST.getLine() + ": generating code for CompoundStatement\n");
 
         Declaration d = AST.getDeclarations();
-        while (d != null) {
-            d = d.getNextNode();
-            //TODO do something with this declarations generated code
-        }
+        if (d != null)
+            AST.appendCode("ecs "+d.getLength()+",-,-");
+
 
         Statement stmt = AST.getStatements();
 
         while (stmt != null) {
             generate(stmt);
+            AST.appendCode(stmt.getCode());
             stmt = (Statement) stmt.getNextNode();
-            //TODO Do something with this statements generated code
         }
+
+        if (d != null)
+            AST.appendCode("lcs -,-,-");
     }
 
     public void generate(LoopStatement AST) {
         output.accept(AST.getLine() + ": generating code for LoopStatement\n");
 
+        currentLoopStartLabels.push(getNewLabel());
+        currentLoopEndLabels.push(getNewLabel());
 
         Statement statement = AST.getStatement();
         generate(statement);
-        //TODO do something with this statements code
+        AST.appendCode("lab -,-,"+currentLoopStartLabels.peek());
+        AST.appendCode(statement.getCode());
+        AST.appendCode("lab -,-,"+currentLoopEndLabels.peek());
 
+        currentLoopStartLabels.pop();
+        currentLoopEndLabels.pop();
     }
 
 
     public void generate(ExitStatement AST) {
         output.accept(AST.getLine() + ": generating code for ExitStatement\n");
-        //TODO add jump to label?
+        AST.appendCode("goto -,-," + currentLoopEndLabels.peek());
     }
 
 
     public void generate(ContinueStatement AST) {
         output.accept(AST.getLine() + ": generating code for ContinueStatement\n");
-        //TODO add jump to label?
+        AST.appendCode("goto -,-," + currentLoopStartLabels.peek());
     }
 
     public void generate(ReturnStatement AST) {
         output.accept(AST.getLine() + ": generating code for ReturnStatement\n");
-        //TODO put the return value code somewhere in the return statements code?
-        generate(AST.getReturnValue());
+
+
+        if( AST.getReturnValue() == null )
+            AST.appendCode("retv " + AST.getFuncDecl().getNumberOfParameters() + ",-,-");
+        else {
+            String temp = generate(AST.getReturnValue());
+            AST.appendCode(AST.getReturnValue().getCode());
+            AST.appendCode("retv " + AST.getFuncDecl().getNumberOfParameters() + ","+temp+",-");
+        }
+
+
     }
 
     public void generate(NullStatement AST) {
@@ -262,23 +292,30 @@ public class QuadrupleGenerator {
         String endBranchLabel = getNewLabel();
         String temp = generate(AST.getAddexp());
 
-        generate(endBranchLabel, getNewLabel(), AST.getCaseStmt());
+        generate(endBranchLabel, getNewLabel(), temp, AST.getCaseStmt());
 
         AST.appendCode("lab " + endBranchLabel);
     }
 
-
-    public void generate(String endBranchLabel, String thisCasesStartLabel, CaseStatement statement) {
-
+    
+    public void generate(String endBranchLabel, String thisCasesStartLabel, String branchConditionTemp, CaseStatement statement) {
+        //Create label for next case statement
         String nextLabel = getNewLabel();
+        statement.appendCode("lab -,-," + thisCasesStartLabel);
+
+        //Check to see if the
         int NUM = statement.getNumberToken().getAttrValue();
         statement.setCode("iff " + NUM + ",-," + nextLabel);
+
+        String temp = getNewTemp();
+        statement.setCode("eq " + NUM + ","+branchConditionTemp+","+temp);
+        statement.setCode("iff " + NUM + ","+temp+","+nextLabel);
         generate(statement.getStatement()); // statement for this case
         statement.appendCode(statement.getStatement().getCode());
-        statement.appendCode("goto " + nextLabel);
+        statement.appendCode("goto L"+endBranchLabel);
 
-        generate((CaseStatement) statement.getNextNode()); // next case in branch statement
-        statement.appendCode(statement.getStatement().getCode());
+        generate(endBranchLabel,nextLabel,branchConditionTemp,(CaseStatement)statement.getNextNode()); // next case in branch statement
+        statement.appendCode(statement.getNextNode().getCode());
     }
 
     public String generate(Expression AST) {
@@ -345,9 +382,8 @@ public class QuadrupleGenerator {
         MultOpFactor next = (MultOpFactor) AST.getFactor().getNextNode();
         if (next != null) {
             String temp2 = generate(next);
+
             AST.appendCode(next.getCode());
-
-
         }
 
         return temp;
@@ -367,7 +403,7 @@ public class QuadrupleGenerator {
 
         else if (AST instanceof AddOpTerm) {
             String temp = generate(((AddOpTerm) AST).getTerm());
-            AST.setCode(((AddOpTerm) AST).getTerm() + "");
+            AST.setCode(((AddOpTerm) AST).getTerm().getCode());
             return temp;
         } else if (AST instanceof MinusExpression) {
 
@@ -424,6 +460,7 @@ public class QuadrupleGenerator {
         output.accept(AST.getLine() + ": generating code for IdFactor\n");
         String newTemp = getNewTemp();
         String temp;
+
         if (AST.getIdTail() instanceof CallStatementTail) {
             temp = generate((CallStatementTail) AST.getIdTail());
             //TODO maybe something here
@@ -433,8 +470,9 @@ public class QuadrupleGenerator {
             temp = generate((AddExpression) AST.getIdTail());
             AST.setCode(AST.getIdTail().getCode());
             AST.appendCode("fae " + AST.getDecl().getID().getName() + "," + temp + "," + newTemp);
-        } else
-            throw new WTFException("Has to be either a call stmt tail or add expression");
+        }
+        else
+            AST.appendCode("asg " + AST.getDecl().getID().getName() + ",-,"+newTemp);
 
         return newTemp;
     }

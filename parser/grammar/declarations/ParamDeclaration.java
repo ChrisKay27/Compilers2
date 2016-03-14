@@ -47,4 +47,11 @@ public class ParamDeclaration extends VarDeclaration {
     }
 
 
+    public boolean isReference() {
+        return isReference;
+    }
+
+    public void setReference(boolean isReference) {
+        this.isReference = isReference;
+    }
 }

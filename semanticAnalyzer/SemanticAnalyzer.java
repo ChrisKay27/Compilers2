@@ -234,6 +234,9 @@ public class SemanticAnalyzer implements SemAnalInter {
     private void callConstraints(IdStatement idStatement) {
         FuncDeclaration function = (FuncDeclaration) idStatement.getDecl();
         Expression args = (Expression) ((CallStatementTail) idStatement.getId_stmt_tail()).getCall_tail();
+
+        ((CallStatementTail) idStatement.getId_stmt_tail()).setFuncDecl(function);
+
         ParamDeclaration currentParam = function.getParams();
         Expression currentArg = args;
         int counter = 0;
@@ -410,6 +413,7 @@ public class SemanticAnalyzer implements SemAnalInter {
             error.accept(AST.getLine(), "Error, return type does not match functions type.");
         } else {
             returnStatementFound = true;
+            AST.setFuncDecl(currentFuncDecl);
         }
     }
 

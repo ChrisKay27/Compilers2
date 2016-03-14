@@ -67,4 +67,14 @@ public class Declaration extends ASTNode {
         }
         return d;
     }
+
+    public int getLength() {
+        int length =1;
+        Declaration tmp = getNextNode();
+        while (tmp != null) {
+            tmp = tmp.getNextNode();
+            length++;
+        }
+        return length;
+    }
 }
