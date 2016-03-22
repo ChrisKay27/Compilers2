@@ -56,5 +56,6 @@ public abstract class ASTNode {
             code = append;
         else
             code = code + '\n' + append;
+        System.out.println(append);
     }
 }

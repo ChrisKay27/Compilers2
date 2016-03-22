@@ -140,35 +140,45 @@ public class QuadrupleGenerator {
     public void generate(IdStatement AST) {
         output.accept(AST.getLine() + ": generating code for IdStatement\n");
 
-        String assignedValue = generate(AST.getId_stmt_tail());
+        String assignedValue = generate(AST.getIdToken().name,AST.getId_stmt_tail());
         AST.appendCode(AST.getId_stmt_tail().getCode());
-        AST.appendCode("(asg," + assignedValue + ",-," + AST.getIdToken().name+')');
+
+        //assigned value will be null IFF this is an assignment into an array.
+        if( assignedValue != null )
+            AST.appendCode("(asg," + assignedValue + ",-," + AST.getIdToken().name+')');
     }
 
-    public String generate(StatementTail AST) {
+    public String generate(String name, StatementTail AST) {
         output.accept(AST.getLine() + ": generating code for StatementTail\n");
+
         if (AST instanceof AssignStatementTail)
-            return generate((AssignStatementTail) AST);
+            return generate(name,(AssignStatementTail) AST);
         else if (AST instanceof CallStatementTail)
             return generate((CallStatementTail) AST);
         throw new WTFException("Malformed statement tail found in quadruple generation stage");
     }
 
-    public String generate(AssignStatementTail AST) {
+    /**
+     *
+     * @param name name of the id being assigned to
+     * @return null IF this is an array assignment ELSE will return the temp of the result of the expression
+     */
+    public String generate(String name, AssignStatementTail AST) {
         output.accept(AST.getLine() + ": generating code for AssignStatementTail\n");
 
-        String returnedValue = "";
-        returnedValue = generate(AST.getExp());
+        String returnedValue = generate(AST.getExp());
 
-        //TODO FIX THIS ARRAY INDEX DOESNT WORK
+        AST.appendCode(AST.getExp().getCode());
+
+        //TODO FIX THIS ARRAY INDEX DOESN'T WORK
         String temp;
         //If its an array index
         if (AST.getAddExpression() != null) {
             temp = generate(AST.getAddExpression());
             AST.setCode(AST.getAddExpression().getCode());
+            AST.setCode("(tae,"+returnedValue+","+temp+","+name+")");
+            return null;
         }
-
-        AST.appendCode(AST.getExp().getCode());
 
         return returnedValue;
     }
@@ -195,6 +205,9 @@ public class QuadrupleGenerator {
         }
     }
 
+    /**
+     * @return null IF the the function does not return anything
+     */
     public String generate(CallStatementTail AST) {
         output.accept(AST.getLine() + ": generating code for CallStatementTail\n");
 
@@ -230,7 +243,9 @@ public class QuadrupleGenerator {
 
         AST.appendCode("(call," + AST.getFuncDecl().getID().getName() + ",-,-)");
 
-        return temp;
+        if(AST.getFuncDecl().hasReturnValue())
+            return temp;
+        return null;
     }
 
     public void generate(CompoundStatement AST) {
@@ -338,6 +353,7 @@ public class QuadrupleGenerator {
 
         AST.setCode(AST.getAddExp().getCode());
 
+
         if (AST.getAddExp2() != null) {
             String temp2 = generate(AST.getAddExp2());
             AST.appendCode(AST.getAddExp2().getCode());
@@ -362,6 +378,7 @@ public class QuadrupleGenerator {
                 case NEQ:
                     AST.appendCode("(neq," + temp + "," + temp2 + "," + newTemp+")");
                     break;
+                default: throw new WTFException("Error! bad token type in Expression relop");
             }
             AST.appendCode("(asg," + newTemp + ",-," + temp+")");
         }
@@ -373,7 +390,7 @@ public class QuadrupleGenerator {
     public String generate(AddExpression AST) {
         output.accept(AST.getLine() + ": generating code for AddExpression\n");
 
-        String newLabel = getNewLabel();
+
 
         String temp = generate(AST.getTerm());
         AST.setCode(AST.getTerm().getCode());
@@ -384,7 +401,7 @@ public class QuadrupleGenerator {
             String temp2 = generate(next);
 
             String newTemp = getNewTemp();
-
+            String newLabel=null;
             switch (next.getAddOp()) {
                 case PLUS:
                     AST.appendCode(next.getCode());
@@ -399,15 +416,18 @@ public class QuadrupleGenerator {
                     AST.appendCode("(or," + temp + "," + temp2 + "," + newTemp+")");
                     break;
                 case ORELSE:
+                    newLabel = getNewLabel();
                     AST.appendCode("(ift," + temp + "," + newLabel+")");
                     AST.appendCode(next.getCode());
                     AST.appendCode("(or," + temp + "," + temp2 + "," + newTemp+")");
                     break;
+                default: throw new WTFException("Error! bad token type in AddExpression addop");
             }
             AST.appendCode("(asg," + newTemp + ",-," + temp+")");
+            if( newLabel != null )
+                AST.appendCode("(lab,-,-,"+newLabel+")");
         }
 
-        AST.appendCode("(lab,-,-,"+newLabel+")");
 
         return temp;
     }
