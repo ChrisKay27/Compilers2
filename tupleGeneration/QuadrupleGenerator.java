@@ -260,12 +260,15 @@ public class QuadrupleGenerator {
 
         while (stmt != null) {
             generate(stmt);
+            Statement nextStmt = (Statement) stmt.getNextNode();
+            if( nextStmt == null && d != null )
+                AST.appendCode("(lcs,-,-,-)");
             AST.appendCode(stmt.getCode());
-            stmt = (Statement) stmt.getNextNode();
+            stmt = nextStmt;
         }
 
-        if (d != null)
-            AST.appendCode("(lcs,-,-,-)");
+//        if (d != null)
+//            AST.appendCode("(lcs,-,-,-)");
     }
 
     public void generate(LoopStatement AST) {
@@ -389,8 +392,6 @@ public class QuadrupleGenerator {
 
     public String generate(AddExpression AST) {
         output.accept(AST.getLine() + ": generating code for AddExpression\n");
-
-
 
         String temp = generate(AST.getTerm());
         AST.setCode(AST.getTerm().getCode());
