@@ -52,6 +52,9 @@ public abstract class ASTNode {
         this.code = code;
     }
     public void appendCode(String append){
-        code = code + '\n' + append;
+        if( code.equals("") )
+            code = append;
+        else
+            code = code + '\n' + append;
     }
 }
