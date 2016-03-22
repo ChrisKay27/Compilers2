@@ -42,10 +42,6 @@ public class Scanner {
         keywords.put("void", new Token(TokenType.VOID, null));
         keywords.put("true", new Token(TokenType.BLIT, 1));
         keywords.put("false", new Token(TokenType.BLIT, 0));
-//        keywords.put("readint", new Token(TokenType.ID, 0));
-//        keywords.put("writeint", new Token(TokenType.ID, 1));
-//        keywords.put("readbool", new Token(TokenType.ID, 2));
-//        keywords.put("writebool", new Token(TokenType.ID, 3));
     }
 
     private Supplier<Integer> reader;
@@ -71,11 +67,11 @@ public class Scanner {
         this.lineTraceOutput = lineTraceOutput;
         this.errorOutput = errorOutput;
 
-        symbolTable.put("readint"  ,0);
-        symbolTable.put("writeint" ,1);
-        symbolTable.put("readbool" ,2);
-        symbolTable.put("writebool",3);
-        symbolTable.put("x",4);
+        symbolTable.put("readint", 0);
+        symbolTable.put("writeint", 1);
+        symbolTable.put("readbool", 2);
+        symbolTable.put("writebool", 3);
+        symbolTable.put("x", 4);
 
         reverseSymbolTable[0] = "readint";
         reverseSymbolTable[1] = "writeint";
@@ -158,7 +154,7 @@ public class Scanner {
                         return new Token(TokenType.ERROR, "Unexpected end of file at line:" + lineCount + " col:" + colCount);
                     else { //else the end of file token is returned
                         t = state.consume(' ');
-                        if( t == null )
+                        if (t == null)
                             t = new Token(TokenType.ENDFILE, null);
                     }
                 }
@@ -206,10 +202,10 @@ public class Scanner {
 
         //if (traceEnabled) {
         //    if (currentLine.length() > 0) currentLine.deleteCharAt(currentLine.length() - 1);
-            tokensOnCurrentLine.add(t);
-       // }
+        tokensOnCurrentLine.add(t);
+        // }
 
-        lineTraceOutput.accept("\n\t\t"+ t + '\n');
+        lineTraceOutput.accept("\n\t\t" + t + '\n');
 
         if (nextChar == '\n') {
             tokensOnLineConsumer.accept(new ArrayList<>(tokensOnCurrentLine));
@@ -223,6 +219,7 @@ public class Scanner {
 
 
     private boolean EOFFound = false;
+
     private int nextChar() {
         int r;
         if (EOFFound)
@@ -237,18 +234,7 @@ public class Scanner {
         return reverseSymbolTable[id];
     }
 
-    /**
-     * @param message - string to be printed on System.err by the administrator
-     */
-    private void reportError(String message) {
-
-    }
-
     public void setTraceEnabled(boolean traceEnabled) {
         this.traceEnabled = traceEnabled;
-    }
-
-    public boolean isTraceEnabled() {
-        return traceEnabled;
     }
 }
