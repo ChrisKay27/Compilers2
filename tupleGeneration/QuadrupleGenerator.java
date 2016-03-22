@@ -42,9 +42,7 @@ public class QuadrupleGenerator {
         this.output = output;
         this.regError = error;
         this.error = lineError;
-
     }
-
 
     public boolean startCodeGeneration(Declaration AST) {
 

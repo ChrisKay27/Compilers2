@@ -18,8 +18,6 @@ public class Options {
     public final boolean printAST;
     public boolean unitTesting;
 
-
-
     public Options(boolean quiet, boolean verbose, boolean tuplePhase, boolean parserPhase, boolean fullCompile, boolean lexicalPhase, boolean semanticPhase, String outputFilePath, String errorFilePath, String inputFilePath, boolean printAST) {
         this.quiet = quiet;
         this.verbose = verbose;
