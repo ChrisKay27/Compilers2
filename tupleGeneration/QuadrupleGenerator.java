@@ -153,8 +153,9 @@ public class QuadrupleGenerator {
 
         if (AST instanceof AssignStatementTail)
             return generate(name, (AssignStatementTail) AST);
-        else if (AST instanceof CallStatementTail)
+        else if (AST instanceof CallStatementTail) {
             return generate((CallStatementTail) AST);
+        }
         throw new WTFException("Malformed statement tail found in quadruple generation stage");
     }
 
@@ -215,12 +216,45 @@ public class QuadrupleGenerator {
     public String generate(CallStatementTail AST) {
         output.accept(AST.getLine() + ": generating code for CallStatementTail\n");
 
-        String temp = getNewTemp();
+        {// handle case where the function call is a library function
+            String functionId = AST.getFuncDecl().getID().getName();
+            String targetRegister = "";
+            Expression exp;
+            switch (functionId) {
+                case "readint":
+                    targetRegister = getNewTemp();
+                    AST.appendCode("(rdi,-,-," + targetRegister + ")");
+                    return targetRegister;
+                case "readbool":
+                    targetRegister = getNewTemp();
+                    AST.appendCode("(rdb,-,-," + targetRegister + ")");
+                    return targetRegister;
+                case "writeint":
+                    exp = (Expression) AST.getCall_tail();
+                    targetRegister = generate(exp);
+                    AST.appendCode(exp.getCode());
+                    AST.appendCode("(wri," + targetRegister + ",-,-)");
+                    return null;
+                case "writebool":
+                    exp = (Expression) AST.getCall_tail();
+                    targetRegister = generate(exp);
+                    AST.appendCode(exp.getCode());
+                    AST.appendCode("(wrb," + targetRegister + ",-,-)");
+                    return null;
+                default:
+                    break;
+            }
+        }
 
-        if (AST.getFuncDecl().hasReturnValue())
-            AST.appendCode("(rval,-,-," + temp + ")");
+        String returnValTemp = "";
+        if (AST.getFuncDecl().hasReturnValue()) {
+            returnValTemp = getNewTemp();
+            AST.appendCode("(rval,-,-," + returnValTemp + ")");
+        }
 
-        if (AST.getCall_tail() != null) {
+        if (AST.getCall_tail() != null)
+
+        {
 
             Expression current = (Expression) AST.getCall_tail();
 
@@ -248,7 +282,7 @@ public class QuadrupleGenerator {
         AST.appendCode("(call," + AST.getFuncDecl().getID().getName() + ",-,-)");
 
         if (AST.getFuncDecl().hasReturnValue())
-            return temp;
+            return returnValTemp;
         return null;
     }
 
@@ -265,9 +299,9 @@ public class QuadrupleGenerator {
         while (stmt != null) {
 
             Statement nextStmt = (Statement) stmt.getNextNode();
-            if( nextStmt == null && d != null )
+            if (nextStmt == null && d != null)
                 AST.appendCode("(lcs,-,-,-)");
-            
+
             generate(stmt);
             AST.appendCode(stmt.getCode());
             stmt = nextStmt;
@@ -455,7 +489,7 @@ public class QuadrupleGenerator {
             switch (next.getMultOp()) {
                 case MULT:
                     AST.appendCode(next.getCode());
-                    AST.appendCode("(mult," + temp + "," + temp2 + "," + newTemp + ")");
+                    AST.appendCode("(mul," + temp + "," + temp2 + "," + newTemp + ")");
                     break;
                 case DIV:
                     AST.appendCode(next.getCode());
