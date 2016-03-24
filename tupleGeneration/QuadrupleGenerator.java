@@ -89,6 +89,8 @@ public class QuadrupleGenerator {
 
         generate(AST.getBody());
         AST.appendCode(AST.getBody().getCode());
+
+
         leavingFuncDeclaration();
     }
 
@@ -183,13 +185,18 @@ public class QuadrupleGenerator {
     public void generate(IfStatement AST) {
         output.accept(AST.getLine() + ": generating code for IfStatement\n");
 
+        //generate code for the expression
         String returnedValue = generate(AST.getExpression());
+
         Statement elseStatement = AST.getElseStatement();
         boolean hasElse = elseStatement != null;
         String elseLabel = getNewLabel();
         String exitLabel = (hasElse ? getNewLabel() : null);
 
-        AST.setCode("(iff," + returnedValue + ",-," + elseLabel + ")");
+        //Set the code for expression
+        AST.setCode(AST.getExpression().getCode());
+
+        AST.appendCode("(iff," + returnedValue + ",-," + elseLabel + ")");
         generate(AST.getStatement());
         AST.appendCode(AST.getStatement().getCode());
         if (hasElse) AST.appendCode("(goto,-,-," + exitLabel + ")");
@@ -256,13 +263,18 @@ public class QuadrupleGenerator {
         Statement stmt = AST.getStatements();
 
         while (stmt != null) {
+
+            Statement nextStmt = (Statement) stmt.getNextNode();
+            if( nextStmt == null && d != null )
+                AST.appendCode("(lcs,-,-,-)");
+            
             generate(stmt);
             AST.appendCode(stmt.getCode());
-            stmt = (Statement) stmt.getNextNode();
+            stmt = nextStmt;
         }
 
-        if (d != null)
-            AST.appendCode("(lcs,-,-,-)");
+//        if (d != null)
+//            AST.appendCode("(lcs,-,-,-)");
     }
 
     public void generate(LoopStatement AST) {
@@ -453,7 +465,7 @@ public class QuadrupleGenerator {
                     AST.appendCode(next.getCode());
                     AST.appendCode("(mod," + temp + "," + temp2 + "," + newTemp + ")");
                     break;
-                case AND:
+                case AND: //TODO i think and isn't short circuited
                     newLabel = getNewLabel();
                     AST.appendCode("(ift," + temp + "," + newLabel + ")");
                     AST.appendCode(next.getCode());
@@ -464,7 +476,6 @@ public class QuadrupleGenerator {
 
             if (newLabel != null)
                 AST.appendCode("(lab,-,-," + newLabel + ")");
-
         }
 
         return temp;
