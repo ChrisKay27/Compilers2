@@ -50,7 +50,6 @@ public class Token {
             return true;
         }
 
-
         return attrValue != null && attrValue.equals(t.attrValue);
     }
 

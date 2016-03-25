@@ -15,7 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
-import static java.lang.System.*;
+import static java.lang.System.err;
+import static java.lang.System.out;
 
 public class Administration implements Administrator {
     // development
@@ -185,7 +186,13 @@ public class Administration implements Administrator {
             printASTTree(tree);
             printCompilationResults(tree);
 
-            new QuadrupleGenerator(tree, this::printLineTrace, this::printErrorMessage, this::printErrorMessage).startCodeGeneration((Declaration) tree);
+
+            String code = new QuadrupleGenerator(tree, this::printLineTrace, this::printErrorMessage, this::printErrorMessage).startCodeGeneration((Declaration) tree);
+
+            out.println("\n  Code Generation Complete");
+            out.println("\n------------------------------\n");
+            out.println(code);
+
             //this.outputHandler.printOutputs(out::println);
         } else {
             //If no tree was returned then the compiling failed

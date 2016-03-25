@@ -1,0 +1,18 @@
+-- Chris Kaebe, March 24, 2016
+
+int one(void){
+    return 1;
+}
+
+int add(int x, int y){
+   return x + y;
+}
+
+
+int main(void){
+    writeint(add(one(),one()));
+    --int x;
+    --x := 1;
+    --writeint(x);
+    return 1;--x;
+}

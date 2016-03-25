@@ -39,6 +39,7 @@ public class SemanticAnalyzer implements SemAnalInter {
     //inside of a loop
     private Stack<LoopStatement> currentLoop = new Stack<>();
 
+
     public void setTraceEnabled(boolean traceEnabled) {
         this.traceEnabled = traceEnabled;
     }
@@ -54,6 +55,7 @@ public class SemanticAnalyzer implements SemAnalInter {
 
 
     public boolean startSemAnal(Declaration AST) {
+
 
         //Library functions
         Token readIntToken = new Token(TokenType.ID, 0);
@@ -83,6 +85,7 @@ public class SemanticAnalyzer implements SemAnalInter {
             if (current instanceof VarDeclaration) {
                 analyze((VarDeclaration) current);
             } else {
+
                 analyze((FuncDeclaration) current);
                 lastFunction = (FuncDeclaration) current;
             }
@@ -92,6 +95,7 @@ public class SemanticAnalyzer implements SemAnalInter {
         while (current != null);
 
         mainFunctionConstraints(lastFunction);
+
 
         return !foundError;
     }
@@ -605,7 +609,7 @@ public class SemanticAnalyzer implements SemAnalInter {
 
         if (AST.getIdTail() instanceof CallStatementTail)
             analyze((CallStatementTail) AST.getIdTail());
-
+        
         else if (AST.getIdTail() instanceof AddExpression) {
             analyze((AddExpression) AST.getIdTail());
 

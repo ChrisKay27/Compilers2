@@ -926,9 +926,10 @@ public class Parser {
     private ASTNode id_tail(Set<TokenType> synch) {
         if (traceEnabled) lineTraceOutput.accept("\t\tEntering id-tail");
 
+        int line = lineNumber.get();
         ASTNode idTail;
         if (FIRSTofCall_tail.contains(lookahead)) {
-            idTail = call_tail(synch);
+            idTail = new CallStatementTail(line,call_tail(synch));
         } else {
             idTail = var_tail(synch);
         }

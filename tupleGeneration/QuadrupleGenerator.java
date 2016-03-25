@@ -9,6 +9,8 @@ import parser.grammar.expressions.*;
 import parser.grammar.statements.*;
 import util.WTFException;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Stack;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -33,6 +35,7 @@ public class QuadrupleGenerator {
     private Stack<String> currentLoopEndLabels = new Stack<>();
 
 
+
     public QuadrupleGenerator(ASTNode astRoot, Consumer<String> output, Consumer<String> error, BiConsumer<Integer, String> lineError) {
         this.astRoot = astRoot;
         this.output = output;
@@ -41,7 +44,8 @@ public class QuadrupleGenerator {
     }
 
 
-    public boolean startCodeGeneration(Declaration AST) {
+    public String startCodeGeneration(Declaration AST ) {
+
 
         FuncDeclaration lastFunction = null;
 
@@ -58,26 +62,21 @@ public class QuadrupleGenerator {
         while (current != null);
 
         current = AST;
-        Declaration prev = current; // POSSIBLE BUG?
         do {
-            if (current instanceof VarDeclaration) {
-                generate((VarDeclaration) current);
-            } else {
+            if (!(current instanceof VarDeclaration))
                 generate((FuncDeclaration) current);
-                lastFunction = (FuncDeclaration) current;
-            }
-            if (prev != current)
-                prev.appendCode(current.getCode());
-            prev = current;
-            current = (Declaration) current.getNextNode();
+
+            if (AST != current)
+                AST.appendCode(current.getCode());
+            current = current.getNextNode();
         }
         while (current != null);
 
         AST.setCode("(start," + numGlobalVars + ",-,-)\n(rval,-,-," + getNewTemp() + ")\n(call,main,-,-)\n(hlt,-,-,-)\n" + AST.getCode());
 
-        output.accept("\n" + AST.getCode());
+//        output.accept("\n" + AST.getCode());
 
-        return !foundError;
+        return AST.getCode();
     }
 
     public void generate(FuncDeclaration AST) {
@@ -143,8 +142,8 @@ public class QuadrupleGenerator {
         String assignedValue = generate(AST.getIdToken().name, AST.getId_stmt_tail());
         AST.appendCode(AST.getId_stmt_tail().getCode());
 
-        //assigned value will be null IFF this is an assignment into an array.
-        if (assignedValue != null)
+        //assigned value will be null IF this is an assignment into an array OR a function call
+        if (assignedValue != null )
             AST.appendCode("(asg," + assignedValue + ",-," + AST.getIdToken().name + ')');
     }
 
@@ -170,7 +169,7 @@ public class QuadrupleGenerator {
 
         AST.appendCode(AST.getExp().getCode());
 
-        //TODO FIX THIS ARRAY INDEX DOESN'T WORK
+        //TODO FIX THIS ARRAY INDEX DOESN'T WORK, it might now...
         String temp;
         //If its an array index
         if (AST.getAddExpression() != null) {
@@ -253,9 +252,7 @@ public class QuadrupleGenerator {
         }
 
         if (AST.getCall_tail() != null)
-
         {
-
             Expression current = (Expression) AST.getCall_tail();
 
             ParamDeclaration pdec = AST.getFuncDecl().getParams();
@@ -427,16 +424,21 @@ public class QuadrupleGenerator {
             AST.appendCode("(asg," + newTemp + ",-," + temp + ")");
         }
 
-
         return temp;
     }
 
     public String generate(AddExpression AST) {
         output.accept(AST.getLine() + ": generating code for AddExpression\n");
 
-
         String temp = generate(AST.getTerm());
         AST.setCode(AST.getTerm().getCode());
+
+        if( AST.isUminus() ){
+            String nTemp = getNewTemp();
+            AST.appendCode("(mul,-1,"+temp+","+nTemp+")");
+            AST.appendCode("(asg,"+nTemp+",-," + temp+")");
+        }
+
         AST.setTemp(temp);
 
         AddOpTerm next = AST.getNextNode();
@@ -558,6 +560,7 @@ public class QuadrupleGenerator {
         return temp;
     }
 
+
     public String generate(LiteralNum AST) {
         output.accept(AST.getLine() + ": generating code for LiteralNum\n"); //Nothing to analyze here
         String temp = getNewTemp();
@@ -587,20 +590,50 @@ public class QuadrupleGenerator {
         String newTemp = getNewTemp();
         String temp;
 
+        //If this is an id factor which is a function call then its arguments will be the expressions in the id tail.
         if (AST.getIdTail() instanceof CallStatementTail) {
-            temp = generate((CallStatementTail) AST.getIdTail());
-            //TODO maybe something here
-            AST.setCode(AST.getIdTail().getCode());
-            AST.appendCode("(asg," + temp + ",-," + newTemp + ")");
+            CallStatementTail cst = (CallStatementTail) AST.getIdTail();
+            Expression current = (Expression) cst.getCall_tail();
+            FuncDeclaration funcDecl = (FuncDeclaration) AST.getDecl();
+            ParamDeclaration pdec = funcDecl.getParams();
+
+            //Keep track of the arguments for when we actually call the function.
+            List<String> arguments = new ArrayList<>();
+
+            //Evaluate all the arguments
+            while (current != null) {
+                String temp2 = generate(current);
+                AST.appendCode(current.getCode());
+
+                if (pdec.isReference())
+                    arguments.add("(arga," + temp2 + ",-,-)");
+                else
+                    arguments.add("(arg," + temp2 + ",-,-)");
+
+                if (current.getNextNode() instanceof Expression) {
+                    current = (Expression) current.getNextNode();
+                    pdec = (ParamDeclaration) pdec.getNextNode();
+                } else {
+                    current = null;
+                }
+            }
+
+            arguments.forEach(AST::appendCode);
+            AST.appendCode("(rval,-,-," + newTemp + ")");
+            AST.appendCode("(call," + AST.getIdToken().getName() + ",-,-)");
+
         } else if (AST.getIdTail() instanceof AddExpression) {
             temp = generate((AddExpression) AST.getIdTail());
             AST.setCode(AST.getIdTail().getCode());
             AST.appendCode("(fae," + AST.getDecl().getID().getName() + "," + temp + "," + newTemp + ")");
+
         } else
             AST.appendCode("(asg," + AST.getDecl().getID().getName() + ",-," + newTemp + ")");
 
         return newTemp;
     }
+
+
 
 
     public void generate(ASTNode AST) {
