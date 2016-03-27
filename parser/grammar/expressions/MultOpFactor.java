@@ -1,6 +1,7 @@
 package parser.grammar.expressions;
 
 import parser.TokenType;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /**
  * Created by Carston on 2/21/2016.
@@ -32,5 +33,10 @@ public class MultOpFactor extends SubExpression {
         factor.appendContents(sb, tabs + 1);
         if( nextNode != null )
             nextNode.appendContents(sb, tabs);
+    }
+
+    @Override
+    protected int evaluateStaticInt() {
+        throw new NotImplementedException();
     }
 }

@@ -9,7 +9,7 @@ import java.util.List;
 public enum TokenType {
      NUM, ID, BLIT, ENDFILE, ERROR, AND , BOOL , BRANCH , CASE , CONTINUE , DEFAULT , ELSE , END , EXIT , IF , INT , LOOP ,
      MOD , NOT , OR , REF , RETURN , VOID, PLUS , MINUS , MULT , DIV , ANDTHEN ,ORELSE , LT , LTEQ , GT , GTEQ , EQ , NEQ ,
-    ASSIGN , COLON , SEMI , COMMA , LPAREN , RPAREN , LSQR, RSQR , LCRLY, RCRLY;
+    ASSIGN, COLON, SEMI, COMMA, LPAREN, RPAREN, LSQR, RSQR, LCRLY, RCRLY, TokenType;
 
     private static final List<Type> intOperandTypes = Arrays.asList(Type.INT);
     private static final List<Type> intORBoolOperandTypes = Arrays.asList(Type.INT,Type.BOOL);

@@ -8,5 +8,8 @@ public abstract class NidFactor extends Factor {
     protected NidFactor(int line) {
         super(line);
     }
+
+    @Override
+    protected abstract int evaluateStaticInt();
 }
 

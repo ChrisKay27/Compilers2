@@ -44,7 +44,7 @@ public class Main {
         boolean quietEnabled;
         boolean verboseEnabled;
         boolean help;
-        boolean tuplePhase = true, lexicalPhase, semanticPhase, parsePhase, compilePhase;
+        boolean tuplePhase, lexicalPhase, semanticPhase, parsePhase, compilePhase;
         boolean printAST;
 
         try {
@@ -71,7 +71,7 @@ public class Main {
             return;
         }
 
-        if( !lexicalPhase && !parsePhase && !tuplePhase && !compilePhase )
+        if (!lexicalPhase && !parsePhase && !tuplePhase && !compilePhase && !semanticPhase)
             tuplePhase = true;
 
         Options options = new Options(quietEnabled, verboseEnabled, tuplePhase, parsePhase, compilePhase, lexicalPhase,

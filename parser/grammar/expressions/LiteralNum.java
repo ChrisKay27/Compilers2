@@ -33,4 +33,9 @@ public class LiteralNum extends NidFactor {
     public Type getType() {
         return Type.INT;
     }
+
+    @Override
+    protected int evaluateStaticInt() {
+        return num;
+    }
 }

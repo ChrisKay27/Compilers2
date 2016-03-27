@@ -1,0 +1,8 @@
+int main(void){
+    int a[1];
+    a := 1;
+    a[2] := 15;
+    writeint(a);
+    writeint(a[2]);
+    return 0;
+}

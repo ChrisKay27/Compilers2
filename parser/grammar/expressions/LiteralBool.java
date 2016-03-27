@@ -1,5 +1,7 @@
 package parser.grammar.expressions;
 
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+
 public class LiteralBool extends NidFactor {
     private final int bool;
 
@@ -32,5 +34,10 @@ public class LiteralBool extends NidFactor {
         if(bool == 1) return ""+true;
         if(bool == 0) return ""+false;
         return "BROKEN_BOOL";
+    }
+
+    @Override
+    protected int evaluateStaticInt() {
+        throw new NotImplementedException();
     }
 }

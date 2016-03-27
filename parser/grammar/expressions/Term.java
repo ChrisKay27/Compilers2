@@ -1,5 +1,7 @@
 package parser.grammar.expressions;
 
+import util.WTFException;
+
 /**
  * Created by Chris on 2/12/2016.
  */
@@ -31,5 +33,27 @@ public class Term extends SubExpression {
 
     public MultOpFactor getNextNode(){
         return (MultOpFactor) super.getNextNode();
+    }
+
+    @Override
+    protected int evaluateStaticInt() {
+        int result = this.factor.evaluateStaticInt();
+        if (this.getNextNode() != null) {
+            int termVal = this.getNextNode().getFactor().evaluateStaticInt();
+            switch (this.getNextNode().getMultOp()) {
+                case MULT:
+                    result *= termVal;
+                    break;
+                case DIV:
+                    result /= termVal;
+                    break;
+                case MOD:
+                    result %= termVal;
+                    break;
+                default:
+                    throw new WTFException("bad operator in term");
+            }
+        }
+        return result;
     }
 }

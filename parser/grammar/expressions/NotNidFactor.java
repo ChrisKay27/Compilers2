@@ -1,5 +1,7 @@
 package parser.grammar.expressions;
 
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+
 /**
  * Created by Chris on 2/12/2016.
  */
@@ -26,5 +28,10 @@ public class NotNidFactor extends NidFactor {
 
     public SubExpression getFactor() {
         return factor;
+    }
+
+    @Override
+    protected int evaluateStaticInt() {
+        throw new NotImplementedException();
     }
 }

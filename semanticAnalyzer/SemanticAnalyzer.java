@@ -168,8 +168,8 @@ public class SemanticAnalyzer implements SemAnalInter {
     public void analyze(VarDeclaration AST) {
         output.accept(AST.getLine() + ": analyze VarDeclaration\n");
 
-        if( AST.getLevel() != 0 ){
-            while(AST != null){
+        if (AST.getLevel() != 0) {
+            while (AST != null) {
                 addDeclaration(AST);
                 AST = (VarDeclaration) AST.getNextNode();
             }
@@ -202,7 +202,8 @@ public class SemanticAnalyzer implements SemAnalInter {
 
     public void analyze(IdStatement AST) {
         output.accept(AST.getLine() + ": analyze IdStatement\n");
-        AST.setDecl(getDeclaration(AST.getLine(),AST.getIdToken().getAttrValue()));
+        AST.setDecl(getDeclaration(AST.getLine(), AST.getIdToken().getAttrValue()));
+
         analyze(AST.getId_stmt_tail());
 
         Declaration d = AST.getDecl();
@@ -228,9 +229,14 @@ public class SemanticAnalyzer implements SemAnalInter {
                 if (assignTail.getAddExpression() != null && !varDec.isAnArray()) {
                     foundError = true;
                     lineError.accept(AST.getLine(), d.getID() + " is not an array and we are trying to index it.");
+                } else if (varDec.isAnArray()) {
+                    int indexExpression = ((AssignStatementTail) AST.getId_stmt_tail()).getAddExpression().evaluateStaticInt();
+                    System.out.println("INDEX: " + indexExpression);
+                    if (indexExpression >= ((VarDeclaration) AST.getDecl()).getArraySize() || indexExpression < 0) {
+                        foundError = true;
+                        lineError.accept(AST.getLine(), "Array index out of bounds, " + indexExpression + " not within [0, " + ((VarDeclaration) AST.getDecl()).getArraySize() + ")");
+                    }
                 }
-
-                //TODO have to check if an array is being assigned to an array!
             }
         }
     }
@@ -270,7 +276,7 @@ public class SemanticAnalyzer implements SemAnalInter {
             }
         }
 
-        if (currentArg == null && currentParam != null && currentParam != ParamDeclaration.voidParam ) {
+        if (currentArg == null && currentParam != null && currentParam != ParamDeclaration.voidParam) {
 
             foundError = true;
             lineError.accept(idStatement.getLine(), "Function call " + idStatement.getIdToken().name
@@ -288,13 +294,18 @@ public class SemanticAnalyzer implements SemAnalInter {
             analyze((AssignStatementTail) AST);
         else if (AST instanceof CallStatementTail)
             analyze((CallStatementTail) AST);
-        else if (AST == null) {System.out.println("AST = [" + AST + "]");}
+        else if (AST == null) {
+            System.out.println("AST = [" + AST + "]");
+        }
     }
 
     public void analyze(AssignStatementTail AST) {
         output.accept(AST.getLine() + ": analyze AssignStatementTail\n");
-        if (AST.getAddExpression() != null)
+        if (AST.getAddExpression() != null) {
+            System.out.println("ANALYZE ARRAY EXPRESSION");
             analyze(AST.getAddExpression());
+
+        }
         analyze(AST.getExp());
     }
 
@@ -514,6 +525,7 @@ public class SemanticAnalyzer implements SemAnalInter {
 
         AST.setStatic(isStatic);
 
+
         return t;
     }
 
@@ -609,13 +621,20 @@ public class SemanticAnalyzer implements SemAnalInter {
 
         if (AST.getIdTail() instanceof CallStatementTail)
             analyze((CallStatementTail) AST.getIdTail());
-        
+
         else if (AST.getIdTail() instanceof AddExpression) {
-            analyze((AddExpression) AST.getIdTail());
+            analyze(AST.getIdTail());
 
             if (!((AddExpression) AST.getIdTail()).isStatic()) {
                 foundError = true;
                 lineError.accept(AST.getLine(), "Non static expression in array index");
+            }
+
+            int indexExpression = ((AddExpression) AST.getIdTail()).evaluateStaticInt();
+            System.out.println("INDEX: " + indexExpression);
+            if (indexExpression >= ((VarDeclaration) AST.getDecl()).getArraySize() || indexExpression < 0) {
+                foundError = true;
+                lineError.accept(AST.getLine(), "Array index out of bounds, " + indexExpression + " not within [0, " + ((VarDeclaration) AST.getDecl()).getArraySize() + ")");
             }
         }
 
@@ -632,7 +651,7 @@ public class SemanticAnalyzer implements SemAnalInter {
         symbolTable.leaveFrame();
     }
 
-    private Declaration getDeclaration(int line,int id) {
+    private Declaration getDeclaration(int line, int id) {
         SymbolTableEntry d = symbolTable.get(id);
 
         if (d == null) {
@@ -646,7 +665,7 @@ public class SemanticAnalyzer implements SemAnalInter {
 
     public void addDeclaration(Declaration d) {
         boolean duplicateDefiniton = symbolTable.push(new SymbolTableEntry(d.getID().getAttrValue(), d));
-        if(duplicateDefiniton == false) {
+        if (duplicateDefiniton == false) {
             lineError.accept(d.getLine(), "Duplicate definition of " + d.getID().name);
         }
     }

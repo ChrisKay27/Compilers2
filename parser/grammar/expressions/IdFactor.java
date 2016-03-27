@@ -3,6 +3,7 @@ package parser.grammar.expressions;
 import parser.grammar.ASTNode;
 import parser.grammar.declarations.Declaration;
 import scanner.Token;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /**
  * Created by Chris on 2/12/2016.
@@ -53,4 +54,8 @@ public class IdFactor extends Factor {
     }
 
 
+    @Override
+    protected int evaluateStaticInt() {
+        throw new NotImplementedException();
+    }
 }

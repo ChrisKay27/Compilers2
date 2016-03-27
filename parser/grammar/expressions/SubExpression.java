@@ -27,6 +27,8 @@ public abstract class SubExpression extends ASTNode {
         return isStatic;
     }
 
+    protected abstract int evaluateStaticInt();
+
     public void setStatic(boolean isStatic) {
         this.isStatic = isStatic;
     }

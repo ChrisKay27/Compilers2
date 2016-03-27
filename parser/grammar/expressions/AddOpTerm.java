@@ -1,6 +1,7 @@
 package parser.grammar.expressions;
 
 import parser.TokenType;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /**
  * Created by Carston on 2/21/2016.
@@ -21,6 +22,7 @@ public class AddOpTerm extends SubExpression {
 
     public Term getTerm() { return term; }
 
+
     @Override
     public void appendContents(StringBuilder sb, int tabs) {
 
@@ -33,5 +35,10 @@ public class AddOpTerm extends SubExpression {
         term.appendContents(sb, tabs + 1);
         if( nextNode != null )
             nextNode.appendContents(sb, tabs);
+    }
+
+    @Override
+    protected int evaluateStaticInt() {
+        throw new NotImplementedException();
     }
 }

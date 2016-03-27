@@ -5,11 +5,13 @@ package parser.grammar.expressions;
  */
 public abstract class Factor extends SubExpression {
 
-protected Factor(int line) {
+    protected Factor(int line) {
         super(line);
-        }
+    }
 
-public MultOpFactor getNextNode(){
+    public MultOpFactor getNextNode() {
         return (MultOpFactor) super.getNextNode();
-        }
-        }
+    }
+
+    protected abstract int evaluateStaticInt();
+}

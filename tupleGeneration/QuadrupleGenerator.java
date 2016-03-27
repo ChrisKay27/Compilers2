@@ -174,8 +174,8 @@ public class QuadrupleGenerator {
         //If its an array index
         if (AST.getAddExpression() != null) {
             temp = generate(AST.getAddExpression());
-            AST.setCode(AST.getAddExpression().getCode());
-            AST.setCode("(tae," + returnedValue + "," + temp + "," + name + ")");
+            AST.appendCode(AST.getAddExpression().getCode());
+            AST.appendCode("(tae," + returnedValue + "," + temp + "," + name + ")");
             return null;
         }
 

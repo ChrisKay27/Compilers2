@@ -22,21 +22,25 @@ public class VarDeclaration extends Declaration {
     }
 
     @Override
-    public void appendContents(StringBuilder sb , int tabs) {
+    public void appendContents(StringBuilder sb, int tabs) {
         sb.append('\n');
         for (int i = 0; i < tabs; i++)
             sb.append("    ");
         sb.append(getLine()).append(":").append(getClass().getSimpleName()).append(' ').append(getType()).append(' ').append(getID());
         sb.append('\n').append(getTabs(tabs)).append("Type:").append(getType());
-        if( arraySize != null )
-            arraySize.appendContents(sb,tabs+1);
+        if (arraySize != null)
+            arraySize.appendContents(sb, tabs + 1);
 
-        if( nextNode != null )
-            nextNode.appendContents(sb,tabs);
+        if (nextNode != null)
+            nextNode.appendContents(sb, tabs);
     }
 
 
     public boolean isAnArray() {
         return arraySize != null;
+    }
+
+    public int getArraySize() {
+        return this.arraySize.evaluateStaticInt();
     }
 }
