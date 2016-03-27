@@ -24,10 +24,12 @@ public class CallStatementTail extends StatementTail {
 
     @Override
     public void appendContents(StringBuilder sb, int tabs) {
+        String tabsStr = '\n'+getTabs(tabs);
+        sb.append(tabsStr).append("arguments: ");
         if( call_tail == null )
-            return;
-        sb.append("Arguments: ");
-        call_tail.appendContents(sb,tabs+1);
+            sb.append(tabsStr).append("\tvoid");
+        else
+            call_tail.appendContents(sb,tabs+1);
     }
 
     public Type getType(){

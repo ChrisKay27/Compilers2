@@ -26,13 +26,14 @@ public class BranchStatement extends Statement {
 
     @Override
     public void appendContents(StringBuilder sb, int tabs) {
-        sb.append('\n');
-        for (int i = 0; i < tabs; i++)
-            sb.append("    ");
+        String tabsStr = '\n'+getTabs(tabs);
 
-        sb.append(getLine() + ":" + getClass().getSimpleName());
+        sb.append(tabsStr).append(getLine()).append(": ").append(getClass().getSimpleName());
+        sb.append(tabsStr).append("\texpression: ");
         addexp.appendContents(sb, tabs+1);
+        sb.append(tabsStr).append("\tcase statements: ");
         caseStmt.appendContents(sb, tabs+1);
+
         if (nextNode != null)
             nextNode.appendContents(sb, tabs);
     }

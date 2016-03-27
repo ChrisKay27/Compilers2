@@ -1,4 +1,6 @@
-package parser;
+package scanner;
+
+import parser.Type;
 
 import java.util.Arrays;
 import java.util.List;

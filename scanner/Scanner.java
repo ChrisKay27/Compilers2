@@ -1,7 +1,6 @@
 package scanner;
 
 import admininstration.Administration;
-import parser.TokenType;
 import stateMachine.State;
 
 import java.io.IOException;
@@ -188,11 +187,12 @@ public class Scanner {
 
                 //We then replace the ID value with a numeral which represents that string
                 int id = symbolTable.get(attrValue);
-                t.attrValue = id;
+//                t.attrValue = id;
+                t.id = id;
                 reverseSymbolTable[id] = attrValue;
             }
         } else if (t.token == TokenType.ERROR) {//If its a error token we set which line and column it appeared on
-            t.attrValue = t.attrValue + " at line:" + lineCount + " col:" + colCount;
+            t.name = t.name + " at line:" + lineCount + " col:" + colCount;
         }
 
         if (Administration.debug()) out.println("Found Token:" + t);

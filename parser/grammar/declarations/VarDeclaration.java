@@ -23,13 +23,17 @@ public class VarDeclaration extends Declaration {
 
     @Override
     public void appendContents(StringBuilder sb, int tabs) {
-        sb.append('\n');
-        for (int i = 0; i < tabs; i++)
-            sb.append("    ");
-        sb.append(getLine()).append(":").append(getClass().getSimpleName()).append(' ').append(getType()).append(' ').append(getID());
-        sb.append('\n').append(getTabs(tabs)).append("Type:").append(getType());
-        if (arraySize != null)
-            arraySize.appendContents(sb, tabs + 1);
+
+        String tabsStr = '\n'+getTabs(tabs);
+
+        sb.append(tabsStr).append(getLine()).append(": ").append(getClass().getSimpleName());
+        sb.append(tabsStr).append("\ttype: ").append(getType());
+        sb.append(tabsStr).append("\tid  : ").append(getID().getName());
+
+        if (arraySize != null) {
+            sb.append(tabsStr).append("\tarray size: ");
+            arraySize.appendContents(sb, tabs + 2);
+        }
 
         if (nextNode != null)
             nextNode.appendContents(sb, tabs);

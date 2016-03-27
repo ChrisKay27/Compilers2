@@ -11,10 +11,9 @@ public class Statement extends ASTNode {
 
     @Override
     public void appendContents(StringBuilder sb, int tabs) {
-        sb.append('\n');
-        for (int i = 0; i < tabs; i++)
-            sb.append("    ");
-        sb.append(getLine() + ":" + getClass().getSimpleName());
+        String tabsStr = '\n'+getTabs(tabs);
+
+        sb.append(tabsStr).append(getLine()).append(": ").append(getClass().getSimpleName());
 
         if (nextNode != null)
             nextNode.appendContents(sb, tabs);

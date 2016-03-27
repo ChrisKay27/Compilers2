@@ -1,7 +1,7 @@
 package admininstration;
 
 import parser.Parser;
-import parser.TokenType;
+import scanner.TokenType;
 import parser.grammar.ASTNode;
 import parser.grammar.declarations.Declaration;
 import scanner.Scanner;
@@ -29,7 +29,13 @@ public class Administration implements Administrator {
     // end development
 
 
-    private BufferedWriter errorWriter, outputWriter;
+    private BufferedWriter errorWriter;
+    /**
+     * This outputWriter is only for results that should be output to the output file. These are the token list, the AST tree,
+     * the annotated AST tree, and the quadruple code for the phases lexical, parser, semantic analyzer, and code generation
+     * respectively
+     */
+    private BufferedWriter outputWriter;
     private final Options options;
     protected OutputHandler outputHandler;
 
@@ -105,15 +111,17 @@ public class Administration implements Administrator {
 
     private void lexicalCompile() throws IOException {
         List<Token> tokens = new ArrayList<>();
-        Token t = null;
+        Token t;
         do {
             t = scanner.nextToken();
             tokens.add(t);
         } while (t.token != TokenType.ENDFILE);
+
+
         if (this.outputWriter != null) {
             StringBuilder sb = new StringBuilder();
             for (Token token : tokens)
-                sb.append(t.toString());
+                sb.append(token.toString()).append('\n');
             this.outputWriter.write(sb.toString());
         }
     }
@@ -121,11 +129,23 @@ public class Administration implements Administrator {
     private void parserCompile() throws IOException {
         ASTNode tree = parser.startParsing();
 
-        printASTTree(tree);
-        printCompilationResults(tree);
-        if (this.outputWriter != null) {
-            this.outputWriter.write(tree.toString());
+        if (outputWriter != null) {
+            try {
+                outputWriter.write("\n\n---- Abstract Syntax Tree ----\n");
+                outputWriter.write("Format:\n");
+                outputWriter.write("lineNumber: ClassName\n");
+                outputWriter.write("                attributes\n\n");
+                outputWriter.write(tree.toString());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
+
+        printCompilationResults(tree);
+
+//        if (this.outputWriter != null) {
+//            this.outputWriter.write(tree.toString());
+//        }
     }
 
     private void semanticCompile() throws IOException {
@@ -135,13 +155,12 @@ public class Administration implements Administrator {
         if (tree == null) {
             out.println("\n-------------------------------------\n");
             out.println("\tCompile Failed at Parser phase\n");
-
             return;
         }
-
         printASTTree(tree);
-
         printLineTrace("\n  ----  Parsing Phase Complete  ----\n\n");
+
+
         printLineTrace("  ----  Starting Semantics Phase  ----\n\n");
         SemanticAnalyzer semAnal = new SemanticAnalyzer(tree, this::printLineTrace, this::printErrorMessage, this::printErrorMessage);
 
@@ -186,31 +205,32 @@ public class Administration implements Administrator {
             printASTTree(tree);
             printCompilationResults(tree);
 
-
             String code = new QuadrupleGenerator(tree, this::printLineTrace, this::printErrorMessage, this::printErrorMessage).startCodeGeneration((Declaration) tree);
 
-            out.println("\n  Code Generation Complete");
-            out.println("\n------------------------------\n");
-            out.println(code);
+            printLineTrace("\n  Code Generation Complete");
+            printLineTrace("\n------------------------------\n");
+            printLineTrace(code);
 
-            //this.outputHandler.printOutputs(out::println);
+            //Print the compiled code to the output file
+            if (this.outputWriter != null)
+                this.outputWriter.write(tree.getCode());
+
         } else {
             //If no tree was returned then the compiling failed
-            out.println("\n-------------------------------------\n");
-            out.println("\tCompile Failed\n");
+            printLineTrace("\n-------------------------------------\n");
+            printLineTrace("\tCompile Failed\n");
 
             //And we print the error messages to the user
             if (!options.unitTesting)
                 outputHandler.printErrors(out::println);
         }
-        if (this.outputWriter != null) {
-            this.outputWriter.write(tree.getCode());
-        }
+
     }
 
     public void printASTTree(ASTNode tree) {
         //if a tree was returned we decide to print it or not based on a program argument
         if (tree != null && options.printAST) {
+
             printLineTrace("\n\n---- Abstract Syntax Tree ----\n\n");
             printLineTrace(tree.toString());
         }
@@ -255,13 +275,13 @@ public class Administration implements Administrator {
         if (options.unitTesting) return;
 
         if (options.verbose)
-            if (outputWriter != null) {
-                try {
-                    outputWriter.write(line);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            } else
+//            if (outputWriter != null) {
+//                try {
+//                    outputWriter.write(line);
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//            } else
                 out.print(line);
     }
 

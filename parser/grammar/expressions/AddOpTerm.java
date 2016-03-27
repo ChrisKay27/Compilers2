@@ -1,6 +1,6 @@
 package parser.grammar.expressions;
 
-import parser.TokenType;
+import scanner.TokenType;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /**
@@ -25,14 +25,12 @@ public class AddOpTerm extends SubExpression {
 
     @Override
     public void appendContents(StringBuilder sb, int tabs) {
+        String tabsStr = '\n' + getTabs(tabs);
 
-        sb.append('\n');
-        String tabsStr = getTabs(tabs);
-        sb.append(tabsStr);
-        sb.append(getLine()).append(":").append(getClass().getSimpleName());
-        sb.append('\n').append(tabsStr).append("Type:").append(getType());
-        sb.append(" ").append(addOp).append(" ");
-        term.appendContents(sb, tabs + 1);
+        sb.append(tabsStr).append(getLine()).append(": ").append(getClass().getSimpleName());
+        sb.append(tabsStr).append("\ttype: ").append(getType());
+        sb.append(tabsStr).append("\taddop: ").append(addOp);
+        term.appendContents(sb, tabs);
         if( nextNode != null )
             nextNode.appendContents(sb, tabs);
     }

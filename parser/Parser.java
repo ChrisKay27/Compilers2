@@ -13,13 +13,14 @@ import parser.grammar.expressions.*;
 import parser.grammar.statements.*;
 import scanner.Scanner;
 import scanner.Token;
+import scanner.TokenType;
 
 import java.io.IOException;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-import static parser.TokenType.*;
+import static scanner.TokenType.*;
 import static parser.grammar.FirstSets.*;
 
 /**
@@ -34,7 +35,7 @@ public class Parser {
     private List<Token> tokens;
 
     private Token lookaheadToken;
-    private TokenType lookahead;
+    private scanner.TokenType lookahead;
     private boolean traceEnabled;
     private boolean syntaxError;
 

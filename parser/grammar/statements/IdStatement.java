@@ -28,15 +28,11 @@ public class IdStatement extends Statement {
 
     @Override
     public void appendContents(StringBuilder sb , int tabs) {
-        sb.append('\n');
-        for (int i = 0; i < tabs; i++)
-            sb.append("    ");
-        sb.append(getLine() + ":" + getClass().getSimpleName());
-        sb.append(' ');
+        String tabsStr = '\n'+getTabs(tabs);
+        sb.append(tabsStr).append(getLine()).append(": ").append(getClass().getSimpleName());
+        sb.append(tabsStr).append("\tid: ").append(idToken.getName());
 
-        sb.append(idToken);
-        sb.append(' ');
-        id_stmt_tail.appendContents(sb,tabs+1);
+        id_stmt_tail.appendContents(sb,tabs+2);
 
         if( nextNode != null )
             nextNode.appendContents(sb,tabs);

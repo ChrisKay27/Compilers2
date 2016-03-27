@@ -28,22 +28,20 @@ public class ParamDeclaration extends VarDeclaration {
 
     @Override
     public void appendContents(StringBuilder sb , int tabs) {
-        sb.append('\n');
-        for (int i = 0; i < tabs; i++)
-            sb.append("    ");
-        sb.append(getLine()).append(":").append(getClass().getSimpleName());
+        String tabsStr = '\n'+getTabs(tabs);
 
-        sb.append(' ');
-        if( isReference )
-            sb.append(" ref ");
-
-        sb.append(getType());
-
-        if( isArray )
-            sb.append(" array ");
-
-        if( nextNode != null )
-            nextNode.appendContents(sb,tabs);
+        if( getID() == null )
+            sb.append(tabsStr).append("void");
+        else {
+            sb.append(tabsStr).append("id: ").append(getID() != null ? getID().getName() : "void");
+            sb.append(tabsStr).append("isRef: ").append(isReference);
+            sb.append(tabsStr).append("type: ").append(getType());
+            sb.append(tabsStr).append("isArray: ").append(isArray);
+        }
+        if( nextNode != null ) {
+            sb.append('\n');
+            nextNode.appendContents(sb, tabs);
+        }
     }
 
 

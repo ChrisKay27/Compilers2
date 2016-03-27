@@ -16,11 +16,12 @@ public class NotNidFactor extends NidFactor {
 
     @Override
     public void appendContents(StringBuilder sb , int tabs) {
-        sb.append('\n');
-        sb.append(getTabs(tabs));
-        sb.append(getLine()).append(":").append(getClass().getSimpleName());
-        sb.append('\n').append(getTabs(tabs)).append("Type:").append(getType());
-        factor.appendContents(sb, tabs + 1);
+
+        String tabsStr = '\n'+getTabs(tabs);
+
+        sb.append(tabsStr).append(getLine()).append(": ").append(getClass().getSimpleName());
+        sb.append(tabsStr).append("\ttype: ").append(getType());
+        factor.appendContents(sb, tabs + 2);
 
         if( nextNode != null )
             nextNode.appendContents(sb, tabs + 2);

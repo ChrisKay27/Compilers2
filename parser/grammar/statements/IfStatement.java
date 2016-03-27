@@ -33,17 +33,19 @@ public class IfStatement extends Statement {
 
     @Override
     public void appendContents(StringBuilder sb , int tabs) {
-        sb.append('\n');
-        for (int i = 0; i < tabs; i++)
-            sb.append("    ");
-        sb.append(getLine() + ":" + getClass().getSimpleName());
+        String tabsStr = '\n'+getTabs(tabs);
+        sb.append(tabsStr).append(getLine()).append(": ").append(getClass().getSimpleName());
 
-        expression.appendContents(sb, tabs + 1);
-        statement.appendContents(sb,tabs+1);
+        sb.append(tabsStr).append("expression: ");
+        expression.appendContents(sb, tabs + 2);
 
-        if( elseStatement != null )
-            elseStatement.appendContents(sb,tabs+1);
+        sb.append(tabsStr).append("statement: ");
+        statement.appendContents(sb,tabs + 2);
 
+        if( elseStatement != null ) {
+            sb.append(tabsStr).append("else statement: ");
+            elseStatement.appendContents(sb, tabs + 2);
+        }
         if( nextNode != null )
             nextNode.appendContents(sb, tabs);
     }

@@ -1,7 +1,5 @@
 package scanner;
 
-import parser.TokenType;
-import stateMachine.Lexicon;
 import stateMachine.State;
 
 import java.util.function.Consumer;

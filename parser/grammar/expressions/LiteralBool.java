@@ -17,11 +17,9 @@ public class LiteralBool extends NidFactor {
 
     @Override
     public void appendContents(StringBuilder sb, int tabs) {
-        sb.append('\n');
-        for (int i = 0; i < tabs; i++)
-            sb.append("    ");
-        sb.append(getLine()).append(":").append(getClass().getSimpleName()).append(" VALUE(").append(this.toString()).append(')');
-        sb.append('\n').append(getTabs(tabs)).append("Type:").append(getType());
+        String tabsStr = '\n'+getTabs(tabs);
+        sb.append(tabsStr).append(getLine()).append(": ").append(getClass().getSimpleName()).append(" VALUE(").append(this.toString()).append(')');
+        sb.append(tabsStr).append("\ttype: ").append(getType());
         if (nextNode != null)
             nextNode.appendContents(sb, tabs);
     }

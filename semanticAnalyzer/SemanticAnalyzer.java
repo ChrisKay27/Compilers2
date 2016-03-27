@@ -1,6 +1,6 @@
 package semanticAnalyzer;
 
-import parser.TokenType;
+import scanner.TokenType;
 import parser.Type;
 import parser.grammar.ASTNode;
 import parser.grammar.declarations.Declaration;

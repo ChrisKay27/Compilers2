@@ -2,7 +2,7 @@ package unitTesting;
 
 import admininstration.Options;
 import admininstration.TestAdmin;
-import parser.TokenType;
+import scanner.TokenType;
 import scanner.Token;
 
 import java.util.ArrayList;

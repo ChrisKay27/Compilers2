@@ -31,12 +31,11 @@ public class IdFactor extends Factor {
 
     @Override
     public void appendContents(StringBuilder sb , int tabs) {
-        sb.append('\n');
-        for (int i = 0; i < tabs; i++)
-            sb.append("    ");
-        sb.append(getLine()).append(":").append(getClass().getSimpleName()).append(" ");
-        sb.append(idToken);
-        sb.append('\n').append(getTabs(tabs)).append("Type:").append(getType());
+        String tabsStr = '\n'+getTabs(tabs);
+        sb.append(tabsStr).append(getLine()).append(": ").append(getClass().getSimpleName()).append(" ");
+        sb.append(tabsStr).append("\tid  : ").append(getIdToken().getName());
+        sb.append(tabsStr).append("\ttype: ").append(getType());
+
         if( idTail != null )
             idTail.appendContents(sb,tabs+1);
 

@@ -26,16 +26,21 @@ public class AddExpression extends SubExpression {
 
     @Override
     public void appendContents(StringBuilder sb, int tabs) {
-        sb.append('\n');
-        String tabsStr = getTabs(tabs);
-        sb.append(tabsStr);
-        sb.append(getLine()).append(":").append(getClass().getSimpleName());
 
-        if (uminus)
-            sb.append(" - ");
+        String tabsStr = '\n' + getTabs(tabs);
 
-        sb.append('\n').append(tabsStr).append("Type:").append(getType());
-        term.appendContents(sb, tabs + 1);
+        int nTabs = tabs;
+        if (uminus) {
+            sb.append(tabsStr).append(getLine()).append(": ").append(getClass().getSimpleName());
+
+            sb.append(tabsStr).append("\tuminus: true");
+
+            sb.append(tabsStr).append("\ttype  : ").append(getType());
+
+            nTabs += 2;
+        }
+
+        term.appendContents(sb, nTabs);
 
         if (nextNode != null)
             nextNode.appendContents(sb, tabs);

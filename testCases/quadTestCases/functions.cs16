@@ -5,8 +5,6 @@ int one(void){
 }
 
 int add2(int x, int y){
-    writeint(x);
-    writeint(y);
     return x + y;
 }
 

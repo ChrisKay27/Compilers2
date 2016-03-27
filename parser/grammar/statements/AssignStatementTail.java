@@ -22,11 +22,9 @@ public class AssignStatementTail extends StatementTail {
 
     @Override
     public void appendContents(StringBuilder sb, int tabs) {
-        sb.append('\n');
-        for (int i = 0; i < tabs; i++)
-            sb.append("    ");
-        sb.append(getLine() + ":" + getClass().getSimpleName());
-        sb.append(' ');
+        String tabsStr = '\n'+getTabs(tabs);
+        sb.append(tabsStr).append(getLine()).append(": ").append(getClass().getSimpleName());
+//        sb.append(' ');
 
         if (addExpression != null)
             addExpression.appendContents(sb, tabs + 1);

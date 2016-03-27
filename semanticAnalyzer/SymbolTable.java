@@ -1,9 +1,5 @@
 package semanticAnalyzer;
 
-import parser.TokenType;
-import parser.grammar.expressions.IdFactor;
-import parser.grammar.expressions.LiteralBool;
-import scanner.Token;
 import util.WTFException;
 
 import java.util.HashMap;

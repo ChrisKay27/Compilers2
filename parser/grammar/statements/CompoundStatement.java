@@ -27,15 +27,18 @@ public class CompoundStatement extends Statement {
 
     @Override
     public void appendContents(StringBuilder sb , int tabs) {
-        sb.append('\n');
-        for (int i = 0; i < tabs; i++)
-            sb.append("    ");
-        sb.append(getLine() + ":" + getClass().getSimpleName());
+        String tabsStr = '\n'+getTabs(tabs);
 
-        if( declarations != null )
-            declarations.appendContents(sb, tabs + 1);
-        if( statements != null )
-            statements.appendContents(sb, tabs + 1);
+        sb.append(tabsStr).append(getLine()).append(": ").append(getClass().getSimpleName());
+
+        if( declarations != null ) {
+            sb.append(tabsStr).append("\tdeclarations: ");
+            declarations.appendContents(sb, tabs + 2);
+        }
+
+        sb.append(tabsStr).append("\tstatements: ");
+        statements.appendContents(sb, tabs + 2);
+
 
         if( nextNode != null )
             nextNode.appendContents(sb,tabs);

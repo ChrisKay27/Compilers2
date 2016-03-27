@@ -31,12 +31,12 @@ public class Declaration extends ASTNode {
 
     @Override
     public void appendContents(StringBuilder sb, int tabs) {
-        sb.append('\n');
-        for (int i = 0; i < tabs; i++)
-            sb.append("    ");
+        String tabsStr = '\n'+getTabs(tabs);
 
-        sb.append(getLine()).append(":").append(getClass().getSimpleName()).append(' ').append(type).append(' ').append(ID);
-        sb.append('\n').append(getTabs(tabs)).append("Type:").append(getType());
+        sb.append(tabsStr).append(getLine()).append(": ").append(getClass().getSimpleName());
+        sb.append(tabsStr).append("\tid  : ").append(getID().getName());
+        sb.append(tabsStr).append("\ttype: ").append(getType());
+
         if (nextNode != null)
             nextNode.appendContents(sb, tabs);
     }

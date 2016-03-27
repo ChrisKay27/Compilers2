@@ -1,12 +1,12 @@
 package parser.grammar;
 
-import parser.TokenType;
+import scanner.TokenType;
 
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import static parser.TokenType.*;
+import static scanner.TokenType.*;
 import static parser.grammar.FirstSets.*;
 
 /**

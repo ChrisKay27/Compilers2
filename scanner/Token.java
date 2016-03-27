@@ -1,7 +1,5 @@
 package scanner;
 
-import parser.TokenType;
-
 /**
  *
  * Created by Chris on 1/9/2016.
@@ -15,7 +13,11 @@ public class Token {
     public static final Token COMMENT_TOKEN = new Token(null, null);
 
     public TokenType token;
+
+    //Kept as an object with and added a getAttrValue() method which returns the attrValue casted to an int
+    //This is an object in because our state machine
     public Object attrValue;
+    public int id;
     public String name;
 
     public Token(TokenType token, String attrValue) {
@@ -23,10 +25,15 @@ public class Token {
         this.attrValue = attrValue;
         this.name = attrValue;
     }
-    public Token(TokenType token, Object attrValue) {
+    public Token(TokenType token, int id) {
         this.token = token;
-        this.attrValue = attrValue;
+        this.attrValue = id;
+        this.id = id;
     }
+//    public Token(TokenType token, Object attrValue) {
+//        this.token = token;
+//        this.attrValue = attrValue;
+//    }
     @Override
     public String toString() {
         return token == null ? "Comment Token" : '(' + token.toString() + "," + attrValue + ")"
@@ -54,7 +61,7 @@ public class Token {
     }
 
     public int getAttrValue() {
-        return (int) attrValue;
+        return id;
     }
 
     public String getName() {

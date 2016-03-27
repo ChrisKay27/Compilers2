@@ -1,6 +1,6 @@
 package parser.grammar.expressions;
 
-import parser.TokenType;
+import scanner.TokenType;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /**
@@ -24,12 +24,11 @@ public class MultOpFactor extends SubExpression {
     @Override
     public void appendContents(StringBuilder sb, int tabs) {
 
-        sb.append('\n');
-        String tabsStr = getTabs(tabs);
+        String tabsStr = '\n'+getTabs(tabs);
         sb.append(tabsStr);
-        sb.append(getLine() + ":" + getClass().getSimpleName());
+        sb.append(getLine()).append(": ").append(getClass().getSimpleName());
 
-        sb.append(" " + addOp + " ");
+        sb.append(" ").append(addOp).append(" ");
         factor.appendContents(sb, tabs + 1);
         if( nextNode != null )
             nextNode.appendContents(sb, tabs);
