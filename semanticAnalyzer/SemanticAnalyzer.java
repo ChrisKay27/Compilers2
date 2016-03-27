@@ -202,7 +202,7 @@ public class SemanticAnalyzer implements SemAnalInter {
 
     public void analyze(IdStatement AST) {
         output.accept(AST.getLine() + ": analyze IdStatement\n");
-        AST.setDecl(getDeclaration(AST.getLine(), AST.getIdToken().getAttrValue()));
+        AST.setDecl(getDeclaration(AST.getLine(), AST.getIdToken()));
 
         analyze(AST.getId_stmt_tail());
 
@@ -230,11 +230,28 @@ public class SemanticAnalyzer implements SemAnalInter {
                     foundError = true;
                     lineError.accept(AST.getLine(), d.getID() + " is not an array and we are trying to index it.");
                 } else if (varDec.isAnArray()) {
-                    int indexExpression = ((AssignStatementTail) AST.getId_stmt_tail()).getAddExpression().evaluateStaticInt();
-                    System.out.println("INDEX: " + indexExpression);
-                    if (indexExpression >= ((VarDeclaration) AST.getDecl()).getArraySize() || indexExpression < 0) {
+                    if (((AssignStatementTail) AST.getId_stmt_tail()).getAddExpression() == null) {
                         foundError = true;
-                        lineError.accept(AST.getLine(), "Array index out of bounds, " + indexExpression + " not within [0, " + ((VarDeclaration) AST.getDecl()).getArraySize() + ")");
+                        String temp;
+                        switch (d.getType()) {
+                            case INT:
+                                temp = "an";
+                                break;
+                            case BOOL:
+                                temp = "a";
+                                break;
+                            default:
+                                temp = "an";
+                                break;
+                        }
+                        lineError.accept(AST.getLine(), d.getID() + " is declared as an array but is being used as " + temp + " " + (d.getType().toString()).toLowerCase());
+                    } else {
+                        int indexExpression = ((AssignStatementTail) AST.getId_stmt_tail()).getAddExpression().evaluateStaticInt();
+                        System.out.println("INDEX: " + indexExpression);
+                        if (indexExpression >= ((VarDeclaration) AST.getDecl()).getArraySize() || indexExpression < 0) {
+                            foundError = true;
+                            lineError.accept(AST.getLine(), "Array index out of bounds, " + indexExpression + " not within [0, " + ((VarDeclaration) AST.getDecl()).getArraySize() + ")");
+                        }
                     }
                 }
             }
@@ -302,7 +319,6 @@ public class SemanticAnalyzer implements SemAnalInter {
     public void analyze(AssignStatementTail AST) {
         output.accept(AST.getLine() + ": analyze AssignStatementTail\n");
         if (AST.getAddExpression() != null) {
-            System.out.println("ANALYZE ARRAY EXPRESSION");
             analyze(AST.getAddExpression());
 
         }
@@ -617,7 +633,7 @@ public class SemanticAnalyzer implements SemAnalInter {
 
         AST.setStatic(false);
 
-        AST.setDecl(getDeclaration(AST.getLine(), AST.getIdToken().getAttrValue()));
+        AST.setDecl(getDeclaration(AST.getLine(), AST.getIdToken()));
 
         if (AST.getIdTail() instanceof CallStatementTail)
             analyze((CallStatementTail) AST.getIdTail());
@@ -651,8 +667,8 @@ public class SemanticAnalyzer implements SemAnalInter {
         symbolTable.leaveFrame();
     }
 
-    private Declaration getDeclaration(int line, int id) {
-        SymbolTableEntry d = symbolTable.get(id);
+    private Declaration getDeclaration(int line, Token id) {
+        SymbolTableEntry d = symbolTable.get(id.getAttrValue());
 
         if (d == null) {
             foundError = true;

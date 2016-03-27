@@ -35,7 +35,6 @@ public class QuadrupleGenerator {
     private Stack<String> currentLoopEndLabels = new Stack<>();
 
 
-
     public QuadrupleGenerator(ASTNode astRoot, Consumer<String> output, Consumer<String> error, BiConsumer<Integer, String> lineError) {
         this.astRoot = astRoot;
         this.output = output;
@@ -44,7 +43,7 @@ public class QuadrupleGenerator {
     }
 
 
-    public String startCodeGeneration(Declaration AST ) {
+    public String startCodeGeneration(Declaration AST) {
 
 
         FuncDeclaration lastFunction = null;
@@ -143,7 +142,7 @@ public class QuadrupleGenerator {
         AST.appendCode(AST.getId_stmt_tail().getCode());
 
         //assigned value will be null IF this is an assignment into an array OR a function call
-        if (assignedValue != null )
+        if (assignedValue != null)
             AST.appendCode("(asg," + assignedValue + ",-," + AST.getIdToken().name + ')');
     }
 
@@ -251,8 +250,7 @@ public class QuadrupleGenerator {
             AST.appendCode("(rval,-,-," + returnValTemp + ")");
         }
 
-        if (AST.getCall_tail() != null)
-        {
+        if (AST.getCall_tail() != null) {
             Expression current = (Expression) AST.getCall_tail();
 
             ParamDeclaration pdec = AST.getFuncDecl().getParams();
@@ -433,10 +431,10 @@ public class QuadrupleGenerator {
         String temp = generate(AST.getTerm());
         AST.setCode(AST.getTerm().getCode());
 
-        if( AST.isUminus() ){
+        if (AST.isUminus()) {
             String nTemp = getNewTemp();
-            AST.appendCode("(mul,-1,"+temp+","+nTemp+")");
-            AST.appendCode("(asg,"+nTemp+",-," + temp+")");
+            AST.appendCode("(uminus," + temp + ",-," + nTemp + ")");
+            AST.appendCode("(asg," + nTemp + ",-," + temp + ")");
         }
 
         AST.setTemp(temp);
@@ -484,7 +482,7 @@ public class QuadrupleGenerator {
         String temp = generate(AST.getFactor());
         AST.setCode(AST.getFactor().getCode());
 
-        MultOpFactor next = (MultOpFactor) AST.getFactor().getNextNode();
+        MultOpFactor next = AST.getNextNode();
         if (next != null) {
             String temp2 = generate(next);
             String newTemp = this.getNewTemp();
@@ -492,16 +490,16 @@ public class QuadrupleGenerator {
                 case MULT:
                     AST.appendCode(next.getCode());
                     AST.appendCode("(mul," + temp + "," + temp2 + "," + newTemp + ")");
-                    break;
+                    return newTemp;
                 case DIV:
                     AST.appendCode(next.getCode());
                     AST.appendCode("(div," + temp + "," + temp2 + "," + newTemp + ")");
-                    break;
+                    return newTemp;
                 case MOD:
                     AST.appendCode(next.getCode());
                     AST.appendCode("(mod," + temp + "," + temp2 + "," + newTemp + ")");
-                    break;
-                case AND: //TODO i think and isn't short circuited
+                    return newTemp;
+                case AND: //TODO i think and isn't short circuited, possibly broken
                     newLabel = getNewLabel();
                     AST.appendCode("(ift," + temp + "," + newLabel + ")");
                     AST.appendCode(next.getCode());
@@ -632,8 +630,6 @@ public class QuadrupleGenerator {
 
         return newTemp;
     }
-
-
 
 
     public void generate(ASTNode AST) {

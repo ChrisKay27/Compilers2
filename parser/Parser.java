@@ -112,7 +112,7 @@ public class Parser {
         lookaheadToken = scanner.nextToken();
         lookahead = lookaheadToken.token;
 
-        return program(new HashSet<>(Arrays.asList(new TokenType[] {ENDFILE})));
+        return program(new HashSet<>(Arrays.asList(new TokenType[]{ENDFILE})));
     }
 
     /**
@@ -128,11 +128,21 @@ public class Parser {
         ASTNode current = null;
         do {
             ASTNode temp = declaration(union(synch, FIRSTofDeclaration));
-            if (current != null)
-                current.setNextNode(temp);
-            if (first == null)
-                first = temp;
-            current = temp;
+            if (!(temp instanceof VarDeclaration)) {
+                if (current != null)
+                    current.setNextNode(temp);
+                if (first == null)
+                    first = temp;
+                current = temp;
+            } else {
+                VarDeclaration declarations = (VarDeclaration) temp;
+                if (first == null) {
+                    first = declarations;
+                } else {
+                    current.setNextNode(declarations);
+                }
+                current = declarations.getLastNextNode();
+            }
 
         } while (FIRSTofDeclaration.contains(lookahead));
 
@@ -503,6 +513,7 @@ public class Parser {
 
     /**
      * 15.	call-tail → ( [ arguments ] )
+     *
      * @param synch - Set of tokens collected during parsing which represents valid next tokens, used for error recovery purposes
      * @return
      */
@@ -521,6 +532,7 @@ public class Parser {
 
     /**
      * 16.	arguments → expression {|, expression|}
+     *
      * @param synch - Set of tokens collected during parsing which represents valid next tokens, used for error recovery purposes
      * @return
      */
@@ -563,7 +575,8 @@ public class Parser {
 
             final VarDecTail varDecTail = var_dec_tail(union(union(synch, FIRSTofStatement), FIRSTofNonvoid_specifier));
 
-            Declaration tempDec2 = varDecTail.toVarDeclarations(line,decType,IDToken);
+            Declaration tempDec2 = varDecTail.toVarDeclarations(line, decType, IDToken);
+
             if (firstDec == null) {
                 firstDec = tempDec2;
                 tempDec = tempDec2.getLastNextNode();
@@ -571,7 +584,6 @@ public class Parser {
                 tempDec.setNextNode(tempDec2);
                 tempDec = tempDec2.getLastNextNode();
             }
-           // tempDec.setNextNode(varDecTail.toVarDeclarations(line,decType,IDToken));
 
 
         }
@@ -930,7 +942,7 @@ public class Parser {
         int line = lineNumber.get();
         ASTNode idTail;
         if (FIRSTofCall_tail.contains(lookahead)) {
-            idTail = new CallStatementTail(line,call_tail(synch));
+            idTail = new CallStatementTail(line, call_tail(synch));
         } else {
             idTail = var_tail(synch);
         }
@@ -1057,7 +1069,7 @@ public class Parser {
 
     /**
      * 37.	uminus → -
-     * 
+     *
      * @param synch - Set of tokens collected during parsing which represents valid next tokens, used for error recovery purposes
      * @return
      */
@@ -1073,9 +1085,9 @@ public class Parser {
 
     /**
      * Drives the scanner to produce more tokens when parsing, sets up the lookahead token, and verifies that tokens expected by the production rule methods are found.
-     * 
+     *
      * @param expected - The token expected by the calling production rule method
-     * @param synch - Set of tokens collected during parsing which represents valid next tokens, used for error recovery purposes
+     * @param synch    - Set of tokens collected during parsing which represents valid next tokens, used for error recovery purposes
      */
     private void match(TokenType expected, Set<TokenType> synch) {
         if (lookahead == expected) {
@@ -1092,7 +1104,7 @@ public class Parser {
 
     /**
      * Checks if a syntax error has been encountered using the synch set. If an error is encountered, an error message is produced and error recovery begins.
-     * 
+     *
      * @param synch - Set of tokens collected during parsing which represents valid next tokens, used for error recovery purposes
      */
     private void syntaxCheck(Set<TokenType> synch) {
@@ -1106,7 +1118,7 @@ public class Parser {
      * Called when an expected token does not match the lookahead token. If an error is encountered, an error message is produced and error recovery begins.
      *
      * @param expected
-     * @param synch - Set of tokens collected during parsing which represents valid next tokens, used for error recovery purposes
+     * @param synch    - Set of tokens collected during parsing which represents valid next tokens, used for error recovery purposes
      */
     private void syntaxError(TokenType expected, Set<TokenType> synch) {
         errorOutput.accept("\t\tSyntax Error, expecting " + expected + " but received " + lookahead);
@@ -1115,7 +1127,7 @@ public class Parser {
 
     /**
      * Implementation of panic mode error recovery. Consumes tokens until a token that is contained in the synch set is encountered.
-     * 
+     *
      * @param synch - Set of tokens collected during parsing which represents valid next tokens, used for error recovery purposes
      */
     private void syntaxError(Set<TokenType> synch) {
