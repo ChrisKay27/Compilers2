@@ -111,7 +111,7 @@ public class SemanticAnalyzer implements SemAnalInter {
         analyze(AST.getParams());
         AST.setNumberOfParameters(AST.getParams().getLength());
 
-        analyze(AST.getBody());
+        analyze(AST.getBody(), true);
         AST.setNumberOfLocals(AST.getBody().getDeclarations().getLength());
 
         functionConstraints(AST);
@@ -205,7 +205,7 @@ public class SemanticAnalyzer implements SemAnalInter {
         if (AST instanceof IfStatement)
             analyze((IfStatement) AST);
         if (AST instanceof CompoundStatement)
-            analyze((CompoundStatement) AST);
+            analyze((CompoundStatement) AST, false);
         if (AST instanceof LoopStatement)
             analyze((LoopStatement) AST);
         if (AST instanceof ContinueStatement)
@@ -373,10 +373,14 @@ public class SemanticAnalyzer implements SemAnalInter {
         }
     }
 
-    public void analyze(CompoundStatement AST) {
-        output.accept(AST.getLine() + ": analyze CompoundStatement\n");
-        enteringCompoundStmt();
-
+    public void analyze(CompoundStatement AST, boolean funcBody) {
+        if( funcBody ) {
+            output.accept(AST.getLine() + ": analyze FunctionBody\n");
+        }
+        else {
+            output.accept(AST.getLine() + ": analyze CompoundStatement\n");
+            enteringCompoundStmt();
+        }
 
         Declaration d = AST.getDeclarations();
         while (d != null) {
@@ -391,8 +395,8 @@ public class SemanticAnalyzer implements SemAnalInter {
             analyze(stmt);
             stmt = (Statement) stmt.getNextNode();
         }
-
-        leavingCompoundStmt();
+        if( !funcBody )
+            leavingCompoundStmt();
     }
 
     public void analyze(LoopStatement AST) {
