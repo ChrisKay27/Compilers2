@@ -3,6 +3,7 @@ package parser.grammar.declarations;
 import parser.Type;
 import parser.grammar.ASTNode;
 import scanner.Token;
+import util.WTFException;
 
 /**
  * Created by Chris on 1/30/2016.
@@ -79,6 +80,13 @@ public class Declaration extends ASTNode {
     }
 
     public String getLD(){
+        if( level == -1 )
+            throw new WTFException("Level is -1 for this node! " + ID.getName());
         return "("+level+","+displacement+")";
+    }
+
+    public void setLevelAndDispl(int lvl, int displacement) {
+        level = lvl;
+        this.displacement = displacement;
     }
 }

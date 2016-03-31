@@ -12,7 +12,7 @@ public class FuncDeclaration extends Declaration {
 
     private final ParamDeclaration params;
     private final CompoundStatement body;
-    protected int numberOfParameters;
+    protected int numberOfParameters = -1;
     protected int numberOfLocals;
     private boolean hasReturnValue;
 

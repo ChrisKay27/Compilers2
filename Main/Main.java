@@ -9,7 +9,7 @@ import static java.lang.System.out;
 /**
  * Compilers
  *
- * @Author Carston Schilds and Chris Kaebe
+ * @author Carston Schilds and Chris Kaebe
  * Date -  1/13/2016.
  */
 public class Main {
@@ -92,8 +92,8 @@ public class Main {
 
     /**
      * Gets the file path for either the error log file or compiler output file and returns it.
-     * UNIV | ERROR2 => error log file path
-     * OUTPUT | OUTPUT2 => compiler output file path
+     * UNIV | ERROR2 - error log file path
+     * OUTPUT | OUTPUT2 - compiler output file path
      *
      * @param args  - String[] args from the command line arguments
      * @param flag1 - Either UNIV, or OUTPUT
@@ -141,7 +141,6 @@ public class Main {
      *
      * @param args - String[] from the command line arguments to main
      * @return - returns the path to the source file to be compiled
-     * @throws - RunTimeException when the path couldn't be found in args
      */
     public static String getInputFilePath(String[] args) {
         boolean ignoreNext = false;

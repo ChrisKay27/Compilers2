@@ -90,7 +90,7 @@ public class QuadrupleGenerator {
         AST.setCode("(fun," + AST.getID().name + "," + AST.getNumberOfLocals() + ",-)");
 //        generate(AST.getParams());
 
-        generate(AST.getBody());
+        generate(AST.getBody(), true);
         AST.appendCode(AST.getBody().getCode());
 
 
@@ -102,6 +102,16 @@ public class QuadrupleGenerator {
         currentFuncDecl = AST;
         levelStack.push(1);
         tempCountStack.push(1+currentFuncDecl.getNumberOfLocals());
+    }
+
+    private void enteringCompoundStmt(int locals){
+        levelStack.push(levelStack.peek()+1);
+        tempCountStack.push(locals);
+    }
+
+    private void leavingCompoundStmt(){
+        levelStack.pop();
+        tempCountStack.pop();
     }
 
 //    // I don't think we need to generate any code for param declarations
@@ -129,7 +139,7 @@ public class QuadrupleGenerator {
         else if (AST instanceof IfStatement)
             generate((IfStatement) AST);
         else if (AST instanceof CompoundStatement)
-            generate((CompoundStatement) AST);
+            generate((CompoundStatement) AST, false);
         else if (AST instanceof LoopStatement)
             generate((LoopStatement) AST);
         else if (AST instanceof ContinueStatement)
@@ -290,14 +300,15 @@ public class QuadrupleGenerator {
         return null;
     }
 
-    public void generate(CompoundStatement AST) {
+    public void generate(CompoundStatement AST, boolean funcBody) {
         output.accept(AST.getLine() + ": generating code for CompoundStatement\n");
 
         Declaration d = AST.getDeclarations();
-        if (d != null) {
+        if ( d != null && !funcBody) {
+
             AST.appendCode("(ecs," + d.getLength() + ",-,-)");
-            levelStack.push(levelStack.peek()+1);
-            tempCountStack.push(d.getLength());
+            enteringCompoundStmt(d.getLength());
+
         }
 
         Statement stmt = AST.getStatements();
@@ -313,9 +324,8 @@ public class QuadrupleGenerator {
             stmt = nextStmt;
         }
 
-        if( d != null ) {
-            levelStack.pop();
-            tempCountStack.pop();
+        if( d != null && !funcBody) {
+            leavingCompoundStmt();
             AST.appendCode("(lcs,-,-,-)");
         }
 //        if (d != null)

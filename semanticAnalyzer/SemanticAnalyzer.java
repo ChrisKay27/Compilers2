@@ -1,6 +1,5 @@
 package semanticAnalyzer;
 
-import scanner.TokenType;
 import parser.Type;
 import parser.grammar.ASTNode;
 import parser.grammar.declarations.Declaration;
@@ -10,6 +9,7 @@ import parser.grammar.declarations.VarDeclaration;
 import parser.grammar.expressions.*;
 import parser.grammar.statements.*;
 import scanner.Token;
+import scanner.TokenType;
 
 import java.util.List;
 import java.util.Stack;
@@ -109,8 +109,11 @@ public class SemanticAnalyzer implements SemAnalInter {
         enteringFuncDeclaration(AST);
 
         analyze(AST.getParams());
+        AST.setNumberOfParameters(AST.getParams().getLength());
 
         analyze(AST.getBody());
+        AST.setNumberOfLocals(AST.getBody().getDeclarations().getLength());
+
         functionConstraints(AST);
 
         leavingFuncDeclaration();
@@ -374,9 +377,11 @@ public class SemanticAnalyzer implements SemAnalInter {
         output.accept(AST.getLine() + ": analyze CompoundStatement\n");
         enteringCompoundStmt();
 
+
         Declaration d = AST.getDeclarations();
         while (d != null) {
-            addDeclaration(d);
+            //addDeclaration(d);
+            analyze((VarDeclaration) d);
             d = d.getNextNode();
         }
 
@@ -696,6 +701,7 @@ public class SemanticAnalyzer implements SemAnalInter {
     }
 
     public void addDeclaration(Declaration d) {
+
         boolean duplicateDefiniton = symbolTable.push(new SymbolTableEntry(d.getID().getID(), d));
         if (!duplicateDefiniton)
             lineError.accept(d.getLine(), "Duplicate definition of " + d.getID().name);
