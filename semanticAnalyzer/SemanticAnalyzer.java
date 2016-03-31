@@ -190,8 +190,8 @@ public class SemanticAnalyzer implements SemAnalInter {
         if (AST.getLevel() != 0) {
             while (AST != null) {
                 AST.setLevel(levelStack.peek());
-                AST.setDisplacement(2+localVariableCountStack.peek());
-                localVariableCountStack.push(localVariableCountStack.pop()+1);
+                AST.setDisplacement(2 + localVariableCountStack.peek());
+                localVariableCountStack.push(localVariableCountStack.pop() + 1);
                 addDeclaration(AST);
                 AST = (VarDeclaration) AST.getNextNode();
             }
@@ -592,12 +592,12 @@ public class SemanticAnalyzer implements SemAnalInter {
     }
 
     public Type analyze(SubExpression AST) {
-        output.accept(AST.getLine() + ": analyze SubExpression\n"); //Nothing to analyze here
+        output.accept(AST.getLine() + ": analyze SubExpression\n");
 
-        if (AST instanceof IdFactor)
-            return analyze((IdFactor) AST);
-
-        else if (AST instanceof LiteralBool)
+        if (AST instanceof IdFactor) {
+            IdFactor id = (IdFactor) AST;
+            return analyze(id);
+        } else if (AST instanceof LiteralBool)
             return analyze((LiteralBool) AST);
 
         else if (AST instanceof LiteralNum)

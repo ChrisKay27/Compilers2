@@ -18,7 +18,7 @@ public class LiteralNum extends NidFactor {
     public void appendContents(StringBuilder sb, int tabs) {
         String tabsStr = '\n'+getTabs(tabs);
         sb.append(tabsStr).append(getLine()).append(": ").append(getClass().getSimpleName());
-        sb.append(tabsStr).append("\tvalue:").append(this.toString());
+        sb.append(tabsStr).append("\tvalue: ").append(this.toString());
         sb.append(tabsStr).append("\ttype : ").append(getType());
 
         if (nextNode != null)

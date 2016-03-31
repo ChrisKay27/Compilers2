@@ -36,8 +36,19 @@ public enum TokenType {
     public List<Type> getOperandTypes(){
 
         switch(this){
-            case MULT:case DIV:case PLUS:case MINUS:case GT:case LT:case GTEQ:case LTEQ:case MOD: return intOperandTypes;
-            case EQ:case NEQ: return intORBoolOperandTypes;
+            case MULT:
+            case DIV:
+            case PLUS:
+            case MINUS:
+            case MOD:
+                return intOperandTypes;
+            case GT:
+            case LT:
+            case GTEQ:
+            case LTEQ:
+            case EQ:
+            case NEQ:
+                return intORBoolOperandTypes;
             case OR:case ORELSE:case AND:case ANDTHEN: return boolOperandTypes;
         }
 

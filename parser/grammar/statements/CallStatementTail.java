@@ -25,7 +25,8 @@ public class CallStatementTail extends StatementTail {
     @Override
     public void appendContents(StringBuilder sb, int tabs) {
         String tabsStr = '\n'+getTabs(tabs);
-        sb.append(tabsStr).append("arguments: ");
+        String tabsStrLess = '\n' + getTabs(tabs - 1);
+        sb.append(tabsStrLess).append("arguments: ");
         if( call_tail == null )
             sb.append(tabsStr).append("\tvoid");
         else

@@ -18,9 +18,13 @@ public class AddOpTerm extends SubExpression {
         this.term = term;
     }
 
-    public TokenType getAddOp() { return addOp; }
+    public TokenType getAddOp() {
+        return addOp;
+    }
 
-    public Term getTerm() { return term; }
+    public Term getTerm() {
+        return term;
+    }
 
 
     @Override
@@ -28,10 +32,9 @@ public class AddOpTerm extends SubExpression {
         String tabsStr = '\n' + getTabs(tabs);
 
         sb.append(tabsStr).append(getLine()).append(": ").append(getClass().getSimpleName());
-        sb.append(tabsStr).append("\ttype: ").append(getType());
-        sb.append(tabsStr).append("\taddop: ").append(addOp);
+        sb.append(" " + addOp);
         term.appendContents(sb, tabs);
-        if( nextNode != null )
+        if (nextNode != null)
             nextNode.appendContents(sb, tabs);
     }
 

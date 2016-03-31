@@ -1,5 +1,6 @@
 package tupleGeneration;
 
+//import com.sun.org.apache.xpath.internal.operations.Mult;
 import parser.grammar.ASTNode;
 import parser.grammar.declarations.Declaration;
 import parser.grammar.declarations.FuncDeclaration;
@@ -101,15 +102,15 @@ public class QuadrupleGenerator {
 //        output.accept("  enteringFuncDeclaration\n");
         currentFuncDecl = AST;
         levelStack.push(1);
-        tempCountStack.push(1+currentFuncDecl.getNumberOfLocals());
+        tempCountStack.push(1 + currentFuncDecl.getNumberOfLocals());
     }
 
-    private void enteringCompoundStmt(int locals){
-        levelStack.push(levelStack.peek()+1);
+    private void enteringCompoundStmt(int locals) {
+        levelStack.push(levelStack.peek() + 1);
         tempCountStack.push(locals);
     }
 
-    private void leavingCompoundStmt(){
+    private void leavingCompoundStmt() {
         levelStack.pop();
         tempCountStack.pop();
     }
@@ -304,7 +305,7 @@ public class QuadrupleGenerator {
         output.accept(AST.getLine() + ": generating code for CompoundStatement\n");
 
         Declaration d = AST.getDeclarations();
-        if ( d != null && !funcBody) {
+        if (d != null && !funcBody) {
 
             AST.appendCode("(ecs," + d.getLength() + ",-,-)");
             enteringCompoundStmt(d.getLength());
@@ -324,7 +325,7 @@ public class QuadrupleGenerator {
             stmt = nextStmt;
         }
 
-        if( d != null && !funcBody) {
+        if (d != null && !funcBody) {
             leavingCompoundStmt();
             AST.appendCode("(lcs,-,-,-)");
         }
@@ -454,89 +455,100 @@ public class QuadrupleGenerator {
     public String generate(AddExpression AST) {
         output.accept(AST.getLine() + ": generating code for AddExpression\n");
 
-        String temp = generate(AST.getTerm());
+        String argument1 = generate(AST.getTerm());
         AST.setCode(AST.getTerm().getCode());
 
         if (AST.isUminus()) {
-            String nTemp = getNewTemp();
-            AST.appendCode("(uminus," + temp + ",-," + nTemp + ")");
-            AST.appendCode("(asg," + nTemp + ",-," + temp + ")");
+            String unaryMinusTemp = getNewTemp();
+            AST.appendCode("(mul," + argument1 + ",-1," + unaryMinusTemp + ")");
+            AST.appendCode("(asg," + unaryMinusTemp + ",-," + argument1 + ")");
         }
 
+        //AST.setTemp(argument1);
+        String resultTemp = null;
         AddOpTerm next = AST.getNextNode();
-        if (next != null) {
-            String temp2 = generate(next);
-
-            String newTemp = getNewTemp();
+        while (next != null) {
+            String argument2 = generate(next);
+            resultTemp = getNewTemp();
             String newLabel = null;
             switch (next.getAddOp()) {
                 case PLUS:
                     AST.appendCode(next.getCode());
-                    AST.appendCode("(add," + temp + "," + temp2 + "," + newTemp + ")");
+                    AST.appendCode("(add," + argument1 + "," + argument2 + "," + resultTemp + ")");
                     break;
                 case MINUS:
                     AST.appendCode(next.getCode());
-                    AST.appendCode("(sub," + temp + "," + temp2 + "," + newTemp + ")");
+                    AST.appendCode("(sub," + argument1 + "," + argument2 + "," + resultTemp + ")");
                     break;
                 case OR:
                     AST.appendCode(next.getCode());
-                    AST.appendCode("(or," + temp + "," + temp2 + "," + newTemp + ")");
+                    AST.appendCode("(or," + argument1 + "," + argument2 + "," + resultTemp + ")");
                     break;
                 case ORELSE:
                     newLabel = getNewLabel();
-                    AST.appendCode("(ift," + temp + "," + newLabel + ")");
+                    AST.appendCode("(ift," + argument1 + ",-," + newLabel + ")");
                     AST.appendCode(next.getCode());
-                    AST.appendCode("(or," + temp + "," + temp2 + "," + newTemp + ")");
+                    AST.appendCode("(or," + argument1 + "," + argument2 + "," + resultTemp + ")");
                     break;
                 default:
                     throw new WTFException("Error! bad token type in AddExpression addop");
             }
-            AST.appendCode("(asg," + newTemp + ",-," + temp + ")");
+            AST.appendCode("(asg," + resultTemp + ",-," + argument1 + ")");
+
+            next = (AddOpTerm) next.getNextNode();
+
             if (newLabel != null)
                 AST.appendCode("(lab,-,-," + newLabel + ")");
         }
 
-
-        return temp;
+        if (resultTemp != null)
+            return resultTemp;
+        else return argument1;
     }
 
     public String generate(Term AST) {
         output.accept(AST.getLine() + ": generating code for Term\n");
         String newLabel = null;
-        String temp = generate(AST.getFactor());
+        String argument1 = generate(AST.getFactor());
+
         AST.setCode(AST.getFactor().getCode());
 
         MultOpFactor next = AST.getNextNode();
-        if (next != null) {
-            String temp2 = generate(next);
-            String newTemp = this.getNewTemp();
+        String resultTemp = null;
+        while (next != null) {
+            String argument2 = generate(next);
+            resultTemp = this.getNewTemp();
             switch (next.getMultOp()) {
                 case MULT:
                     AST.appendCode(next.getCode());
-                    AST.appendCode("(mul," + temp + "," + temp2 + "," + newTemp + ")");
-                    return newTemp;
+                    AST.appendCode("(mul," + argument1 + "," + argument2 + "," + resultTemp + ")");
+                    break;
                 case DIV:
                     AST.appendCode(next.getCode());
-                    AST.appendCode("(div," + temp + "," + temp2 + "," + newTemp + ")");
-                    return newTemp;
+                    AST.appendCode("(div," + argument1 + "," + argument2 + "," + resultTemp + ")");
+                    break;
                 case MOD:
                     AST.appendCode(next.getCode());
-                    AST.appendCode("(mod," + temp + "," + temp2 + "," + newTemp + ")");
-                    return newTemp;
+                    AST.appendCode("(mod," + argument1 + "," + argument2 + "," + resultTemp + ")");
+                    break;
                 case AND: //TODO i think and isn't short circuited, possibly broken
                     newLabel = getNewLabel();
-                    AST.appendCode("(ift," + temp + "," + newLabel + ")");
+                    AST.appendCode("(ift," + argument1 + "," + newLabel + ")");
                     AST.appendCode(next.getCode());
-                    AST.appendCode("(and," + temp + "," + temp2 + "," + newTemp + ")");
+                    AST.appendCode("(and," + argument1 + "," + argument2 + "," + resultTemp + ")");
                     break;
             }
-            AST.appendCode(next.getCode());
+            argument1 = resultTemp;
+//
+//            AST.appendCode(next.getCode());
+            next = (MultOpFactor) next.getNextNode();
 
             if (newLabel != null)
                 AST.appendCode("(lab,-,-," + newLabel + ")");
         }
-
-        return temp;
+        if (resultTemp != null)
+            return resultTemp;
+        else return argument1;
     }
 
     public String generate(SubExpression AST) {
@@ -660,10 +672,10 @@ public class QuadrupleGenerator {
     }
 
     public String getNewTemp() {
-        if( executableQuadruple ) {
-            tempCountStack.push(tempCountStack.pop()+1);
+        if (executableQuadruple) {
+            tempCountStack.push(tempCountStack.pop() + 1);
             return "(" + levelStack.peek() + "," + tempCountStack.peek() + ")";
-        }else
+        } else
             return "t" + tempCounter++;
     }
 

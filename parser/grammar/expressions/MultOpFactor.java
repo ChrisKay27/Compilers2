@@ -8,16 +8,18 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
  */
 public class MultOpFactor extends SubExpression {
 
-    private final TokenType addOp;
+    private final TokenType multOp;
     private final SubExpression factor;
 
-    public MultOpFactor(int line, TokenType addOp, SubExpression term) {
+    public MultOpFactor(int line, TokenType multOp, SubExpression term) {
         super(line);
-        this.addOp = addOp;
+        this.multOp = multOp;
         this.factor = term;
     }
 
-    public TokenType getMultOp() { return addOp; }
+    public TokenType getMultOp() {
+        return multOp;
+    }
 
     public SubExpression getFactor() { return factor; }
 
@@ -28,7 +30,7 @@ public class MultOpFactor extends SubExpression {
         sb.append(tabsStr);
         sb.append(getLine()).append(": ").append(getClass().getSimpleName());
 
-        sb.append(" ").append(addOp).append(" ");
+        sb.append(" ").append(multOp).append(" ");
         factor.appendContents(sb, tabs + 1);
 
         if( nextNode != null )
