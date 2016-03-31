@@ -76,8 +76,14 @@ public class QuadrupleGenerator {
         }
         while (current != null);
 
-        tempCountStack.push(numGlobalVars);
-        AST.setCode("(start," + numGlobalVars + ",-,-)\n(rval,-,-," + getNewTemp() + ")\n(call,main,-,-)\n(hlt,-,-,-)\n" + AST.getCode());
+        tempCountStack.push(0);// 0 was previously numGlobalVars
+
+        AST.setCode(
+                "(start," + numGlobalVars + ",-,-)\n" +
+                        "(rval,-,-," + getNewTemp() + ")\n" +
+                        "(call,main,-,-)\n" +
+                        "(hlt,-,-,-)\n"
+                        + AST.getCode());
 
 //        output.accept("\n" + AST.getCode());
 
@@ -274,7 +280,7 @@ public class QuadrupleGenerator {
             Expression current = (Expression) AST.getCall_tail();
 
             ParamDeclaration pdec = AST.getFuncDecl().getParams();
-
+            Stack<String> arguments = new Stack<String>(); // stack for argument code, push to it then pop off and append code before calling function
             while (current != null) {
 
                 String temp2 = generate(current);
@@ -531,9 +537,9 @@ public class QuadrupleGenerator {
                     AST.appendCode(next.getCode());
                     AST.appendCode("(mod," + argument1 + "," + argument2 + "," + resultTemp + ")");
                     break;
-                case AND: //TODO i think and isn't short circuited, possibly broken
+                case ANDTHEN: // TODO i think and isn't short circuited, possibly broken
                     newLabel = getNewLabel();
-                    AST.appendCode("(ift," + argument1 + "," + newLabel + ")");
+                    AST.appendCode("(iff," + argument1 + ",-," + newLabel + ")");
                     AST.appendCode(next.getCode());
                     AST.appendCode("(and," + argument1 + "," + argument2 + "," + resultTemp + ")");
                     break;

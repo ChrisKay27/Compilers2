@@ -17,12 +17,9 @@ public enum TokenType {
     private static final List<Type> intORBoolOperandTypes = Arrays.asList(Type.INT,Type.BOOL);
     private static final List<Type> boolOperandTypes = Arrays.asList(Type.BOOL);
 
-
     private static final List<TokenType> intResultTypes = Arrays.asList(PLUS,MINUS,MOD,DIV,MULT);
 
     private static final List<TokenType> boolResultTypes = Arrays.asList(GT,LT,LTEQ,GTEQ,NEQ,AND,OR,ANDTHEN,OR,ORELSE,NOT);
-
-
 
     public Type getResultType(){
 
@@ -49,7 +46,11 @@ public enum TokenType {
             case EQ:
             case NEQ:
                 return intORBoolOperandTypes;
-            case OR:case ORELSE:case AND:case ANDTHEN: return boolOperandTypes;
+            case OR:
+            case ORELSE:
+            case AND:
+            case ANDTHEN:
+                return boolOperandTypes;
         }
 
         return Arrays.asList(Type.VOID);
