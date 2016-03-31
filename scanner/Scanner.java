@@ -1,6 +1,6 @@
 package scanner;
 
-import admininstration.Administration;
+import admininstration.Administrator;
 import stateMachine.State;
 
 import java.io.IOException;
@@ -117,7 +117,7 @@ public class Scanner {
         if (nextChar == -1)
             return new Token(TokenType.ENDFILE, null);
 
-        if (Administration.debug()) out.println("Starting in init state");
+        if (Administrator.debug()) out.println("Starting in init state");
 
         //Always starts in the start state
         State state = ssm.init;
@@ -125,7 +125,7 @@ public class Scanner {
         //Consume characters until we produce a token.
         while (t == null) {
 
-            if (Administration.debug())
+            if (Administrator.debug())
                 out.println("looking at char: " + (char) nextChar + "[" + nextChar + "]");
 
             //Keeping track of the line number
@@ -141,7 +141,7 @@ public class Scanner {
             //get the next state that we must transition to
             state = state.nextState();
 
-            if (Administration.debug()) out.println("went to " + state + " after char: " + (char) nextChar);
+            if (Administrator.debug()) out.println("went to " + state + " after char: " + (char) nextChar);
 
 
             //If the current state did not produce a token
@@ -158,7 +158,7 @@ public class Scanner {
                     }
                 }
 
-                if (Administration.debug()) out.println("Going to state:" + state);
+                if (Administrator.debug()) out.println("Going to state:" + state);
                 //get the next character from the input
                 nextChar = nextChar();
                 //keep track of what column we are on
@@ -177,11 +177,11 @@ public class Scanner {
         }
 
         if (t.token == TokenType.ID) { //If we have received an ID token then we now check to see if it is actually a keyword
-            Token keyword = keywords.get(t.attrValue);
+            Token keyword = keywords.get(t.name);
             if (keyword != null)
                 t = keyword;
             else {//else the ID is not for a keyword, then we add it to the symbol table if it is not already there.
-                String attrValue = (String) t.attrValue;
+                String attrValue = t.name;
                 if (!symbolTable.containsKey(attrValue))
                     symbolTable.put(attrValue, symbolCount++);
 
@@ -195,7 +195,7 @@ public class Scanner {
             t.name = t.name + " at line:" + lineCount + " col:" + colCount;
         }
 
-        if (Administration.debug()) out.println("Found Token:" + t);
+        if (Administrator.debug()) out.println("Found Token:" + t);
 
         //So we don't append this character here because if we are returning a token we haven't consumed this character
         //so it should not be added to the current line yet

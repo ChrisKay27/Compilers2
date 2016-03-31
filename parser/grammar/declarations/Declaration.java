@@ -77,4 +77,8 @@ public class Declaration extends ASTNode {
         }
         return length;
     }
+
+    public String getLD(){
+        return "("+level+","+displacement+")";
+    }
 }

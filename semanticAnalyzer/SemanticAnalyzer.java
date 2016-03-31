@@ -31,6 +31,9 @@ public class SemanticAnalyzer implements SemAnalInter {
     private boolean foundError;
     private boolean traceEnabled;
 
+    private Stack<Integer> levelStack = new Stack<>();
+    private Stack<Integer> localVariableCountStack = new Stack<>();
+
     private FuncDeclaration currentFuncDecl;
     private static Declaration errorDeclaration = new Declaration(-1, Type.UNIV, null);
     private boolean returnStatementFound;
@@ -148,19 +151,32 @@ public class SemanticAnalyzer implements SemAnalInter {
         }
         currentFuncDecl = AST;
         this.returnStatementFound = false;
+
+        //update what level we are on
+        levelStack.push(1);
+        localVariableCountStack.push(0);
     }
 
     private void leavingFuncDeclaration() {
         output.accept("  leavingFuncDeclaration\n");
         currentFuncDecl = null;
         leavingCompoundStmt();
+
+        levelStack.pop();
+        localVariableCountStack.pop();
     }
 
     public void analyze(ParamDeclaration AST) {
         output.accept(AST.getLine() + ": analyze ParamDeclaration\n");
+        int length = -1;
         while (AST != null) {
-            if (AST.getType() != VOID)
+            if (AST.getType() != VOID) {
                 addDeclaration(AST);
+
+                AST.setLevel(1);
+                //Parameters are indexed with negative displacements starting at -1 for the first
+                AST.setDisplacement(length--);
+            }
             AST = (ParamDeclaration) AST.getNextNode();
         }
     }
@@ -170,6 +186,9 @@ public class SemanticAnalyzer implements SemAnalInter {
 
         if (AST.getLevel() != 0) {
             while (AST != null) {
+                AST.setLevel(levelStack.peek());
+                AST.setDisplacement(2+localVariableCountStack.peek());
+                localVariableCountStack.push(localVariableCountStack.pop()+1);
                 addDeclaration(AST);
                 AST = (VarDeclaration) AST.getNextNode();
             }
@@ -553,7 +572,7 @@ public class SemanticAnalyzer implements SemAnalInter {
 
         boolean isStatic = AST.getFactor().isStatic();
 
-        MultOpFactor next = (MultOpFactor) AST.getFactor().getNextNode();
+        MultOpFactor next = AST.getNextNode();
         if (next != null) {
             Type t2 = analyze(next);
 
@@ -581,9 +600,6 @@ public class SemanticAnalyzer implements SemAnalInter {
 
         else if (AST instanceof AddOpTerm)
             return analyze(((AddOpTerm) AST).getTerm());
-
-        else if (AST instanceof MinusExpression)
-            return INT;
 
         else if (AST instanceof MultOpFactor)
             return analyze((MultOpFactor) AST);
@@ -668,7 +684,7 @@ public class SemanticAnalyzer implements SemAnalInter {
     }
 
     private Declaration getDeclaration(int line, Token id) {
-        SymbolTableEntry d = symbolTable.get(id.getAttrValue());
+        SymbolTableEntry d = symbolTable.get(id.getID());
 
         if (d == null) {
             foundError = true;
@@ -680,10 +696,9 @@ public class SemanticAnalyzer implements SemAnalInter {
     }
 
     public void addDeclaration(Declaration d) {
-        boolean duplicateDefiniton = symbolTable.push(new SymbolTableEntry(d.getID().getAttrValue(), d));
-        if (duplicateDefiniton == false) {
+        boolean duplicateDefiniton = symbolTable.push(new SymbolTableEntry(d.getID().getID(), d));
+        if (!duplicateDefiniton)
             lineError.accept(d.getLine(), "Duplicate definition of " + d.getID().name);
-        }
     }
 
     @Override

@@ -33,18 +33,22 @@ public class QuadrupleGenerator {
     private int tempCounter;
     private Stack<String> currentLoopStartLabels = new Stack<>();
     private Stack<String> currentLoopEndLabels = new Stack<>();
+    private Stack<Integer> levelStack = new Stack<>();
+    private Stack<Integer> tempCountStack = new Stack<>();
+    private boolean executableQuadruple;
 
 
-    public QuadrupleGenerator(ASTNode astRoot, Consumer<String> output, Consumer<String> error, BiConsumer<Integer, String> lineError) {
+    public QuadrupleGenerator(ASTNode astRoot, Consumer<String> output, Consumer<String> error, BiConsumer<Integer, String> lineError, boolean executableQuadruple) {
         this.astRoot = astRoot;
         this.output = output;
         this.regError = error;
         this.error = lineError;
+        this.executableQuadruple = executableQuadruple;
     }
 
 
     public String startCodeGeneration(Declaration AST) {
-
+        levelStack.push(0);
 
         FuncDeclaration lastFunction = null;
 
@@ -71,6 +75,7 @@ public class QuadrupleGenerator {
         }
         while (current != null);
 
+        tempCountStack.push(numGlobalVars);
         AST.setCode("(start," + numGlobalVars + ",-,-)\n(rval,-,-," + getNewTemp() + ")\n(call,main,-,-)\n(hlt,-,-,-)\n" + AST.getCode());
 
 //        output.accept("\n" + AST.getCode());
@@ -93,8 +98,10 @@ public class QuadrupleGenerator {
     }
 
     private void enteringFuncDeclaration(FuncDeclaration AST) {
-        output.accept("  enteringFuncDeclaration\n");
+//        output.accept("  enteringFuncDeclaration\n");
         currentFuncDecl = AST;
+        levelStack.push(1);
+        tempCountStack.push(1+currentFuncDecl.getNumberOfLocals());
     }
 
 //    // I don't think we need to generate any code for param declarations
@@ -107,7 +114,9 @@ public class QuadrupleGenerator {
 //    }
 
     private void leavingFuncDeclaration() {
-        output.accept("  leavingFuncDeclaration\n");
+//        output.accept("  leavingFuncDeclaration\n");
+        tempCountStack.pop();
+        levelStack.pop();
         currentFuncDecl = null;
     }
 
@@ -143,7 +152,7 @@ public class QuadrupleGenerator {
 
         //assigned value will be null IF this is an assignment into an array OR a function call
         if (assignedValue != null)
-            AST.appendCode("(asg," + assignedValue + ",-," + AST.getIdToken().name + ')');
+            AST.appendCode("(asg," + assignedValue + ",-," + AST.getDecl().getLD() + ')');
     }
 
     public String generate(String name, StatementTail AST) {
@@ -285,23 +294,30 @@ public class QuadrupleGenerator {
         output.accept(AST.getLine() + ": generating code for CompoundStatement\n");
 
         Declaration d = AST.getDeclarations();
-        if (d != null)
+        if (d != null) {
             AST.appendCode("(ecs," + d.getLength() + ",-,-)");
-
+            levelStack.push(levelStack.peek()+1);
+            tempCountStack.push(d.getLength());
+        }
 
         Statement stmt = AST.getStatements();
 
         while (stmt != null) {
 
             Statement nextStmt = (Statement) stmt.getNextNode();
-            if (nextStmt == null && d != null)
-                AST.appendCode("(lcs,-,-,-)");
+            //if (nextStmt == null && d != null)
+            //    AST.appendCode("(lcs,-,-,-)");
 
             generate(stmt);
             AST.appendCode(stmt.getCode());
             stmt = nextStmt;
         }
 
+        if( d != null ) {
+            levelStack.pop();
+            tempCountStack.pop();
+            AST.appendCode("(lcs,-,-,-)");
+        }
 //        if (d != null)
 //            AST.appendCode("(lcs,-,-,-)");
     }
@@ -368,7 +384,7 @@ public class QuadrupleGenerator {
         statement.appendCode("(lab,-,-," + thisCasesStartLabel + ")");
 
         //Check to see if the
-        int NUM = statement.getNumberToken().getAttrValue();
+        int NUM = statement.getNumberToken().getID();
         statement.setCode("(iff," + NUM + ",-," + nextLabel + ")");
 
         String temp = getNewTemp();
@@ -436,8 +452,6 @@ public class QuadrupleGenerator {
             AST.appendCode("(uminus," + temp + ",-," + nTemp + ")");
             AST.appendCode("(asg," + nTemp + ",-," + temp + ")");
         }
-
-        AST.setTemp(temp);
 
         AddOpTerm next = AST.getNextNode();
         if (next != null) {
@@ -531,8 +545,6 @@ public class QuadrupleGenerator {
             String temp = generate(((AddOpTerm) AST).getTerm());
             AST.setCode(((AddOpTerm) AST).getTerm().getCode());
             return temp;
-        } else if (AST instanceof MinusExpression) {
-
         } else if (AST instanceof MultOpFactor)
             return generate((MultOpFactor) AST);
 
@@ -623,10 +635,10 @@ public class QuadrupleGenerator {
         } else if (AST.getIdTail() instanceof AddExpression) {
             temp = generate((AddExpression) AST.getIdTail());
             AST.setCode(AST.getIdTail().getCode());
-            AST.appendCode("(fae," + AST.getDecl().getID().getName() + "," + temp + "," + newTemp + ")");
+            AST.appendCode("(fae," + AST.getDecl().getLD() + "," + temp + "," + newTemp + ")");
 
         } else
-            AST.appendCode("(asg," + AST.getDecl().getID().getName() + ",-," + newTemp + ")");
+            AST.appendCode("(asg," + AST.getDecl().getLD() + ",-," + newTemp + ")");
 
         return newTemp;
     }
@@ -638,7 +650,11 @@ public class QuadrupleGenerator {
     }
 
     public String getNewTemp() {
-        return "t" + tempCounter++;
+        if( executableQuadruple ) {
+            tempCountStack.push(tempCountStack.pop()+1);
+            return "(" + levelStack.peek() + "," + tempCountStack.peek() + ")";
+        }else
+            return "t" + tempCounter++;
     }
 
     public String getNewLabel() {

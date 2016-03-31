@@ -899,12 +899,12 @@ public class Parser {
             case NUM:
                 Token numToken = lookaheadToken;
                 match(NUM, synch);
-                nidFactor = new LiteralNum(line, (Integer) numToken.attrValue);
+                nidFactor = new LiteralNum(line, numToken.getID());
                 break;
             case BLIT:
                 Token blitToken = lookaheadToken;
                 match(BLIT, synch);
-                nidFactor = new LiteralBool(line, (Integer) blitToken.attrValue);
+                nidFactor = new LiteralBool(line, blitToken.getID());
                 break;
         }
 
@@ -1073,14 +1073,12 @@ public class Parser {
      * @param synch - Set of tokens collected during parsing which represents valid next tokens, used for error recovery purposes
      * @return
      */
-    private MinusExpression uminus(Set<TokenType> synch) {
+    private void uminus(Set<TokenType> synch) {
         if (traceEnabled) lineTraceOutput.accept("\t\tEntering unimus");
 
-        int line = lineNumber.get();
         match(MINUS, synch);
 
         if (traceEnabled) lineTraceOutput.accept("\t\tLeaving unimus");
-        return new MinusExpression(line);
     }
 
     /**

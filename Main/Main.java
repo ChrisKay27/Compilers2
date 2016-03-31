@@ -1,6 +1,6 @@
 package Main;
 
-import admininstration.Administration;
+import admininstration.Administrator;
 import admininstration.Options;
 import unitTesting.Test;
 
@@ -77,9 +77,9 @@ public class Main {
         Options options = new Options(quietEnabled, verboseEnabled, tuplePhase, parsePhase, compilePhase, lexicalPhase,
                 semanticPhase, outputFilePath, errorLogFilePath, srcFilePath, printAST);
 
-        Administration admin;
+        Administrator admin;
         try {
-            admin = new Administration(options);
+            admin = new Administrator(options);
             admin.compile();
             admin.close();
         } catch (Exception e) {

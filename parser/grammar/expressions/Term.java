@@ -8,7 +8,6 @@ import util.WTFException;
 public class Term extends SubExpression {
 
     private final SubExpression factor;
-
     public Term(int line, SubExpression factor) {
         super(line);
         this.factor = factor;
@@ -16,7 +15,7 @@ public class Term extends SubExpression {
 
     @Override
     public void appendContents(StringBuilder sb , int tabs) {
-        String tabsStr = '\n'+getTabs(tabs);
+//        String tabsStr = '\n'+getTabs(tabs);
 
 //        sb.append(tabsStr).append(getLine()).append(": ").append(getClass().getSimpleName());
 //        sb.append(tabsStr).append("\ttype: ").append(getType());

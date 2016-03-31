@@ -30,6 +30,7 @@ public class MultOpFactor extends SubExpression {
 
         sb.append(" ").append(addOp).append(" ");
         factor.appendContents(sb, tabs + 1);
+
         if( nextNode != null )
             nextNode.appendContents(sb, tabs);
     }

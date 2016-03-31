@@ -1,0 +1,22 @@
+int a;
+
+int f(int x,bool b){
+    int y;
+    if(b){
+        int u; -- point A
+        u := 2 * x;
+        return u;
+    }
+    else{
+        y := f(x,not b);
+        return y;
+    }
+}
+
+int main(void){
+    int m;
+    a := 1;
+    m := f(a,false);
+    writeint(m);
+    return 0;
+}
