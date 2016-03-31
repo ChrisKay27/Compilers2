@@ -280,16 +280,16 @@ public class QuadrupleGenerator {
             Expression current = (Expression) AST.getCall_tail();
 
             ParamDeclaration pdec = AST.getFuncDecl().getParams();
-            Stack<String> arguments = new Stack<String>(); // stack for argument code, push to it then pop off and append code before calling function
+            Stack<String> arguments = new Stack<String>();
             while (current != null) {
 
                 String temp2 = generate(current);
                 AST.appendCode(current.getCode());
 
                 if (pdec.isReference())
-                    AST.appendCode("(arga," + temp2 + ",-,-)");
+                    arguments.push("(arga," + temp2 + ",-,-)");
                 else
-                    AST.appendCode("(arg," + temp2 + ",-,-)");
+                    arguments.push("(arg," + temp2 + ",-,-)");
 
                 if (current.getNextNode() instanceof Expression) {
                     current = (Expression) current.getNextNode();
@@ -297,6 +297,9 @@ public class QuadrupleGenerator {
                 } else {
                     current = null;
                 }
+            }
+            while (!arguments.isEmpty()) {
+                AST.appendCode(arguments.pop());
             }
         }
 
