@@ -78,6 +78,7 @@ public class SemanticAnalyzer implements SemAnalInter {
         FuncDeclaration lastFunction = null;
         do {
             current.setLevel(0);
+            System.out.println("Adding Top Level Decl");
             addDeclaration(current);
             current = current.getNextNode();
         }
@@ -174,6 +175,7 @@ public class SemanticAnalyzer implements SemAnalInter {
         int length = -1;
         while (AST != null) {
             if (AST.getType() != VOID) {
+                System.out.println("Adding Param Decl");
                 addDeclaration(AST);
 
                 AST.setLevel(1);
@@ -188,13 +190,14 @@ public class SemanticAnalyzer implements SemAnalInter {
         output.accept(AST.getLine() + ": analyze VarDeclaration\n");
 
         if (AST.getLevel() != 0) {
-            while (AST != null) {
+//            while (AST != null) {
                 AST.setLevel(levelStack.peek());
                 AST.setDisplacement(2 + localVariableCountStack.peek());
                 localVariableCountStack.push(localVariableCountStack.pop() + 1);
+                System.out.println("Adding Decl");
                 addDeclaration(AST);
                 AST = (VarDeclaration) AST.getNextNode();
-            }
+//            }
         }
     }
 
