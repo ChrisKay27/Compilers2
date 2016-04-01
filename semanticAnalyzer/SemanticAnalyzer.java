@@ -529,7 +529,10 @@ public class SemanticAnalyzer implements SemAnalInter {
         if (AST.getAddExp2() != null) {
             Type t2 = analyze(AST.getAddExp2());
 
-            AST.setType(typeCheck(t, t2, AST.getRelop().getOperandTypes()));
+            Type expType = typeCheck(t, t2, AST.getRelop().getOperandTypes());
+            if( expType != UNIV )
+                expType = BOOL;
+            AST.setType(expType);
 
             isStatic &= AST.getAddExp2().isStatic();
 //

@@ -110,10 +110,6 @@ public class Scanner {
             initNextChar = false;
         }
 
-//        if (traceEnabled)
-//            //Add the character to the current line to be output during the line traceEnabled
-//            currentLine.append((char) nextChar);
-
         if (nextChar == -1)
             return new Token(TokenType.ENDFILE, null);
 
@@ -127,14 +123,6 @@ public class Scanner {
 
             if (Administrator.debug())
                 out.println("looking at char: " + (char) nextChar + "[" + nextChar + "]");
-
-            //Keeping track of the line number
-//            if (nextChar == '\n') {
-//                tokensOnLineConsumer.accept(new ArrayList<>(tokensOnCurrentLine));
-//                tokensOnCurrentLine.clear();
-//                lineCount++;
-//                colCount = 0;
-//            }
 
             //let the current state consume the next character
             t = state.consume((char) nextChar);
@@ -164,15 +152,9 @@ public class Scanner {
                 //keep track of what column we are on
                 colCount++;
 
-
-//                if (traceEnabled)
-//                    //Add the character to the current line to be output during the line traceEnabled
-//                    currentLine.append((char) nextChar);
-
             } else if (t == Token.COMMENT_TOKEN) {//If its a comment token we ignore it, resetting the state back to the init state
                 t = null;
                 state = ssm.init;
-
             }
         }
 
@@ -197,13 +179,7 @@ public class Scanner {
 
         if (Administrator.debug()) out.println("Found Token:" + t);
 
-        //So we don't append this character here because if we are returning a token we haven't consumed this character
-        //so it should not be added to the current line yet
-
-        //if (traceEnabled) {
-        //    if (currentLine.length() > 0) currentLine.deleteCharAt(currentLine.length() - 1);
         tokensOnCurrentLine.add(t);
-        // }
 
         lineTraceOutput.accept("\n\t\t" + t + '\n');
 
