@@ -4,48 +4,29 @@ int main(void){
     r := false;
     s := true;
     
-    p := r && r;
+    p := r and r;
+    writebool(p); -- f    
+    p := r and s;
     writebool(p); -- f
-    
-    p := r && s;
+    p := s and r; 
     writebool(p); -- f
-    p := s && r; 
-    writebool(p); -- f
-    p := s && s;
+    p := s and s;
     writebool(p); -- t
     
-    q := r || r;
+    q := r or r;
     writebool(q); -- f
-    q := r || s;
+    q := r or s;
     writebool(q); -- t
-    q := s || r;
+    q := s or r;
     writebool(q); -- t
-    q := s || s;
+    q := s or s;
     writebool(q); -- t
 
-    q := r && (s || s && r);
+    q := r and (s or s and r);
     writebool(q); -- f
 
-    q := s || (r && s || s);
+    q := s or (r and s or s);
     writebool(q); -- t
-
-    q := s > r;
-    writebool(q);
-
-    q := s < r;
-    writebool(q);
-
-    q := s = r;
-    writebool(q);
-
-    q := s >= r;
-    writebool(q);
-
-    q := s <= r;
-    writebool(q);
-
-    q := s /= r;
-    writebool(q);
 
     return 0;
 }

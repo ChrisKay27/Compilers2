@@ -58,8 +58,6 @@ public class SemanticAnalyzer implements SemAnalInter {
 
 
     public boolean startSemAnal(Declaration AST) {
-
-
         //Library functions
         Token readIntToken = new Token(TokenType.ID, 0);
         readIntToken.name = "readint";
@@ -85,11 +83,12 @@ public class SemanticAnalyzer implements SemAnalInter {
         while (current != null);
 
         current = AST;
+        levelStack.push(0);
+        localVariableCountStack.push(0);
         do {
             if (current instanceof VarDeclaration) {
                 analyze((VarDeclaration) current);
             } else {
-
                 analyze((FuncDeclaration) current);
                 lastFunction = (FuncDeclaration) current;
             }
@@ -188,17 +187,11 @@ public class SemanticAnalyzer implements SemAnalInter {
 
     public void analyze(VarDeclaration AST) {
         output.accept(AST.getLine() + ": analyze VarDeclaration\n");
-
-        if (AST.getLevel() != 0) {
-//            while (AST != null) {
-                AST.setLevel(levelStack.peek());
-                AST.setDisplacement(2 + localVariableCountStack.peek());
-                localVariableCountStack.push(localVariableCountStack.pop() + 1);
-                System.out.println("Adding Decl");
-                addDeclaration(AST);
-//                AST = (VarDeclaration) AST.getNextNode();
-//            }
-        }
+        AST.setLevel(levelStack.peek());
+        AST.setDisplacement((levelStack.peek() == 0 ? 0 : 2) + localVariableCountStack.peek());
+        localVariableCountStack.push(localVariableCountStack.pop() + 1);
+        //System.out.println("Adding Decl");
+        addDeclaration(AST);
     }
 
     public void analyze(Statement AST) {
@@ -239,9 +232,8 @@ public class SemanticAnalyzer implements SemAnalInter {
                 lineError.accept(AST.getLine(), d.getID() + " is a function declaration and it is being assigned to.");
             } else
                 callConstraints(AST);
-        }
-        else if( AST.getId_stmt_tail() instanceof AssignStatementTail ){
-            ((AssignStatementTail)AST.getId_stmt_tail()).setDecl(d);
+        } else if (AST.getId_stmt_tail() instanceof AssignStatementTail) {
+            ((AssignStatementTail) AST.getId_stmt_tail()).setDecl(d);
         }
 
 
@@ -381,10 +373,9 @@ public class SemanticAnalyzer implements SemAnalInter {
     }
 
     public void analyze(CompoundStatement AST, boolean funcBody) {
-        if( funcBody ) {
+        if (funcBody) {
             output.accept(AST.getLine() + ": analyze FunctionBody\n");
-        }
-        else {
+        } else {
             output.accept(AST.getLine() + ": analyze CompoundStatement\n");
             enteringCompoundStmt();
         }
@@ -402,7 +393,7 @@ public class SemanticAnalyzer implements SemAnalInter {
             analyze(stmt);
             stmt = (Statement) stmt.getNextNode();
         }
-        if( !funcBody )
+        if (!funcBody)
             leavingCompoundStmt();
     }
 
@@ -506,7 +497,7 @@ public class SemanticAnalyzer implements SemAnalInter {
             if (stmt.getNumberToken() == null) {
                 if (defaultCaseFound) {
                     foundError = true;
-                    lineError.accept(stmt.getLine(),"Duplicate defaults.");
+                    lineError.accept(stmt.getLine(), "Duplicate defaults.");
                 }
                 defaultCaseFound = true;
             }
@@ -515,9 +506,9 @@ public class SemanticAnalyzer implements SemAnalInter {
     }
 
     public void analyze(CaseStatement statement) {
-        if( statement == null ) return;
+        if (statement == null) return;
         analyze(statement.getStatement()); // statement for this case
-        analyze((CaseStatement)statement.getNextNode()); // next case in branch statement
+        analyze((CaseStatement) statement.getNextNode()); // next case in branch statement
     }
 
     public Type analyze(Expression AST) {
@@ -532,7 +523,7 @@ public class SemanticAnalyzer implements SemAnalInter {
             Type t2 = analyze(AST.getAddExp2());
 
             Type expType = typeCheck(t, t2, AST.getRelop().getOperandTypes());
-            if( expType != UNIV )
+            if (expType != UNIV)
                 expType = BOOL;
             AST.setType(expType);
 

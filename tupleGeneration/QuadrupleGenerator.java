@@ -1,6 +1,5 @@
 package tupleGeneration;
 
-//import com.sun.org.apache.xpath.internal.operations.Mult;
 import parser.grammar.ASTNode;
 import parser.grammar.declarations.Declaration;
 import parser.grammar.declarations.FuncDeclaration;
@@ -61,7 +60,6 @@ public class QuadrupleGenerator {
             current.setLevel(0);
             if (current instanceof VarDeclaration)
                 numGlobalVars++;
-            //TODO do something with this
             current = current.getNextNode();
         }
         while (current != null);
@@ -83,13 +81,10 @@ public class QuadrupleGenerator {
                 "(start," + numGlobalVars + ",-,-)\n" +
                         "(rval,-,-," + getNewTemp() + ")\n" +
                         "(call,main,-,-)\n" +
-                        "(hlt,"+numGlobalVars+",-,-)\n"
+                        "(hlt," + numGlobalVars + ",-,-)\n"
                         + AST.getCode());
 
-//        output.accept("\n" + AST.getCode());
-
-
-        return TupleOptimizer.optimize(AST.getCode());
+        return /*TupleOptimizer.optimize*/(AST.getCode());
     }
 
     public void generate(FuncDeclaration AST) {
@@ -166,7 +161,7 @@ public class QuadrupleGenerator {
     public void generate(IdStatement AST) {
         output.accept(AST.getLine() + ": generating code for IdStatement\n");
 
-        String assignedValue = generate(AST.getIdToken().name, AST.getId_stmt_tail());
+        String assignedValue = generate(AST.getId_stmt_tail());
         AST.appendCode(AST.getId_stmt_tail().getCode());
 
         //assigned value will be null IF this is an assignment into an array OR a function call
@@ -174,11 +169,11 @@ public class QuadrupleGenerator {
             AST.appendCode("(asg," + assignedValue + ",-," + AST.getDecl().getLD() + ')');
     }
 
-    public String generate(String name, StatementTail AST) {
+    public String generate(StatementTail AST) {
         output.accept(AST.getLine() + ": generating code for StatementTail\n");
 
         if (AST instanceof AssignStatementTail)
-            return generate(name, (AssignStatementTail) AST);
+            return generate((AssignStatementTail) AST);
         else if (AST instanceof CallStatementTail) {
             return generate((CallStatementTail) AST);
         }
@@ -186,23 +181,21 @@ public class QuadrupleGenerator {
     }
 
     /**
-     * @param name name of the id being assigned to
      * @return null IF this is an array assignment ELSE will return the temp of the result of the expression
      */
-    public String generate(String name, AssignStatementTail AST) {
+    public String generate(AssignStatementTail AST) {
         output.accept(AST.getLine() + ": generating code for AssignStatementTail\n");
 
         String returnedValue = generate(AST.getExp());
 
         AST.appendCode(AST.getExp().getCode());
 
-        //TODO FIX THIS ARRAY INDEX DOESN'T WORK, it might now...
         String temp;
         //If its an array index
         if (AST.getAddExpression() != null) {
             temp = generate(AST.getAddExpression());
             AST.appendCode(AST.getAddExpression().getCode());
-            AST.appendCode("(tae," + returnedValue + "," + temp + "," + name + ")");
+            AST.appendCode("(tae," + returnedValue + "," + temp + "," + AST.getDecl().getLD() + ")");
             return null;
         }
 
@@ -301,7 +294,7 @@ public class QuadrupleGenerator {
                 }
             }
             while (!arguments.isEmpty()) {
-                AST.appendCode(arguments.pop());
+                AST.appendCode(arguments.pop() + " : arguments");
             }
         }
 
@@ -403,21 +396,20 @@ public class QuadrupleGenerator {
     public void generate(String endBranchLabel, String thisCasesStartLabel, String branchConditionTemp, CaseStatement statement) {
         //Create label for next case statement
 
-        if( thisCasesStartLabel != null )
+        if (thisCasesStartLabel != null)
             statement.appendCode("(lab,-,-," + thisCasesStartLabel + ")");
 
         String temp = getNewTemp();
-        if( statement.getNumberToken() != null ){
+        if (statement.getNumberToken() != null) {
             //Check to see if the expression matches this case.
             int NUM = statement.getNumberToken().getID();
             statement.appendCode("(eq," + NUM + "," + branchConditionTemp + "," + temp + ")");
-        }
-        else{
+        } else {
             statement.appendCode("(asg,true,-," + temp + ")");
         }
 
         String nextLabel = null;
-        if( statement.getNextNode() != null ) {
+        if (statement.getNextNode() != null) {
             nextLabel = getNewLabel();
             statement.appendCode("(iff," + temp + ",-," + nextLabel + ")");
         }
@@ -425,7 +417,7 @@ public class QuadrupleGenerator {
         generate(statement.getStatement()); // statement for this case
         statement.appendCode(statement.getStatement().getCode());
 
-        if( statement.getNextNode() != null )
+        if (statement.getNextNode() != null)
             statement.appendCode("(goto,-,-," + endBranchLabel + ")");
 
         if (statement.getNextNode() != null) {
@@ -510,9 +502,11 @@ public class QuadrupleGenerator {
                     break;
                 case ORELSE:
                     newLabel = getNewLabel();
+                    AST.appendCode("(asg," + argument1 + ",-," + resultTemp + ")");
                     AST.appendCode("(ift," + argument1 + ",-," + newLabel + ")");
                     AST.appendCode(next.getCode());
                     AST.appendCode("(or," + argument1 + "," + argument2 + "," + resultTemp + ")");
+                    AST.appendCode("(lab,-,-," + newLabel + ")");
                     break;
                 default:
                     throw new WTFException("Error! bad token type in AddExpression addop");
@@ -520,9 +514,6 @@ public class QuadrupleGenerator {
             AST.appendCode("(asg," + resultTemp + ",-," + argument1 + ")");
 
             next = (AddOpTerm) next.getNextNode();
-
-            if (newLabel != null)
-                AST.appendCode("(lab,-,-," + newLabel + ")");
         }
 
         if (resultTemp != null)
@@ -555,22 +546,26 @@ public class QuadrupleGenerator {
                     AST.appendCode(next.getCode());
                     AST.appendCode("(mod," + argument1 + "," + argument2 + "," + resultTemp + ")");
                     break;
-                case ANDTHEN: // TODO i think and isn't short circuited, possibly broken
+                case AND:
+                    AST.appendCode(next.getCode());
+                    AST.appendCode("(and," + argument1 + "," + argument2 + "," + resultTemp + ")");
+                case ANDTHEN:
                     newLabel = getNewLabel();
+                    AST.appendCode("(asg," + argument1 + ",-," + resultTemp + ")");
                     AST.appendCode("(iff," + argument1 + ",-," + newLabel + ")");
                     AST.appendCode(next.getCode());
                     AST.appendCode("(and," + argument1 + "," + argument2 + "," + resultTemp + ")");
-
+                    AST.appendCode("(lab,-,-," + newLabel + ")");
                     break;
             }
+
+            // set up next round of the loop
             argument1 = resultTemp;
-//
-//            AST.appendCode(next.getCode());
             next = (MultOpFactor) next.getNextNode();
         }
+
         if (resultTemp != null)
             return resultTemp;
-
         else return argument1;
     }
 
@@ -651,7 +646,23 @@ public class QuadrupleGenerator {
             Expression current = (Expression) cst.getCall_tail();
             FuncDeclaration funcDecl = (FuncDeclaration) AST.getDecl();
             ParamDeclaration pdec = funcDecl.getParams();
-
+            {// handle case where the function call is a library function
+                String functionId = AST.getDecl().getID().getName();
+                String targetRegister = "";
+                Expression exp;
+                switch (functionId) {
+                    case "readint":
+                        targetRegister = getNewTemp();
+                        AST.appendCode("(rdi,-,-," + targetRegister + ")");
+                        return targetRegister;
+                    case "readbool":
+                        targetRegister = getNewTemp();
+                        AST.appendCode("(rdb,-,-," + targetRegister + ")");
+                        return targetRegister;
+                    default:
+                        break;
+                }
+            }
             //Keep track of the arguments for when we actually call the function.
             List<String> arguments = new ArrayList<>();
 
@@ -661,7 +672,7 @@ public class QuadrupleGenerator {
                 AST.appendCode(current.getCode());
 
                 if (pdec.isReference())
-                    arguments.add("(arga," + temp2 + ",-,-)");
+                    arguments.add("(arga," + temp2 + ",-,-) ");
                 else
                     arguments.add("(arg," + temp2 + ",-,-)");
 

@@ -3,6 +3,7 @@
 int main(void){
     int x;
     x := 0;
+    
     loop{
         x := x + 1;
         writeint(x);
@@ -10,7 +11,6 @@ int main(void){
             exit;
         continue;
     }end;
-
 
     return -1;
 }
