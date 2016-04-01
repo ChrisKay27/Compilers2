@@ -100,7 +100,7 @@ public class OutputHandler {
     public void printErrors(Consumer<String> out) {
         if (errorLog.size() > MAX_ERRORS)
             errorLog = errorLog.subList(0, MAX_ERRORS);
-        errorLog.forEach(out::accept);
+        errorLog.forEach(out);
     }
 
     public List<String> getErrorLog() {

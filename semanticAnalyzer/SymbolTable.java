@@ -79,12 +79,12 @@ public class SymbolTable {
     }
 
     public void enterFrame() {
-        System.out.println("Entering Frame");
+//        System.out.println("Entering Frame");
         frameSizes.push(0);
     }
 
     public void leaveFrame() {
-        System.out.println("Leaving Frame");
+//        System.out.println("Leaving Frame");
         int count = frameSizes.peek();
         while (count > 0) {
             this.pop();

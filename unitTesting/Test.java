@@ -53,13 +53,31 @@ public class Test {
 //        } catch (Exception e) {
 //            e.printStackTrace();
 //        }
-        if( lexicalPhase )
-            System.out.println("Scanner tests results: " + TestScanner.runAll(options));
+        if( !lexicalPhase && !parsePhase && !semanticPhase && !tuplePhase )
+            lexicalPhase = parsePhase = semanticPhase = tuplePhase = true;
 
-        if( parsePhase )
-            System.out.println("\nParser tests results: " + ParserTest.runAll(options));
+        boolean overallResults = true;
+        if( lexicalPhase ) {
+            boolean results = TestScanner.runAll(options);
+            System.out.println("Scanner tests results: " + results);
+            overallResults = results;
+        }
+        if( parsePhase ) {
+            boolean results = ParserTest.runAll(options);
+            System.out.println("\nParser tests results: " + results);
+            overallResults &= results;
+        }
+        if( semanticPhase ) {
+            boolean results = SemanticAnalyzerTesting.runAll(options);
+            System.out.println("\nSemantic tests results: " + results);
+            overallResults &= results;
+        }
+        if( tuplePhase ) {
+            boolean results = QuadGenTester.runAll(options);
+            System.out.println("\nCode Generation tests results: " + results);
+            overallResults &= results;
+        }
 
-        if( semanticPhase )
-            System.out.println("\nSemantic tests results: " + SemanticAnalyzerTesting.runAll(options));
+        System.out.println("\nOverall Test Results: " + overallResults);
     }
 }
