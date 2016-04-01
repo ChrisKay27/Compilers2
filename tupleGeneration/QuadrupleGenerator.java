@@ -547,18 +547,17 @@ public class QuadrupleGenerator {
                     AST.appendCode("(iff," + argument1 + ",-," + newLabel + ")");
                     AST.appendCode(next.getCode());
                     AST.appendCode("(and," + argument1 + "," + argument2 + "," + resultTemp + ")");
+
                     break;
             }
             argument1 = resultTemp;
 //
 //            AST.appendCode(next.getCode());
             next = (MultOpFactor) next.getNextNode();
-
-            if (newLabel != null)
-                AST.appendCode("(lab,-,-," + newLabel + ")");
         }
         if (resultTemp != null)
             return resultTemp;
+
         else return argument1;
     }
 

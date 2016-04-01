@@ -70,6 +70,8 @@ public class Declaration extends ASTNode {
     }
 
     public int getLength() {
+        if( type == Type.VOID )
+            return 0;
         int length =1;
         Declaration tmp = getNextNode();
         while (tmp != null) {

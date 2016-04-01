@@ -324,7 +324,7 @@ public class Administrator {
      * @throws UnrecognizedSourceCodeException
      */
     private void initReader(String path) throws UnrecognizedSourceCodeException {
-        if (isCs16File(path)) { // verifies that the source code file has the correct extension
+//        if (isCs16File(path)) { // verifies that the source code file has the correct extension
 
             if (options.quiet)
                 System.out.println("Reading " + path);
@@ -378,7 +378,7 @@ public class Administrator {
                 outputHandler.printErrorMessage(e.getMessage());
 //                System.out.println(e);
             }
-        } else throw new UnrecognizedSourceCodeException("The file located at" + path + "is not a .cs16 file");
+//        } else throw new UnrecognizedSourceCodeException("The file located at" + path + "is not a .cs16 file");
     }
 
     private void initErrorFile(String errorFilePath) {
@@ -423,9 +423,9 @@ public class Administrator {
         }
     }
 
-    public boolean isCs16File(String path) {
-        return path.substring(path.length() - 5, path.length()).equals(".cs16");
-    }
+//    public boolean isCs16File(String path) {
+//        return path.substring(path.length() - 5, path.length()).equals(".cs16");
+//    }
 
     /**
      * Closes the buffered reader
