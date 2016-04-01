@@ -196,7 +196,7 @@ public class SemanticAnalyzer implements SemAnalInter {
                 localVariableCountStack.push(localVariableCountStack.pop() + 1);
                 System.out.println("Adding Decl");
                 addDeclaration(AST);
-                AST = (VarDeclaration) AST.getNextNode();
+//                AST = (VarDeclaration) AST.getNextNode();
 //            }
         }
     }

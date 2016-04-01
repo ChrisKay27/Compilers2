@@ -50,6 +50,7 @@ public class QuadrupleGenerator {
 
     public String startCodeGeneration(Declaration AST) {
         levelStack.push(0);
+        tempCountStack.push(0);
 
         FuncDeclaration lastFunction = null;
 
@@ -76,18 +77,19 @@ public class QuadrupleGenerator {
         }
         while (current != null);
 
-        tempCountStack.push(0);// 0 was previously numGlobalVars
+        tempCountStack.push(numGlobalVars);
 
         AST.setCode(
                 "(start," + numGlobalVars + ",-,-)\n" +
                         "(rval,-,-," + getNewTemp() + ")\n" +
                         "(call,main,-,-)\n" +
-                        "(hlt,-,-,-)\n"
+                        "(hlt,"+numGlobalVars+",-,-)\n"
                         + AST.getCode());
 
 //        output.accept("\n" + AST.getCode());
 
-        return AST.getCode();
+
+        return TupleOptimizer.optimize(AST.getCode());
     }
 
     public void generate(FuncDeclaration AST) {
@@ -105,7 +107,7 @@ public class QuadrupleGenerator {
     }
 
     private void enteringFuncDeclaration(FuncDeclaration AST) {
-//        output.accept("  enteringFuncDeclaration\n");
+//      output.accept("  enteringFuncDeclaration\n");
         currentFuncDecl = AST;
         levelStack.push(1);
         tempCountStack.push(1 + currentFuncDecl.getNumberOfLocals());
@@ -682,8 +684,9 @@ public class QuadrupleGenerator {
 
     public String getNewTemp() {
         if (executableQuadruple) {
+            String tmp = "(" + levelStack.peek() + "," + tempCountStack.peek() + ")";
             tempCountStack.push(tempCountStack.pop() + 1);
-            return "(" + levelStack.peek() + "," + tempCountStack.peek() + ")";
+            return tmp;
         } else
             return "t" + tempCounter++;
     }
