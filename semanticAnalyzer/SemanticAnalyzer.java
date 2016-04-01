@@ -231,6 +231,7 @@ public class SemanticAnalyzer implements SemAnalInter {
 
         analyze(AST.getId_stmt_tail());
 
+
         Declaration d = AST.getDecl();
         if (d instanceof FuncDeclaration) {
             if ((AST.getId_stmt_tail() instanceof AssignStatementTail)) {
@@ -238,6 +239,9 @@ public class SemanticAnalyzer implements SemAnalInter {
                 lineError.accept(AST.getLine(), d.getID() + " is a function declaration and it is being assigned to.");
             } else
                 callConstraints(AST);
+        }
+        else if( AST.getId_stmt_tail() instanceof AssignStatementTail ){
+            ((AssignStatementTail)AST.getId_stmt_tail()).setDecl(d);
         }
 
 
