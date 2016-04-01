@@ -502,10 +502,11 @@ public class SemanticAnalyzer implements SemAnalInter {
     private void branchConstraints(CaseStatement statement) {
         CaseStatement stmt = statement;
         boolean defaultCaseFound = false;
-        while (statement.getNextNode() != null) {
+        while (stmt != null) {
             if (stmt.getNumberToken() == null) {
                 if (defaultCaseFound) {
-                    // semantic lineError
+                    foundError = true;
+                    lineError.accept(stmt.getLine(),"Duplicate defaults.");
                 }
                 defaultCaseFound = true;
             }
@@ -514,8 +515,9 @@ public class SemanticAnalyzer implements SemAnalInter {
     }
 
     public void analyze(CaseStatement statement) {
+        if( statement == null ) return;
         analyze(statement.getStatement()); // statement for this case
-        analyze(statement.getNextNode()); // next case in branch statement
+        analyze((CaseStatement)statement.getNextNode()); // next case in branch statement
     }
 
     public Type analyze(Expression AST) {
@@ -670,8 +672,10 @@ public class SemanticAnalyzer implements SemAnalInter {
 
         AST.setDecl(getDeclaration(AST.getLine(), AST.getIdToken()));
 
-        if (AST.getIdTail() instanceof CallStatementTail)
+        if (AST.getIdTail() instanceof CallStatementTail) {
             analyze((CallStatementTail) AST.getIdTail());
+            ((CallStatementTail) AST.getIdTail()).setFuncDecl((FuncDeclaration) AST.getDecl());
+        }
 
         else if (AST.getIdTail() instanceof AddExpression) {
             analyze(AST.getIdTail());

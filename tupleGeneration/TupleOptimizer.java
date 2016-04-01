@@ -5,8 +5,8 @@ package tupleGeneration;
  */
 public class TupleOptimizer {
     public static String optimize(String code) {
-//        if( true )
-//            return code;
+        if( true )
+            return code;
         String[] split = code.split("\n");
 
         boolean optimized = false;

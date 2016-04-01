@@ -1,0 +1,28 @@
+-- Chris Kaebe, March 22, 2016
+
+
+int main(void){
+    int x;
+    x := 1;
+
+    loop{
+
+        branch(x)
+        case 1: writeint(1);
+        case 3: {
+            int y;
+            writeint(3);
+        }
+        case 4: writeint(9000+x);
+        case 5: writeint(8008135);
+        default: writeint(2);
+        end;
+        x := x + 1;
+
+        if( x > 5 )
+            exit;
+        continue;
+    }end;
+
+    return x;
+}

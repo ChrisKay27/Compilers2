@@ -393,33 +393,46 @@ public class QuadrupleGenerator {
         //TODO
         String endBranchLabel = getNewLabel();
         String temp = generate(AST.getAddexp());
-
-        generate(endBranchLabel, getNewLabel(), temp, AST.getCaseStmt());
-
+        AST.appendCode(AST.getAddexp().getCode());
+        generate(endBranchLabel, null, temp, AST.getCaseStmt());
+        AST.appendCode(AST.getCaseStmt().getCode());
         AST.appendCode("(lab,-,-," + endBranchLabel + ")");
     }
 
 
     public void generate(String endBranchLabel, String thisCasesStartLabel, String branchConditionTemp, CaseStatement statement) {
         //Create label for next case statement
-        String nextLabel = getNewLabel();
-        statement.appendCode("(lab,-,-," + thisCasesStartLabel + ")");
 
-        //Check to see if the
-        int NUM = statement.getNumberToken().getID();
-        statement.setCode("(iff," + NUM + ",-," + nextLabel + ")");
+        if( thisCasesStartLabel != null )
+            statement.appendCode("(lab,-,-," + thisCasesStartLabel + ")");
 
         String temp = getNewTemp();
-        statement.setCode("(eq," + NUM + "," + branchConditionTemp + "," + temp + ")");
-        statement.setCode("(iff," + NUM + "," + temp + "," + nextLabel + ")");
+        if( statement.getNumberToken() != null ){
+            //Check to see if the expression matches this case.
+            int NUM = statement.getNumberToken().getID();
+            statement.appendCode("(eq," + NUM + "," + branchConditionTemp + "," + temp + ")");
+        }
+        else{
+            statement.appendCode("(asg,true,-," + temp + ")");
+        }
+
+        String nextLabel = null;
+        if( statement.getNextNode() != null ) {
+            nextLabel = getNewLabel();
+            statement.appendCode("(iff," + temp + ",-," + nextLabel + ")");
+        }
+
         generate(statement.getStatement()); // statement for this case
         statement.appendCode(statement.getStatement().getCode());
-        statement.appendCode("(goto,-,-,L" + endBranchLabel + ")");
+
+        if( statement.getNextNode() != null )
+            statement.appendCode("(goto,-,-," + endBranchLabel + ")");
 
         if (statement.getNextNode() != null) {
             generate(endBranchLabel, nextLabel, branchConditionTemp, (CaseStatement) statement.getNextNode()); // next case in branch statement
             statement.appendCode(statement.getNextNode().getCode());
         }
+
     }
 
     public String generate(Expression AST) {
