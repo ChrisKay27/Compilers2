@@ -30,10 +30,15 @@ public class TupleOptimizer {
                 sb.append(t2Operator).append(tArgs[0]).append(",-,").append(t2Args[1]).append(")\n");
                 i++;
             }
+            else if( tArgs[1].equals(t2Args[0]) ) {
+                sb.append(t2Operator).append(tArgs[0]).append(",-,").append(t2Args[1]).append(")\n");
+                i++;
+            }
             else{
                 sb.append(split[i-1]).append('\n');
             }
         }
+        sb.append(split[split.length-1]);
 
         return sb.toString();
     }
