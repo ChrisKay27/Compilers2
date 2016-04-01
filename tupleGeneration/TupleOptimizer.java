@@ -9,6 +9,7 @@ public class TupleOptimizer {
 //            return code;
         String[] split = code.split("\n");
 
+        boolean optimized = false;
         StringBuilder sb = new StringBuilder();
         for (int i = 1; i < split.length; i++) {
             String t = split[i-1];
@@ -29,16 +30,20 @@ public class TupleOptimizer {
             if( tArgs[1].equals(t2Args[0]) ) {
                 sb.append(t2Operator).append(tArgs[0]).append(",-,").append(t2Args[1]).append(")\n");
                 i++;
+                optimized = true;
             }
-            else if( tArgs[1].equals(t2Args[0]) ) {
-                sb.append(t2Operator).append(tArgs[0]).append(",-,").append(t2Args[1]).append(")\n");
-                i++;
-            }
+//            else if( tArgs[1].equals(t2Args[0]) ) {
+//                sb.append(t2Operator).append(tArgs[0]).append(",-,").append(t2Args[1]).append(")\n");
+//                i++;
+//                optimized = true;
+//            }
             else{
                 sb.append(split[i-1]).append('\n');
+                optimized = false;
             }
         }
-        sb.append(split[split.length-1]);
+        if( !optimized )
+            sb.append(split[split.length-1]);
 
         return sb.toString();
     }
