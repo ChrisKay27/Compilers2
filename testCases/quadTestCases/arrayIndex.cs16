@@ -1,0 +1,28 @@
+-- Carston Schilds - tests array index out of bounds semantic error
+int main(void){
+    int a[5];
+    
+    -- literal indices
+    a[0] := 0;
+    a[1] := 1;
+    a[2] := 2;
+    a[3] := 3;
+    a[4] := 4;
+
+    -- addops
+     writeint(a[0 + (1 - 1)]);
+     writeint(a[1 + (1 - 1)]);
+     writeint(a[2 + (1 - 1)]);
+     writeint(a[3 + (1 - 1)]);
+     writeint(a[4 + (1 - 1)]);
+
+    -- mulops  
+     writeint(a[0* (1 / (1 mod 5))]);
+     writeint(a[1* (1 / (1 mod 5))]);
+     writeint(a[2* (1 / (1 mod 5))]);
+     writeint(a[3* (1 / (1 mod 5))]);
+     writeint(a[4* (1 / (1 mod 5))]);
+    
+
+    return 0;
+}

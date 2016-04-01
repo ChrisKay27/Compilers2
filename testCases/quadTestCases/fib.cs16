@@ -1,0 +1,28 @@
+/** 
+ * Prints the Nth fibonacci number, 
+ * where N is the user's input
+ */
+
+int main(void){
+    int result, n, i, t1, t2;
+    
+    result := 0;
+    n := readint();
+    writeint(n);   
+    i := 0;
+    t1 := 1;
+    t2 := 1;
+    
+    loop {
+        if (i < n) {
+            result := t1;
+            t1 := t2;
+            t2 := result + t1;
+            i := i + 1;
+            continue;
+        } else exit;
+    } end;
+    
+    writeint(result);    
+    return result;
+}

@@ -1,0 +1,50 @@
+int main(void){
+    bool p,q,r,s;
+    
+    r := false;
+    s := true;
+    
+    p := r && r;
+    writebool(p); -- f    
+    p := r && s;
+    writebool(p); -- f
+    p := s && r; 
+    writebool(p); -- f
+    p := s && s;
+    writebool(p); -- t
+    
+    q := r || r;
+    writebool(q); -- f
+    q := r || s;
+    writebool(q); -- t
+    q := s || r;
+    writebool(q); -- t
+    q := s || s;
+    writebool(q); -- t
+
+    q := r && (s || s && r);
+    writebool(q); -- f
+
+    q := s || (r && s || s);
+    writebool(q); -- t
+
+    q := s > r;
+    writebool(q); -- t 
+
+    q := s < r;
+    writebool(q); -- f
+
+    q := s = r;
+    writebool(q); -- f
+
+    q := s >= r;
+    writebool(q); -- t
+
+    q := s <= r;
+    writebool(q); -- f
+
+    q := s /= r; -- t
+    writebool(q);
+
+    return 0;
+}

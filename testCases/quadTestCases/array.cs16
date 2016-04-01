@@ -1,0 +1,26 @@
+ int main(void){
+     int x[5];
+     
+     -- initialize
+     x[0] := 0;
+     x[1] := 1;
+     x[2] := 2;
+     x[3] := 3;
+     x[4] := 4;
+     
+     -- reassigns
+     x[0] := x[0] + 1;
+     x[1] := x[1] + 1;
+     x[2] := x[2] + 1;
+     x[3] := x[3] + 1;
+     x[4] := x[4] + 1;
+     
+     -- print results
+     writeint(x[0]); -- 1
+     writeint(x[1]); -- 2
+     writeint(x[2]); -- 3
+     writeint(x[3]); -- 4
+     writeint(x[4]); -- 5
+
+    return 0;
+ }
