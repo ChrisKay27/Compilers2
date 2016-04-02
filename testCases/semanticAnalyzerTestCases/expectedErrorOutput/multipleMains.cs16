@@ -1,0 +1,4 @@
+10: int foo(void){
+10: Duplicate definition of foo
+18: int main(void){
+18: Duplicate definition of main

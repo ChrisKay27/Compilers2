@@ -1,0 +1,10 @@
+10:     x := false;
+10: Assignment type mismatch, Expected Type: INT, Type found: BOOL
+11:     p := 1;
+11: Assignment type mismatch, Expected Type: BOOL, Type found: INT
+12:     a[0] := true;
+12: Assignment type mismatch, Expected Type: INT, Type found: BOOL
+15:     x := getBool();
+15: Assignment type mismatch, Expected Type: INT, Type found: BOOL
+16:     p := getInt();
+16: Assignment type mismatch, Expected Type: BOOL, Type found: INT

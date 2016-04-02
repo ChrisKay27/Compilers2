@@ -1,0 +1,12 @@
+6:     a[-1] := -1;
+6: Array index out of bounds, -1 not within [0, 5)
+12:     a[5] := 5;
+12: Array index out of bounds, 5 not within [0, 5)
+15:     a[-1 + (1 - 1)] := -1;
+15: Array index out of bounds, -1 not within [0, 5)
+21:     a[5 + (1 - 1)] := 5;
+21: Array index out of bounds, 5 not within [0, 5)
+24:     a[-1 * (1 / (1 mod 5))] := -1;
+24: Array index out of bounds, -1 not within [0, 5)
+30:     a[5 * (1 / (1 mod 5))] := 5;
+30: Array index out of bounds, 5 not within [0, 5)

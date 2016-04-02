@@ -1,0 +1,11 @@
+int main(void) {
+
+    int x;
+    int a[true];
+    
+    a[true] := 2;
+    x := a[true];   
+    x := a[12];
+    
+    return 0;
+}

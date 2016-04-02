@@ -1,0 +1,6 @@
+4:     int a[true];
+4: Array size expression must be of type INT, Evaluated Type: BOOL
+6:     a[true] := 2;
+6: Array index expression must be of type INT, Evaluated Type: BOOL
+7:     x := a[true];   
+7: Array index expression must be of type INT, Evaluated Type: BOOL
