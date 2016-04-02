@@ -210,13 +210,17 @@ public class Parser {
             //build ast node
             if (decTail instanceof VarDecTail) {
                 VarDecTail varDecTail = (VarDecTail) decTail;
+                if (traceEnabled) lineTraceOutput.accept("\t\tLeaving declaration");
                 return varDecTail.toVarDeclarations(line, type, token);
             } else if (decTail instanceof FuncDeclarationTail) {
                 FuncDeclarationTail funcDecTail = (FuncDeclarationTail) decTail;
+                if (traceEnabled) lineTraceOutput.accept("\t\tLeaving declaration");
                 return new FuncDeclaration(line, type, token, funcDecTail.getParams(), funcDecTail.getFuncBody());
             }
+            if (traceEnabled) lineTraceOutput.accept("\t\tLeaving declaration");
             return new VarDeclaration(line, type, token);
         } else {
+            errorOutput.accept("\t\tError! Expected either a void token or a non-void specifier.\n");
             //error
         }
 
@@ -1108,7 +1112,7 @@ public class Parser {
      */
     private void syntaxCheck(Set<TokenType> synch) {
         if (!synch.contains(lookahead)) {
-            errorOutput.accept("\t\tSyntax Error, token:" + lookahead + " is not expected here.");
+            errorOutput.accept("\t\tSyntax Error, token:" + lookahead + " is not expected here.\n");
             syntaxError(synch);
         }
     }
@@ -1120,7 +1124,7 @@ public class Parser {
      * @param synch    - Set of tokens collected during parsing which represents valid next tokens, used for error recovery purposes
      */
     private void syntaxError(TokenType expected, Set<TokenType> synch) {
-        errorOutput.accept("\t\tSyntax Error, expecting " + expected + " but received " + lookahead);
+        errorOutput.accept("\t\tSyntax Error, expecting " + expected + " but received " + lookahead + '\n');
         syntaxError(synch);
     }
 
@@ -1132,7 +1136,7 @@ public class Parser {
     private void syntaxError(Set<TokenType> synch) {
         syntaxError = true;
         while (!synch.contains(lookahead)) {
-            errorOutput.accept("\t\tConsuming " + lookahead + " because it is not expected.");
+            errorOutput.accept("\t\tConsuming " + lookahead + " because it is not expected.\n");
             lookaheadToken = scanner.nextToken();
             this.tokens.add(lookaheadToken);
             lookahead = lookaheadToken.token;

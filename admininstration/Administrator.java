@@ -78,6 +78,9 @@ public class Administrator {
             System.out.println("Compiling up to the " + options.getPhase());
         printLineTrace("Compiling up to the " + options.getPhase() + '\n');
 
+        outputWriter.write("Compiling up to the " + options.getPhase() + '\n');
+        outputWriter.write("Reading " + options.inputFilePath + '\n');
+
         //inits the input file reader
         this.initReader(options.inputFilePath);
 
@@ -107,6 +110,16 @@ public class Administrator {
         } else if (options.lexicalPhase) {
             lexicalCompile();
         }
+
+        if( errorWriter != null ){
+            outputHandler.printErrors((str) -> {
+                try {
+                    errorWriter.write(str);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
+        }
     }
 
     private void lexicalCompile() throws IOException {
@@ -120,9 +133,10 @@ public class Administrator {
 
         if (this.outputWriter != null) {
             StringBuilder sb = new StringBuilder();
-            for (Token token : tokens)
-                sb.append(token.toString()).append('\n');
-            this.outputWriter.write(sb.toString());
+            outputHandler.printScannerOutput(sb::append);
+            //for (Token token : tokens)
+             //   sb.append(token.toString()).append('\n');
+//            this.outputWriter.write(sb.toString());
         }
     }
 
@@ -131,11 +145,30 @@ public class Administrator {
 
         if (outputWriter != null) {
             try {
-                outputWriter.write("\n\n---- Abstract Syntax Tree ----\n");
-                outputWriter.write("Format:\n");
-                outputWriter.write("lineNumber: ClassName\n");
-                outputWriter.write("                attributes\n\n");
-                outputWriter.write(tree.toString());
+                outputWriter.write("Compiling up to the " + options.getPhase() + '\n');
+                outputWriter.write("Reading " + options.inputFilePath + '\n');
+
+                if( tree == null ) {
+                    outputWriter.write("--------------------\n");
+                    outputWriter.write("Compile Failed\n");
+
+                    outputHandler.printErrors((str) -> {
+                        try {
+                            outputWriter.write(str);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    });
+
+                }else {
+                    outputWriter.write("\n\n---- Compile Successful! ----\n");
+                    outputWriter.write("\n\n---- Abstract Syntax Tree ----\n");
+                    outputWriter.write("Format:\n");
+                    outputWriter.write("lineNumber: ClassName\n");
+                    outputWriter.write("                attributes\n\n");
+                    outputWriter.write(tree.toString());
+                }
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -169,12 +202,28 @@ public class Administrator {
             printASTTree(tree);
             printCompilationResults(tree);
         } else {
+
             //If no tree was returned then the compiling failed
-            out.println("\n-------------------------------------\n");
-            out.println("\tCompile Failed\n");
+            String error1 = "\n-------------------------------------\n";
+            String error2 = "\tCompile Failed\n";
+
+            if (this.outputWriter != null) {
+                outputWriter.write(error1);
+                outputWriter.write(error2);
+
+                List<String> errorLog = outputHandler.getErrorLog();
+                for(String s : errorLog )
+                    outputWriter.write(s);
+            }
+
+            outputHandler.addErrorMessage(error1);
+            outputHandler.addErrorMessage(error2);
+
+            out.println(error1);
+            out.println(error2);
 
             //And we print the error messages to the user
-            if (!options.unitTesting)
+            if (!options.unitTesting && !options.quiet )
                 outputHandler.printErrors(out::println);
         }
 
@@ -274,15 +323,18 @@ public class Administrator {
     public void printLineTrace(String line) {
         if (options.unitTesting) return;
 
-        if (options.verbose)
-//            if (outputWriter != null) {
-//                try {
-//                    outputWriter.write(line);
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//            } else
-                out.print(line);
+        if (options.verbose) {
+
+            if( options.lexicalPhase )
+            if (outputWriter != null)
+                try {
+                    outputWriter.write(line);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+            out.print(line);
+        }
     }
 
     /**
@@ -347,9 +399,10 @@ public class Administrator {
                 //Keeps track of the lines in the file for error output
                 fileLines.add(currentLine);
 
-                if (options.verbose && !curLine.trim().isEmpty())
-                    printLineTrace("\n" + lineNumber + ": " + curLine);
-
+                if (options.verbose && !curLine.trim().isEmpty()) {
+                    String line = "\n\n" + lineNumber + ": " + curLine;
+                    printLineTrace(line);
+                }
                 fileInput = () -> {
                     if (currentLineFeed.length() == 0) {
                         if (fileScanner.hasNextLine()) {
@@ -361,9 +414,10 @@ public class Administrator {
                             //Keeps track of the lines in the file for error output
                             fileLines.add(currentLine);
 
-                            if (options.verbose && !currLine.trim().isEmpty())
-                                printLineTrace("\n" + lineNumber + ": " + currLine);
-
+                            if (options.verbose && !currLine.trim().isEmpty()) {
+                                String line = "\n\n" + lineNumber + ": " + currLine;
+                                printLineTrace(line);
+                            }
 
                         } else
                             return -1;

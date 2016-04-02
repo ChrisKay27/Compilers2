@@ -181,7 +181,7 @@ public class Scanner {
 
         tokensOnCurrentLine.add(t);
 
-        lineTraceOutput.accept("\n\t\t" + t + '\n');
+        lineTraceOutput.accept("\n\t\t" + t);
 
         if (nextChar == '\n') {
             tokensOnLineConsumer.accept(new ArrayList<>(tokensOnCurrentLine));
