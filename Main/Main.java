@@ -67,6 +67,7 @@ public class Main {
             return;
         }
 
+        printAST = verboseEnabled;
         if (!lexicalPhase && !parsePhase && !tuplePhase && !compilePhase && !semanticPhase)
             tuplePhase = true;
 

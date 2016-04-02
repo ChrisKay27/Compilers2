@@ -124,7 +124,7 @@ public class SemanticAnalyzer implements SemAnalInter {
     private void functionConstraints(FuncDeclaration node) {
         if ((!returnStatementFound) && node.getType() != Type.VOID) {
             foundError = true;
-            lineError.accept(currentFuncDecl.getLine(), "No return statement found.");
+            lineError.accept(currentFuncDecl.getLine(), "No return statement found.\n");
         }
     }
 
@@ -135,15 +135,15 @@ public class SemanticAnalyzer implements SemAnalInter {
         } else if ("main".equals(function.getID().name)) {
             if (function.getType() != Type.INT) {
                 foundError = true;
-                lineError.accept(function.getLine(), "Function main must have a return type of int.");
+                lineError.accept(function.getLine(), "Function main must have a return type of int.\n");
             }
             if (function.getParams().getType() != Type.VOID && !(function.getParams().getNextNode() instanceof ParamDeclaration)) {
                 foundError = true;
-                lineError.accept(function.getLine(), "Function main must have no parameters.");
+                lineError.accept(function.getLine(), "Function main must have no parameters.\n");
             }
         } else {
             foundError = true;
-            lineError.accept(function.getLine(), "Function main must be the last function declared in the source file.");
+            lineError.accept(function.getLine(), "Function main must be the last function declared in the source file.\n");
         }
     }
 
@@ -152,7 +152,7 @@ public class SemanticAnalyzer implements SemAnalInter {
         enteringCompoundStmt();
         if (currentFuncDecl != null) {
             foundError = true;
-            lineError.accept(AST.getLine(), "No functions are allowed to be inside other functions");
+            lineError.accept(AST.getLine(), "No functions are allowed to be inside other functions.\n");
         }
         currentFuncDecl = AST;
         this.returnStatementFound = false;
@@ -193,7 +193,7 @@ public class SemanticAnalyzer implements SemAnalInter {
             Type type = analyze(AST.getArraySizeExpression());
             if (type != Type.INT) {
                 foundError = true;
-                lineError.accept(AST.getLine(), "Array size expression must be of type INT, Evaluated Type: " + type);
+                lineError.accept(AST.getLine(), "Array size expression must be of type INT, Evaluated Type: " + type + '\n');
             }
         }
 
@@ -240,7 +240,7 @@ public class SemanticAnalyzer implements SemAnalInter {
         if (d instanceof FuncDeclaration) {
             if ((AST.getId_stmt_tail() instanceof AssignStatementTail)) {
                 foundError = true;
-                lineError.accept(AST.getLine(), d.getID() + " is a function declaration and it is being assigned to.");
+                lineError.accept(AST.getLine(), d.getID() + " is a function declaration and it is being assigned to.\n");
             } else
                 callConstraints(AST);
         } else if (AST.getId_stmt_tail() instanceof AssignStatementTail) {
@@ -252,14 +252,14 @@ public class SemanticAnalyzer implements SemAnalInter {
 
             if (AST.getId_stmt_tail() instanceof CallStatementTail) {
                 foundError = true;
-                lineError.accept(AST.getLine(), d.getID() + " is a var declaration and its being called as a function.");
+                lineError.accept(AST.getLine(), d.getID() + " is a var declaration and its being called as a function.\n");
             } else {
                 AssignStatementTail assignTail = (AssignStatementTail) AST.getId_stmt_tail();
 
                 // If we are trying to index this variable and it is not an array
                 if (assignTail.getAddExpression() != null && !varDec.isAnArray()) {
                     foundError = true;
-                    lineError.accept(AST.getLine(), d.getID() + " is not an array and we are trying to index it.");
+                    lineError.accept(AST.getLine(), d.getID() + " is not an array and we are trying to index it.\n");
                 } else if (varDec.isAnArray()) {
                     if (((AssignStatementTail) AST.getId_stmt_tail()).getAddExpression() == null) {
                         foundError = true;
@@ -275,11 +275,13 @@ public class SemanticAnalyzer implements SemAnalInter {
                                 temp = "an";
                                 break;
                         }
-                        lineError.accept(AST.getLine(), d.getID() + " is declared as an array but is being used as " + temp + " " + (d.getType().toString()).toLowerCase());
+                        lineError.accept(AST.getLine(), d.getID() + " is declared as an array but is being used as " + temp + " "
+                                + (d.getType().toString()).toLowerCase() + '\n');
                     } else {
                         if (((AssignStatementTail) AST.getId_stmt_tail()).getAddExpression().getType() != Type.INT) {
                             foundError = true;
-                            lineError.accept(AST.getLine(), "Array index expression must be of type INT, Evaluated Type: " + ((AssignStatementTail) AST.getId_stmt_tail()).getAddExpression().getType());
+                            lineError.accept(AST.getLine(), "Array index expression must be of type INT, Evaluated Type: " +
+                                    ((AssignStatementTail) AST.getId_stmt_tail()).getAddExpression().getType()+ '\n');
                         } else {
                             int indexExpression = ((AssignStatementTail) AST.getId_stmt_tail()).getAddExpression().evaluateStaticInt();
 
@@ -287,7 +289,8 @@ public class SemanticAnalyzer implements SemAnalInter {
 
                                 if (indexExpression >= ((VarDeclaration) AST.getDecl()).getArraySize() || indexExpression < 0) {
                                     foundError = true;
-                                    lineError.accept(AST.getLine(), "Array index out of bounds, " + indexExpression + " not within [0, " + ((VarDeclaration) AST.getDecl()).getArraySize() + ")");
+                                    lineError.accept(AST.getLine(), "Array index out of bounds, " + indexExpression +
+                                            " not within [0, " + ((VarDeclaration) AST.getDecl()).getArraySize() + ")\n");
                                 }
                             }
                         }
@@ -313,7 +316,7 @@ public class SemanticAnalyzer implements SemAnalInter {
                     foundError = true;
                     lineError.accept(idStatement.getLine(), idStatement.getIdToken().name +
                             ", Argument #" + counter + " : Expected argument of type " + currentParam.getType()
-                            + ", received argument of type " + currentArg.getType());
+                            + ", received argument of type " + currentArg.getType() + '\n');
                 } else {
 
                 }
@@ -336,11 +339,11 @@ public class SemanticAnalyzer implements SemAnalInter {
 
             foundError = true;
             lineError.accept(idStatement.getLine(), "Function call " + idStatement.getIdToken().name
-                    + " has not enough arguments provided.");
+                    + " has not enough arguments provided.\n");
         } else if (currentParam == null && currentArg != null) {
             foundError = true;
             lineError.accept(idStatement.getLine(), "Function call " + idStatement.getIdToken().name
-                    + " has too many arguments provided.");
+                    + " has too many arguments provided.\n");
         }
     }
 
@@ -363,7 +366,8 @@ public class SemanticAnalyzer implements SemAnalInter {
         Type type = analyze(AST.getExp());
         if (type != expectedType) {
             foundError = true;
-            lineError.accept(AST.getLine(), "Assignment type mismatch, Expected Type: " + expectedType + ", Type found: " + type);
+            lineError.accept(AST.getLine(), "Assignment type mismatch, Expected Type: " + expectedType + ", Type found: "
+                    + type+'\n');
         }
     }
 
@@ -458,7 +462,7 @@ public class SemanticAnalyzer implements SemAnalInter {
     public void analyze(ExitStatement AST) {
         output.accept(AST.getLine() + ": analyze ExitStatement\n");
         if (!isInsideLoop()) {
-            lineError.accept(AST.getLine(), "Exit statement not within loop");
+            lineError.accept(AST.getLine(), "Exit statement not within loop.\n");
             foundError = true;
         }
     }
@@ -470,7 +474,7 @@ public class SemanticAnalyzer implements SemAnalInter {
     public void analyze(ContinueStatement AST) {
         output.accept(AST.getLine() + ": analyze ContinueStatement\n");
         if (!isInsideLoop()) {
-            lineError.accept(AST.getLine(), "Continue statement not within loop");
+            lineError.accept(AST.getLine(), "Continue statement not within loop.\n");
             foundError = true;
         }
     }
@@ -482,12 +486,13 @@ public class SemanticAnalyzer implements SemAnalInter {
         returnStatementFound = true;
         if (currentFuncDecl == null) {
             foundError = true;
-            lineError.accept(AST.getLine(), "Error, return statement not within function.");
+            lineError.accept(AST.getLine(), "Error, return statement not within function.\n");
         }
 
         if (AST.getReturnValue().getType() != currentFuncDecl.getType()) {
             foundError = true;
-            lineError.accept(AST.getLine(), "Return type mismatch, Expected Type: " + currentFuncDecl.getType() + ", Evaluated Type: " + AST.getReturnValue().getType());
+            lineError.accept(AST.getLine(), "Return type mismatch, Expected Type: " + currentFuncDecl.getType() +
+                    ", Evaluated Type: " + AST.getReturnValue().getType() + '\n');
         } else {
             AST.setFuncDecl(currentFuncDecl);
         }
@@ -516,7 +521,7 @@ public class SemanticAnalyzer implements SemAnalInter {
             if (stmt.getNumberToken() == null) {
                 if (defaultCaseFound) {
                     foundError = true;
-                    lineError.accept(stmt.getLine(), "Duplicate defaults.");
+                    lineError.accept(stmt.getLine(), "Duplicate defaults.\n");
                 }
                 defaultCaseFound = true;
             }
@@ -577,7 +582,7 @@ public class SemanticAnalyzer implements SemAnalInter {
         if (t == BOOL && AST.isUminus()) {
             t = UNIV;
             foundError = true;
-            lineError.accept(AST.getLine(), "Cannot urinary minus a boolean!");
+            lineError.accept(AST.getLine(), "Cannot urinary minus a boolean!\n");
         }
 
         AddOpTerm next = AST.getNextNode();
@@ -690,17 +695,19 @@ public class SemanticAnalyzer implements SemAnalInter {
 
             if (!((AddExpression) AST.getIdTail()).isStatic()) {
                 foundError = true;
-                lineError.accept(AST.getLine(), "Non static expression in array index");
+                lineError.accept(AST.getLine(), "Non static expression in array index.\n");
             }
             if (((AddExpression) AST.getIdTail()).getType() != Type.INT) {
                 foundError = true;
-                lineError.accept(AST.getLine(), "Array index expression must be of type INT, Evaluated Type: " + ((AddExpression) AST.getIdTail()).getType());
+                lineError.accept(AST.getLine(), "Array index expression must be of type INT, Evaluated Type: " +
+                        ((AddExpression) AST.getIdTail()).getType() + '\n');
             } else {
                 int indexExpression = ((AddExpression) AST.getIdTail()).evaluateStaticInt();
                 if (((VarDeclaration) AST.getDecl()).getArraySizeExpression().getType() == Type.INT) {
                     if (indexExpression >= ((VarDeclaration) AST.getDecl()).getArraySize() || indexExpression < 0) {
                         foundError = true;
-                        lineError.accept(AST.getLine(), "Array index out of bounds, " + indexExpression + " not within [0, " + ((VarDeclaration) AST.getDecl()).getArraySize() + ")");
+                        lineError.accept(AST.getLine(), "Array index out of bounds, " + indexExpression +
+                                " not within [0, " + ((VarDeclaration) AST.getDecl()).getArraySize() + ")\n");
                     }
                 }
             }
@@ -724,7 +731,7 @@ public class SemanticAnalyzer implements SemAnalInter {
 
         if (d == null) {
             foundError = true;
-            lineError.accept(line, "No declaration for this id: " + id);
+            lineError.accept(line, "No declaration for this id: " + id + '\n');
             return errorDeclaration;
         }
 
@@ -736,7 +743,7 @@ public class SemanticAnalyzer implements SemAnalInter {
         boolean duplicateDefiniton = symbolTable.push(new SymbolTableEntry(d.getID().getID(), d));
         if (!duplicateDefiniton) {
             foundError = true;
-            lineError.accept(d.getLine(), "Duplicate definition of " + d.getID().name);
+            lineError.accept(d.getLine(), "Duplicate definition of " + d.getID().name + '\n');
         }
     }
 
@@ -754,7 +761,7 @@ public class SemanticAnalyzer implements SemAnalInter {
         //If the types do not match or the operand types available do not contain one of these operators then report lineError
         if (t != t2 || (!operandTypes.contains(t) || !operandTypes.contains(t2))) {
             foundError = true;
-            singleError.accept("Expression type mismatch");
+            singleError.accept("Expression type mismatch.\n");
             return UNIV;
         }
         //Everything is fine, return the type

@@ -73,13 +73,25 @@ public class Administrator {
             outputHandler.setErrorOutput(System.out::println);
         }
 
-        //Prints some information to the user about to what phase of compiling is being performed.
-        if (options.quiet)
-            System.out.println("Compiling up to the " + options.getPhase());
-        printLineTrace("Compiling up to the " + options.getPhase() + '\n');
 
-        outputWriter.write("Compiling up to the " + options.getPhase() + '\n');
-        outputWriter.write("Reading " + options.inputFilePath + '\n');
+        String compilingMsg = "Compiling up to the " + options.getPhase() + '\n';
+        String readingFileMsg = "Reading " + options.inputFilePath + '\n';
+        //Prints some information to the user about to what phase of compiling is being performed.
+        if (options.quiet || !options.verbose) {
+            System.out.print(compilingMsg);
+            System.out.print(readingFileMsg);
+        }
+        if( !options.lexicalPhase ) {
+            printLineTrace(compilingMsg);
+            printLineTrace(readingFileMsg);
+        }
+        outputWriter.write(compilingMsg);
+        outputWriter.write(readingFileMsg);
+
+        if( errorWriter != null ) {
+            errorWriter.write(compilingMsg);
+            errorWriter.write(readingFileMsg);
+        }
 
         //inits the input file reader
         this.initReader(options.inputFilePath);
@@ -145,9 +157,6 @@ public class Administrator {
 
         if (outputWriter != null) {
             try {
-                outputWriter.write("Compiling up to the " + options.getPhase() + '\n');
-                outputWriter.write("Reading " + options.inputFilePath + '\n');
-
                 if( tree == null ) {
                     outputWriter.write("--------------------\n");
                     outputWriter.write("Compile Failed\n");
@@ -211,10 +220,19 @@ public class Administrator {
                 outputWriter.write(error1);
                 outputWriter.write(error2);
 
+                if( errorWriter != null ) {
+                    errorWriter.write(error1);
+                    errorWriter.write(error2);
+                }
+
                 List<String> errorLog = outputHandler.getErrorLog();
-                for(String s : errorLog )
+                for(String s : errorLog ){
                     outputWriter.write(s);
+//                    if( errorWriter != null )
+//                        errorWriter.write(s);
+                }
             }
+
 
             outputHandler.addErrorMessage(error1);
             outputHandler.addErrorMessage(error2);
@@ -289,12 +307,14 @@ public class Administrator {
 
         if (tree != null) {
             //If it returned a tree we report success
-            if (!options.unitTesting)
-                out.println("\n\tCompile Successful");
+            if (!options.unitTesting) {
+                out.println("\n\n---- Compile Successful! ----");
+                printASTTree(tree);
+            }
         } else {
             //If no tree was returned then the compiling failed
             out.println("\n-------------------------------------\n");
-            out.println("\tCompile Failed\n");
+            out.println("\t---- Compile Failed ---- \n");
 
             //And we print the error messages to the user
             if (!options.unitTesting)
@@ -309,7 +329,7 @@ public class Administrator {
     public void printTokensOnCurrentLine(List<Token> tokens) {
         if (options.unitTesting) return;
 
-        if (!tokens.isEmpty() && options.verbose) {
+        if (!tokens.isEmpty()) {
             StringBuilder sb = new StringBuilder();
             tokens.forEach(t -> sb.append('\n').append(lineNumber).append(":\t\t").append(t));
 
@@ -326,12 +346,12 @@ public class Administrator {
         if (options.verbose) {
 
             if( options.lexicalPhase )
-            if (outputWriter != null)
-                try {
-                    outputWriter.write(line);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                if (outputWriter != null)
+                    try {
+                        outputWriter.write(line);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
 
             out.print(line);
         }
@@ -344,7 +364,7 @@ public class Administrator {
         outputHandler.addParseOutput(lineNumber + ": " + currentLine.trim(), lineNumber + ": " + trace);
 
         if (options.verbose) {
-            printLineTrace(trace + '\n');
+            printLineTrace(trace);
         }
     }
 
@@ -353,8 +373,8 @@ public class Administrator {
      */
     public void printErrorMessage(String msg) {
         String errorMsg = (lineNumber) + ": " + currentLine + (lineNumber) + ":" + msg;
-        if (!options.unitTesting && !options.quiet)
-            outputHandler.printErrorMessage(errorMsg);
+//        if (!options.unitTesting && !options.quiet)
+//            outputHandler.printErrorMessage(errorMsg);
         outputHandler.addErrorMessage(errorMsg);
     }
 
@@ -363,8 +383,8 @@ public class Administrator {
      */
     public void printErrorMessage(int lineNumber, String msg) {
         String errorMsg = (lineNumber) + ": " + fileLines.get(lineNumber) + (lineNumber) + ": " + msg;
-        if (!options.unitTesting && !options.quiet)
-            outputHandler.printErrorMessage(errorMsg);
+//        if (!options.unitTesting && !options.quiet)
+//            outputHandler.printErrorMessage(errorMsg);
         outputHandler.addErrorMessage(errorMsg);
     }
 
@@ -377,10 +397,6 @@ public class Administrator {
      */
     private void initReader(String path) throws UnrecognizedSourceCodeException {
 //        if (isCs16File(path)) { // verifies that the source code file has the correct extension
-
-            if (options.quiet)
-                System.out.println("Reading " + path);
-            printLineTrace("Reading " + path + '\n');
 
             File input = new File(path);
             Charset encoding = Charset.forName("ascii");
@@ -399,7 +415,7 @@ public class Administrator {
                 //Keeps track of the lines in the file for error output
                 fileLines.add(currentLine);
 
-                if (options.verbose && !curLine.trim().isEmpty()) {
+                if (!curLine.trim().isEmpty()) {
                     String line = "\n\n" + lineNumber + ": " + curLine;
                     printLineTrace(line);
                 }
@@ -414,7 +430,7 @@ public class Administrator {
                             //Keeps track of the lines in the file for error output
                             fileLines.add(currentLine);
 
-                            if (options.verbose && !currLine.trim().isEmpty()) {
+                            if (!currLine.trim().isEmpty()) {
                                 String line = "\n\n" + lineNumber + ": " + currLine;
                                 printLineTrace(line);
                             }
