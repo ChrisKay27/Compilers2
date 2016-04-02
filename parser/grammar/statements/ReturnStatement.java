@@ -20,12 +20,14 @@ public class ReturnStatement extends Statement {
 
     @Override
     public void appendContents(StringBuilder sb, int tabs) {
-        String tabsStr = '\n'+getTabs(tabs);
+        String tabsStr = '\n' + getTabs(tabs);
 
         sb.append(tabsStr).append(getLine()).append(": ").append(getClass().getSimpleName());
 
-        sb.append(tabsStr).append("\treturn value:");
-        returnValue.appendContents(sb,tabs+2);
+        if (returnValue != null) {
+            sb.append(tabsStr).append("\treturn value:");
+            returnValue.appendContents(sb, tabs + 2);
+        }
 
         if (nextNode != null)
             System.err.println("Warning: Unreachable code found after return statement on line " + getLine() + ".");

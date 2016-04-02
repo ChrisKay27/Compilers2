@@ -217,7 +217,7 @@ public class Administrator {
             printASTTree(tree, true);
             out.println("\n ---- Compile Complete! ---- ");
             printToOutputFile("\n ---- Annotated Abstract Syntax Tree ---- \n");
-            outputWriter.write(tree.toString());
+            printToOutputFile(tree.toString());
             printToOutputFile("\n\n ---- Compile Complete! ---- ");
 //            printCompilationResults(tree);
         } else {

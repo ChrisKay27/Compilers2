@@ -7,7 +7,6 @@ import static Main.Main.PRINT_AST;
 import static Main.Main.hasOption;
 
 /**
- *
  * Created by chris_000 on 2/21/2016.
  */
 public class Test {
@@ -44,31 +43,35 @@ public class Test {
         Options options = new Options(quietEnabled, verboseEnabled, tuplePhase, parsePhase, compilePhase, lexicalPhase,
                 semanticPhase, outputFilePath, errorLogFilePath, srcFilePath, printAST);
 
-        if( !lexicalPhase && !parsePhase && !semanticPhase && !tuplePhase )
+        if (!lexicalPhase && !parsePhase && !semanticPhase && !tuplePhase)
             lexicalPhase = parsePhase = semanticPhase = tuplePhase = true;
-
+        StringBuilder resultsString = new StringBuilder();
         boolean overallResults = true;
-        if( lexicalPhase ) {
+        if (lexicalPhase) {
+            options.setPhase(1);
             boolean results = TestScanner.runAll(options);
-            System.out.println("Scanner tests results: " + results);
+            resultsString.append("Scanner tests results: " + results + "\n");
             overallResults = results;
         }
-        if( parsePhase ) {
+        if (parsePhase) {
+            options.setPhase(2);
             boolean results = ParserTest.runAll(options);
-            System.out.println("\nParser tests results: " + results);
+            resultsString.append("Parser tests results: " + results + "\n");
             overallResults &= results;
         }
-        if( semanticPhase ) {
+        if (semanticPhase) {
+            options.setPhase(3);
             boolean results = SemanticAnalyzerTesting.runAll(options);
-            System.out.println("\nSemantic tests results: " + results);
+            resultsString.append("Semantic tests results: " + results + "\n");
             overallResults &= results;
         }
-        if( tuplePhase ) {
+        if (tuplePhase) {
+            options.setPhase(4);
             boolean results = QuadGenTester.runAll(options);
-            System.out.println("\nCode Generation tests results: " + results);
+            resultsString.append("Code Generation tests results: " + results + "\n");
             overallResults &= results;
         }
-
-        System.out.println("\nOverall Test Results: " + overallResults);
+        System.out.println("\n" + resultsString.toString());
+        System.out.println("Overall Test Results: " + overallResults);
     }
 }

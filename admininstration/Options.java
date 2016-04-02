@@ -1,5 +1,7 @@
 package admininstration;
 
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+
 /**
  * Created by Chris on 1/19/2016.
  */
@@ -7,11 +9,11 @@ public class Options {
 
     public final boolean quiet;
     public final boolean verbose;
-    public final boolean tuplePhase;
-    public final boolean parserPhase;
-    public final boolean fullCompile;
-    public final boolean lexicalPhase;
-    public final boolean semanticPhase;
+    public boolean tuplePhase;
+    public boolean parserPhase;
+    public boolean fullCompile;
+    public boolean lexicalPhase;
+    public boolean semanticPhase;
     public final String outputFilePath;
     public final String errorFilePath;
     public String inputFilePath;
@@ -32,6 +34,33 @@ public class Options {
         this.printAST = printAST;
     }
 
+    public void setPhase(int n) {
+        this.lexicalPhase = false;
+        this.parserPhase = false;
+        this.semanticPhase = false;
+        this.tuplePhase = false;
+        this.fullCompile = false;
+        switch (n) {
+            case 1:
+                this.lexicalPhase = true;
+                break;
+            case 2:
+                this.parserPhase = true;
+                break;
+            case 3:
+                this.semanticPhase = true;
+                break;
+            case 4:
+                this.tuplePhase = true;
+                break;
+            case 5:
+                this.fullCompile = true;
+                break;
+            default:
+                throw new NotImplementedException();
+        }
+    }
+
     public String getPhase() {
         if(fullCompile){
             return "Complete Compilation Phase";
@@ -44,9 +73,10 @@ public class Options {
         }
         else if(parserPhase){
             return "Parser Phase";
-        }
-        else{
+        } else if (lexicalPhase) {
             return "Lexical Phase";
+        } else {
+            return "Phase not specified";
         }
 
     }
