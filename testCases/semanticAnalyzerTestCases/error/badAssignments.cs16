@@ -1,0 +1,19 @@
+int getInt(void){ return 100;}
+bool getBool(void){ return false;}
+
+int main(void){
+    int x;
+    bool p;
+    int a[1];
+    int b[1];
+    
+    x := false;
+    p := 1;
+    a[0] := true;
+    b[0] := -1;
+    
+    x := getBool();
+    p := getInt();
+
+    return 0;
+}

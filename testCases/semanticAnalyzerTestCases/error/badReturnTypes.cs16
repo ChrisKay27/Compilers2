@@ -4,7 +4,15 @@
     Date: March 4, 2016
 */
 
-bool foo(void){
+bool shoo(void){
+    return;
+}
+
+int too(void){
+    return;
+}
+
+bool boo(void){
     return 1;
 }
 
@@ -25,7 +33,7 @@ void moo(void){
 
 void main(void){
     int x;
-    if( x = 1 )
+    if(x = 1)
         return 1;
     if(x=2) return x;
     if(x=2) return -x;
@@ -35,5 +43,4 @@ void main(void){
     if(x=2) return x*x;
     if(x=2) return x-x;
     if(x=2) return x;
-
 }

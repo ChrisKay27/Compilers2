@@ -114,7 +114,7 @@ public class SemanticAnalyzer implements SemAnalInter {
         analyze(AST.getBody(), true);
 
         Declaration decls = AST.getBody().getDeclarations();
-        AST.setNumberOfLocals(decls != null ? decls.getLength() : 0 );
+        AST.setNumberOfLocals(decls != null ? decls.getLength() : 0);
 
         functionConstraints(AST);
 
@@ -224,8 +224,7 @@ public class SemanticAnalyzer implements SemAnalInter {
         output.accept(AST.getLine() + ": analyze IdStatement\n");
         AST.setDecl(getDeclaration(AST.getLine(), AST.getIdToken()));
 
-        analyze(AST.getId_stmt_tail());
-
+        analyze(AST.getDecl().getType(), AST.getId_stmt_tail());
 
         Declaration d = AST.getDecl();
         if (d instanceof FuncDeclaration) {
@@ -238,7 +237,6 @@ public class SemanticAnalyzer implements SemAnalInter {
             ((AssignStatementTail) AST.getId_stmt_tail()).setDecl(d);
         }
 
-
         if (d instanceof VarDeclaration) {
             VarDeclaration varDec = (VarDeclaration) d;
 
@@ -248,7 +246,7 @@ public class SemanticAnalyzer implements SemAnalInter {
             } else {
                 AssignStatementTail assignTail = (AssignStatementTail) AST.getId_stmt_tail();
 
-                //If we are trying to index this variable and it is not an array...
+                // If we are trying to index this variable and it is not an array
                 if (assignTail.getAddExpression() != null && !varDec.isAnArray()) {
                     foundError = true;
                     lineError.accept(AST.getLine(), d.getID() + " is not an array and we are trying to index it.");
@@ -270,7 +268,6 @@ public class SemanticAnalyzer implements SemAnalInter {
                         lineError.accept(AST.getLine(), d.getID() + " is declared as an array but is being used as " + temp + " " + (d.getType().toString()).toLowerCase());
                     } else {
                         int indexExpression = ((AssignStatementTail) AST.getId_stmt_tail()).getAddExpression().evaluateStaticInt();
-//                        System.out.println("INDEX: " + indexExpression);
                         if (indexExpression >= ((VarDeclaration) AST.getDecl()).getArraySize() || indexExpression < 0) {
                             foundError = true;
                             lineError.accept(AST.getLine(), "Array index out of bounds, " + indexExpression + " not within [0, " + ((VarDeclaration) AST.getDecl()).getArraySize() + ")");
@@ -328,10 +325,10 @@ public class SemanticAnalyzer implements SemAnalInter {
         }
     }
 
-    public void analyze(StatementTail AST) {
+    public void analyze(Type expectedType, StatementTail AST) {
         output.accept(AST.getLine() + ": analyze StatementTail\n");
         if (AST instanceof AssignStatementTail)
-            analyze((AssignStatementTail) AST);
+            analyze(expectedType, (AssignStatementTail) AST);
         else if (AST instanceof CallStatementTail)
             analyze((CallStatementTail) AST);
         else if (AST == null) {
@@ -339,13 +336,16 @@ public class SemanticAnalyzer implements SemAnalInter {
         }
     }
 
-    public void analyze(AssignStatementTail AST) {
+    public void analyze(Type expectedType, AssignStatementTail AST) {
         output.accept(AST.getLine() + ": analyze AssignStatementTail\n");
         if (AST.getAddExpression() != null) {
             analyze(AST.getAddExpression());
-
         }
-        analyze(AST.getExp());
+        Type type = analyze(AST.getExp());
+        if (type != expectedType) {
+            foundError = true;
+            lineError.accept(AST.getLine(), "Assignment type mismatch, Expected Type: " + expectedType + ", Type found: " + type);
+        }
     }
 
     public void analyze(IfStatement AST) {
@@ -362,9 +362,7 @@ public class SemanticAnalyzer implements SemAnalInter {
             Expression expression = (Expression) AST.getCall_tail();
             Expression current = expression;
             while (current != null) {
-
                 analyze(current);
-
                 if (current.getNextNode() instanceof Expression) {
                     current = (Expression) current.getNextNode();
                 } else {
@@ -462,6 +460,7 @@ public class SemanticAnalyzer implements SemAnalInter {
         output.accept(AST.getLine() + ": analyze ReturnStatement\n");
         analyze(AST.getReturnValue());
 
+        returnStatementFound = true;
         if (currentFuncDecl == null) {
             foundError = true;
             lineError.accept(AST.getLine(), "Error, return statement not within function.");
@@ -469,9 +468,8 @@ public class SemanticAnalyzer implements SemAnalInter {
 
         if (AST.getReturnValue().getType() != currentFuncDecl.getType()) {
             foundError = true;
-            lineError.accept(AST.getLine(), "Error, return type does not match functions type.");
+            lineError.accept(AST.getLine(), "Return type mismatch, Expected Type: " + currentFuncDecl.getType() + ", Evaluated Type: " + AST.getReturnValue().getType());
         } else {
-            returnStatementFound = true;
             AST.setFuncDecl(currentFuncDecl);
         }
     }
@@ -668,9 +666,7 @@ public class SemanticAnalyzer implements SemAnalInter {
         if (AST.getIdTail() instanceof CallStatementTail) {
             analyze((CallStatementTail) AST.getIdTail());
             ((CallStatementTail) AST.getIdTail()).setFuncDecl((FuncDeclaration) AST.getDecl());
-        }
-
-        else if (AST.getIdTail() instanceof AddExpression) {
+        } else if (AST.getIdTail() instanceof AddExpression) {
             analyze(AST.getIdTail());
 
             if (!((AddExpression) AST.getIdTail()).isStatic()) {
