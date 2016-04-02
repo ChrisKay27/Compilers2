@@ -44,15 +44,6 @@ public class Test {
         Options options = new Options(quietEnabled, verboseEnabled, tuplePhase, parsePhase, compilePhase, lexicalPhase,
                 semanticPhase, outputFilePath, errorLogFilePath, srcFilePath, printAST);
 
-
-//        TestAdmin admin;
-//        try {
-//            admin = new TestAdmin(options);
-//            admin.compile();
-//            admin.close();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
         if( !lexicalPhase && !parsePhase && !semanticPhase && !tuplePhase )
             lexicalPhase = parsePhase = semanticPhase = tuplePhase = true;
 

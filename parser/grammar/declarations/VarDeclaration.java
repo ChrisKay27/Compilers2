@@ -44,6 +44,10 @@ public class VarDeclaration extends Declaration {
         return arraySize != null;
     }
 
+    public AddExpression getArraySizeExpression() {
+        return this.arraySize;
+    }
+
     public int getArraySize() {
         return this.arraySize.evaluateStaticInt();
     }

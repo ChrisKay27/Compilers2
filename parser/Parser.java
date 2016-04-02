@@ -569,13 +569,14 @@ public class Parser {
         Declaration tempDec = null;
         while (FIRSTofNonvoid_specifier.contains(lookahead)) {
 
+            int lineOfDeclaration = lineNumber.get();
             Type decType = nonvoid_specifier(union(synch, ID));
             Token IDToken = lookaheadToken;
             match(ID, union(synch, FIRSTofVar_dec_tail));
 
             final VarDecTail varDecTail = var_dec_tail(union(union(synch, FIRSTofStatement), FIRSTofNonvoid_specifier));
 
-            Declaration tempDec2 = varDecTail.toVarDeclarations(line, decType, IDToken);
+            Declaration tempDec2 = varDecTail.toVarDeclarations(lineOfDeclaration, decType, IDToken);
 
             if (firstDec == null) {
                 firstDec = tempDec2;

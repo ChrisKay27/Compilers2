@@ -28,10 +28,6 @@ public class Main {
     public static final String PRINT_AST = "-ast";
 
     public static void main(String[] args) {
-//
-//        System.out.println("DEBUG FIRST AND FOLLOW SETS");
-//        FirstAndFollowSets.FIRSTofCase_stmt.forEach(System.out::println);
-//        System.out.println("END DEBUG");
 
         if (hasOption(args, UNITTEST)) {
             Test.main(args);

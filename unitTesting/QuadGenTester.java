@@ -112,8 +112,6 @@ public class QuadGenTester {
 
         return testCases;
     }
-
-
 }
 /*
 if( errorFile ) {

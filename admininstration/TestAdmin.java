@@ -13,7 +13,6 @@ import java.util.List;
  */
 public class TestAdmin extends Administrator {
 
-
     private Options options;
 
     public TestAdmin(Options options) throws IOException, UnrecognizedSourceCodeException {
