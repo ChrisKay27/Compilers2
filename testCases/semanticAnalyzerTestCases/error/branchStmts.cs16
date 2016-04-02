@@ -7,7 +7,7 @@ int main(void){
     int y, banana;
 
     branch(y)
-    case 1:
+    case 1: ;
     default: writeint(593);
     default: writeint(-1);
     end;

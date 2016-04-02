@@ -1,2 +1,6 @@
+39:     wiggerness := foo(); --should not assigned to int
+39: Assignment type mismatch, Expected Type: INT, Type found: VOID
+40:     isAFatty := foo(); --should not assigned to bool
+40: Assignment type mismatch, Expected Type: BOOL, Type found: VOID
 33: int main(bool isWoman){
 33: Function main must have no parameters.

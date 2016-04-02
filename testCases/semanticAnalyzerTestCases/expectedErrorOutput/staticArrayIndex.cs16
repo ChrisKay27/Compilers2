@@ -1,4 +1,8 @@
+7:     int x, y, z[5], a[x];
+7: Array size expression must be a static expression.
 10:     y := z[x];
-10: Non static expression in array index
-6: int main(void){
-6: No return statement found.
+10: Non static expression in array index.
+11:     a := z;
+11: (ID,8) => a is declared as an array but is being used as an int
+12:     z[y] := y;
+12: Non static expression in array index.

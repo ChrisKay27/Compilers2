@@ -28,7 +28,7 @@ public class ReturnStatement extends Statement {
         returnValue.appendContents(sb,tabs+2);
 
         if (nextNode != null)
-            System.err.println("Probably shouldn't have next node after a return statement");
+            System.err.println("Warning: Unreachable code found after return statement on line " + getLine() + ".");
     }
 
     public Expression getReturnValue() {

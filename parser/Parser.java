@@ -143,7 +143,6 @@ public class Parser {
                 }
                 current = declarations.getLastNextNode();
             }
-
         } while (FIRSTofDeclaration.contains(lookahead));
 
         if (traceEnabled) lineTraceOutput.accept("\n\t\tLeaving program");
@@ -220,10 +219,8 @@ public class Parser {
             if (traceEnabled) lineTraceOutput.accept("\n\t\tLeaving declaration");
             return new VarDeclaration(line, type, token);
         } else {
-            errorOutput.accept("\t\tError! No declarations found.\n");
-            //error
+            errorOutput.accept("\t\tError! No valid declarations found.\n");
         }
-
         if (traceEnabled) lineTraceOutput.accept("\n\t\tLeaving declaration");
         return null;
     }

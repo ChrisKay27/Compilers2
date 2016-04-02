@@ -19,7 +19,7 @@ import java.util.List;
  */
 public class TestScanner {
     //
-    private static final String TEST_CASE_PATH = "src/testCases/scannerTestCases";
+    private static final String TEST_CASE_PATH = "src/testCases/scannerTestCases/";
     //
     protected List<Token> expectedTokens;
     private static List<Token> libraryTokens;
@@ -109,41 +109,6 @@ public class TestScanner {
                 new Token(TokenType.SEMI, null),
                 new Token(TokenType.ENDFILE, null)));
         testCases.put(fileName, new TestScanner(fileName, expectedTokens, options));
-
-        fileName = "input.cs16";
-        expectedTokens = new ArrayList(TestScanner.libraryTokens);
-        expectedTokens.addAll(Arrays.asList(
-                new Token(TokenType.INT, null), new Token(TokenType.ID, 2), new Token(TokenType.ASSIGN, null), new Token(TokenType.NUM, 0),
-                new Token(TokenType.SEMI, null), new Token(TokenType.INT, null), new Token(TokenType.ID, 5), new Token(TokenType.ASSIGN, null),
-                new Token(TokenType.NUM, 0), new Token(TokenType.SEMI, null), new Token(TokenType.ID, 6), new Token(TokenType.ID, 7),
-                new Token(TokenType.VOID, null), new Token(TokenType.ID, 8), new Token(TokenType.LPAREN, null), new Token(TokenType.INT, null),
-                new Token(TokenType.LSQR, null), new Token(TokenType.RSQR, null), new Token(TokenType.ID, 9), new Token(TokenType.RPAREN, null),
-                new Token(TokenType.LCRLY, null), new Token(TokenType.ID, 10), new Token(TokenType.LPAREN, null), new Token(TokenType.ID, 2),
-                new Token(TokenType.PLUS, null), new Token(TokenType.ID, 5), new Token(TokenType.RPAREN, null), new Token(TokenType.SEMI, null),
-                new Token(TokenType.ID, 10), new Token(TokenType.LPAREN, null), new Token(TokenType.ID, 2), new Token(TokenType.LSQR, null),
-                new Token(TokenType.RSQR, null), new Token(TokenType.PLUS, null), new Token(TokenType.ID, 5), new Token(TokenType.RPAREN, null),
-                new Token(TokenType.SEMI, null), new Token(TokenType.IF, null), new Token(TokenType.LPAREN, null), new Token(TokenType.BLIT, 1),
-                new Token(TokenType.RPAREN, null), new Token(TokenType.LCRLY, null), new Token(TokenType.ID, 10), new Token(TokenType.LPAREN, null),
-                new Token(TokenType.ID, 2), new Token(TokenType.MINUS, null), new Token(TokenType.ID, 5), new Token(TokenType.RPAREN, null),
-                new Token(TokenType.SEMI, null), new Token(TokenType.ID, 10), new Token(TokenType.LPAREN, null), new Token(TokenType.ID, 2),
-                new Token(TokenType.DIV, null), new Token(TokenType.ID, 5), new Token(TokenType.RPAREN, null), new Token(TokenType.SEMI, null),
-                new Token(TokenType.ID, 10), new Token(TokenType.LPAREN, null), new Token(TokenType.ID, 2), new Token(TokenType.MULT, null),
-                new Token(TokenType.ID, 5), new Token(TokenType.RPAREN, null), new Token(TokenType.SEMI, null), new Token(TokenType.IF, null),
-                new Token(TokenType.LPAREN, null), new Token(TokenType.ID, 2), new Token(TokenType.LT, null), new Token(TokenType.ID, 5),
-                new Token(TokenType.ANDTHEN, null), new Token(TokenType.ID, 5), new Token(TokenType.LT, null), new Token(TokenType.ID, 2),
-                new Token(TokenType.ORELSE, null), new Token(TokenType.ID, 2), new Token(TokenType.GTEQ, null), new Token(TokenType.ID, 5),
-                new Token(TokenType.ORELSE, null), new Token(TokenType.ID, 5), new Token(TokenType.GTEQ, null), new Token(TokenType.ID, 2),
-                new Token(TokenType.RPAREN, null), new Token(TokenType.LOOP, null), new Token(TokenType.LCRLY, null), new Token(TokenType.ID, 2),
-                new Token(TokenType.ASSIGN, null), new Token(TokenType.ID, 2), new Token(TokenType.MINUS, null), new Token(TokenType.NUM, 1),
-                new Token(TokenType.SEMI, null), new Token(TokenType.IF, null), new Token(TokenType.LPAREN, null), new Token(TokenType.ID, 2),
-                new Token(TokenType.LT, null), new Token(TokenType.NUM, 0), new Token(TokenType.RPAREN, null), new Token(TokenType.EXIT, null),
-                new Token(TokenType.SEMI, null), new Token(TokenType.ELSE, null), new Token(TokenType.CONTINUE, null), new Token(TokenType.SEMI, null),
-                new Token(TokenType.RCRLY, null), new Token(TokenType.END, null), new Token(TokenType.RCRLY, null), new Token(TokenType.ID, 11),
-                new Token(TokenType.LPAREN, null), new Token(TokenType.NUM, 0), new Token(TokenType.RPAREN, null), new Token(TokenType.SEMI, null),
-                new Token(TokenType.RCRLY, null), new Token(TokenType.ENDFILE, null)
-        ));
-        testCases.put(fileName, new TestScanner(fileName, expectedTokens, options));
-
 
         fileName = "keywords.cs16";
         expectedTokens = new ArrayList(TestScanner.libraryTokens);
@@ -319,7 +284,41 @@ public class TestScanner {
         return testCases;
     }
 
-
+/*
+fileName = "input.cs16";
+        expectedTokens = new ArrayList(TestScanner.libraryTokens);
+        expectedTokens.addAll(Arrays.asList(
+                new Token(TokenType.INT, null), new Token(TokenType.ID, 2), new Token(TokenType.ASSIGN, null), new Token(TokenType.NUM, 0),
+                new Token(TokenType.SEMI, null), new Token(TokenType.INT, null), new Token(TokenType.ID, 5), new Token(TokenType.ASSIGN, null),
+                new Token(TokenType.NUM, 0), new Token(TokenType.SEMI, null), new Token(TokenType.ID, 6), new Token(TokenType.ID, 7),
+                new Token(TokenType.VOID, null), new Token(TokenType.ID, 8), new Token(TokenType.LPAREN, null), new Token(TokenType.INT, null),
+                new Token(TokenType.LSQR, null), new Token(TokenType.RSQR, null), new Token(TokenType.ID, 9), new Token(TokenType.RPAREN, null),
+                new Token(TokenType.LCRLY, null), new Token(TokenType.ID, 10), new Token(TokenType.LPAREN, null), new Token(TokenType.ID, 2),
+                new Token(TokenType.PLUS, null), new Token(TokenType.ID, 5), new Token(TokenType.RPAREN, null), new Token(TokenType.SEMI, null),
+                new Token(TokenType.ID, 10), new Token(TokenType.LPAREN, null), new Token(TokenType.ID, 2), new Token(TokenType.LSQR, null),
+                new Token(TokenType.RSQR, null), new Token(TokenType.PLUS, null), new Token(TokenType.ID, 5), new Token(TokenType.RPAREN, null),
+                new Token(TokenType.SEMI, null), new Token(TokenType.IF, null), new Token(TokenType.LPAREN, null), new Token(TokenType.BLIT, 1),
+                new Token(TokenType.RPAREN, null), new Token(TokenType.LCRLY, null), new Token(TokenType.ID, 10), new Token(TokenType.LPAREN, null),
+                new Token(TokenType.ID, 2), new Token(TokenType.MINUS, null), new Token(TokenType.ID, 5), new Token(TokenType.RPAREN, null),
+                new Token(TokenType.SEMI, null), new Token(TokenType.ID, 10), new Token(TokenType.LPAREN, null), new Token(TokenType.ID, 2),
+                new Token(TokenType.DIV, null), new Token(TokenType.ID, 5), new Token(TokenType.RPAREN, null), new Token(TokenType.SEMI, null),
+                new Token(TokenType.ID, 10), new Token(TokenType.LPAREN, null), new Token(TokenType.ID, 2), new Token(TokenType.MULT, null),
+                new Token(TokenType.ID, 5), new Token(TokenType.RPAREN, null), new Token(TokenType.SEMI, null), new Token(TokenType.IF, null),
+                new Token(TokenType.LPAREN, null), new Token(TokenType.ID, 2), new Token(TokenType.LT, null), new Token(TokenType.ID, 5),
+                new Token(TokenType.ANDTHEN, null), new Token(TokenType.ID, 5), new Token(TokenType.LT, null), new Token(TokenType.ID, 2),
+                new Token(TokenType.ORELSE, null), new Token(TokenType.ID, 2), new Token(TokenType.GTEQ, null), new Token(TokenType.ID, 5),
+                new Token(TokenType.ORELSE, null), new Token(TokenType.ID, 5), new Token(TokenType.GTEQ, null), new Token(TokenType.ID, 2),
+                new Token(TokenType.RPAREN, null), new Token(TokenType.LOOP, null), new Token(TokenType.LCRLY, null), new Token(TokenType.ID, 2),
+                new Token(TokenType.ASSIGN, null), new Token(TokenType.ID, 2), new Token(TokenType.MINUS, null), new Token(TokenType.NUM, 1),
+                new Token(TokenType.SEMI, null), new Token(TokenType.IF, null), new Token(TokenType.LPAREN, null), new Token(TokenType.ID, 2),
+                new Token(TokenType.LT, null), new Token(TokenType.NUM, 0), new Token(TokenType.RPAREN, null), new Token(TokenType.EXIT, null),
+                new Token(TokenType.SEMI, null), new Token(TokenType.ELSE, null), new Token(TokenType.CONTINUE, null), new Token(TokenType.SEMI, null),
+                new Token(TokenType.RCRLY, null), new Token(TokenType.END, null), new Token(TokenType.RCRLY, null), new Token(TokenType.ID, 11),
+                new Token(TokenType.LPAREN, null), new Token(TokenType.NUM, 0), new Token(TokenType.RPAREN, null), new Token(TokenType.SEMI, null),
+                new Token(TokenType.RCRLY, null), new Token(TokenType.ENDFILE, null)
+        ));
+        testCases.put(fileName, new TestScanner(fileName, expectedTokens, options));
+ */
 //    public static void main(String[] args) {
 //        String srcFilePath = null;
 //        String errorLogFilePath = null;

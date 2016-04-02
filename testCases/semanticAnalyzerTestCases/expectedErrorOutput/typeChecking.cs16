@@ -1,23 +1,43 @@
-37: }
-37:Expression type mismatch
-37: }
-37:Expression type mismatch
-37: }
-37:Expression type mismatch
-37: }
-37:Expression type mismatch
-37: }
-37:Expression type mismatch
-37: }
-37:Expression type mismatch
-37: }
-37:Expression type mismatch
-37: }
-37:Expression type mismatch
-37: }
-37:Expression type mismatch
-37: }
-37:Expression type mismatch
+8:     int x,y;
+8: Duplicate definition of x
+10:     x:=b;
+10: Assignment type mismatch, Expected Type: INT, Type found: BOOL
+11:     y:= false                         ; b := y < x ;
+11: Assignment type mismatch, Expected Type: INT, Type found: BOOL
+13:     b:= x;
+13: Assignment type mismatch, Expected Type: BOOL, Type found: INT
+21:     x := b - 1;
+21: Operand type mismatch, Allowed Types: {INT}, Type 1: BOOL, Type 2: INT
+21:     x := b - 1;
+21: Assignment type mismatch, Expected Type: INT, Type found: BOOL
+22:     x := b - y;
+22: Operand type mismatch, Allowed Types: {INT}, Type 1: BOOL, Type 2: INT
+22:     x := b - y;
+22: Assignment type mismatch, Expected Type: INT, Type found: BOOL
+25:     b := x * b;
+25: Operand type mismatch, Allowed Types: {INT}, Type 1: INT, Type 2: BOOL
+25:     b := x * b;
+25: Assignment type mismatch, Expected Type: BOOL, Type found: INT
+26:     b := x / b;
+26: Operand type mismatch, Allowed Types: {INT}, Type 1: INT, Type 2: BOOL
+26:     b := x / b;
+26: Assignment type mismatch, Expected Type: BOOL, Type found: INT
+27:     b := x - b;
+27: Operand type mismatch, Allowed Types: {INT}, Type 1: INT, Type 2: BOOL
+27:     b := x - b;
+27: Assignment type mismatch, Expected Type: BOOL, Type found: INT
+28:     b := x + b;
+28: Operand type mismatch, Allowed Types: {INT}, Type 1: INT, Type 2: BOOL
+28:     b := x + b;
+28: Assignment type mismatch, Expected Type: BOOL, Type found: INT
+30:     b := b * b;
+30: Operand type mismatch, Allowed Types: {INT}, Type 1: BOOL, Type 2: BOOL
+31:     b := b / b;
+31: Operand type mismatch, Allowed Types: {INT}, Type 1: BOOL, Type 2: BOOL
+32:     b := b + b;
+32: Operand type mismatch, Allowed Types: {INT}, Type 1: BOOL, Type 2: BOOL
+33:     b := b - b;
+33: Operand type mismatch, Allowed Types: {INT}, Type 1: BOOL, Type 2: BOOL
 7: void main(int x){
 7: Function main must have a return type of int.
 7: void main(int x){

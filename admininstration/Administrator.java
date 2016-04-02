@@ -81,14 +81,15 @@ public class Administrator {
             System.out.print(compilingMsg);
             System.out.print(readingFileMsg);
         }
-        if( !options.lexicalPhase ) {
+        if (!options.lexicalPhase) {
             printLineTrace(compilingMsg);
             printLineTrace(readingFileMsg);
         }
-        outputWriter.write(compilingMsg);
-        outputWriter.write(readingFileMsg);
-
-        if( errorWriter != null ) {
+        if (outputWriter != null) {
+            outputWriter.write("Compiling up to the " + options.getPhase() + '\n');
+            outputWriter.write("Reading " + options.inputFilePath + '\n');
+        }
+        if (errorWriter != null) {
             errorWriter.write(compilingMsg);
             errorWriter.write(readingFileMsg);
         }
@@ -123,7 +124,7 @@ public class Administrator {
             lexicalCompile();
         }
 
-        if( errorWriter != null ){
+        if (errorWriter != null) {
             outputHandler.printErrors((str) -> {
                 try {
                     errorWriter.write(str);
@@ -147,7 +148,7 @@ public class Administrator {
             StringBuilder sb = new StringBuilder();
             outputHandler.printScannerOutput(sb::append);
             //for (Token token : tokens)
-             //   sb.append(token.toString()).append('\n');
+            //   sb.append(token.toString()).append('\n');
 //            this.outputWriter.write(sb.toString());
         }
     }
@@ -157,7 +158,7 @@ public class Administrator {
 
         if (outputWriter != null) {
             try {
-                if( tree == null ) {
+                if (tree == null) {
                     outputWriter.write("--------------------\n");
                     outputWriter.write("Compile Failed\n");
 
@@ -169,7 +170,7 @@ public class Administrator {
                         }
                     });
 
-                }else {
+                } else {
                     outputWriter.write("\n\n---- Compile Successful! ----\n");
                     outputWriter.write("\n\n---- Abstract Syntax Tree ----\n");
                     outputWriter.write("Format:\n");
@@ -220,13 +221,13 @@ public class Administrator {
                 outputWriter.write(error1);
                 outputWriter.write(error2);
 
-                if( errorWriter != null ) {
+                if (errorWriter != null) {
                     errorWriter.write(error1);
                     errorWriter.write(error2);
                 }
 
                 List<String> errorLog = outputHandler.getErrorLog();
-                for(String s : errorLog ){
+                for (String s : errorLog) {
                     outputWriter.write(s);
 //                    if( errorWriter != null )
 //                        errorWriter.write(s);
@@ -241,7 +242,7 @@ public class Administrator {
             out.println(error2);
 
             //And we print the error messages to the user
-            if (!options.unitTesting && !options.quiet )
+            if (!options.unitTesting && !options.quiet)
                 outputHandler.printErrors(out::println);
         }
 
@@ -272,7 +273,7 @@ public class Administrator {
             printASTTree(tree);
             printCompilationResults(tree);
 
-            String code = new QuadrupleGenerator(tree, this::printLineTrace, this::printErrorMessage, this::printErrorMessage,true).startCodeGeneration((Declaration) tree);
+            String code = new QuadrupleGenerator(tree, this::printLineTrace, this::printErrorMessage, this::printErrorMessage, true).startCodeGeneration((Declaration) tree);
 
             printLineTrace("\n  Code Generation Complete");
             printLineTrace("\n------------------------------\n");
@@ -345,7 +346,7 @@ public class Administrator {
 
         if (options.verbose) {
 
-            if( options.lexicalPhase )
+            if (options.lexicalPhase)
                 if (outputWriter != null)
                     try {
                         outputWriter.write(line);
@@ -398,56 +399,56 @@ public class Administrator {
     private void initReader(String path) throws UnrecognizedSourceCodeException {
 //        if (isCs16File(path)) { // verifies that the source code file has the correct extension
 
-            File input = new File(path);
-            Charset encoding = Charset.forName("ascii");
+        File input = new File(path);
+        Charset encoding = Charset.forName("ascii");
 
-            try {
-                InputStream in = new FileInputStream(input);
-                Reader reader = new InputStreamReader(in, encoding);
-                fileScanner = new java.util.Scanner(reader);
-                String curLine = "";
-                if (fileScanner.hasNext())
-                    curLine = fileScanner.nextLine();
-                currentLineFeed = curLine + '\n';
-                currentLine = currentLineFeed;
-                lineNumber = 1;
+        try {
+            InputStream in = new FileInputStream(input);
+            Reader reader = new InputStreamReader(in, encoding);
+            fileScanner = new java.util.Scanner(reader);
+            String curLine = "";
+            if (fileScanner.hasNext())
+                curLine = fileScanner.nextLine();
+            currentLineFeed = curLine + '\n';
+            currentLine = currentLineFeed;
+            lineNumber = 1;
 
-                //Keeps track of the lines in the file for error output
-                fileLines.add(currentLine);
+            //Keeps track of the lines in the file for error output
+            fileLines.add(currentLine);
 
-                if (!curLine.trim().isEmpty()) {
-                    String line = "\n\n" + lineNumber + ": " + curLine;
-                    printLineTrace(line);
+            if (!curLine.trim().isEmpty()) {
+                String line = "\n\n" + lineNumber + ": " + curLine;
+                printLineTrace(line);
+            }
+            fileInput = () -> {
+                if (currentLineFeed.length() == 0) {
+                    if (fileScanner.hasNextLine()) {
+                        String currLine = fileScanner.nextLine();
+                        currentLineFeed = currLine + '\n';
+                        currentLine = currentLineFeed;
+                        lineNumber++;
+
+                        //Keeps track of the lines in the file for error output
+                        fileLines.add(currentLine);
+
+                        if (!currLine.trim().isEmpty()) {
+                            String line = "\n\n" + lineNumber + ": " + currLine;
+                            printLineTrace(line);
+                        }
+
+                    } else
+                        return -1;
                 }
-                fileInput = () -> {
-                    if (currentLineFeed.length() == 0) {
-                        if (fileScanner.hasNextLine()) {
-                            String currLine = fileScanner.nextLine();
-                            currentLineFeed = currLine + '\n';
-                            currentLine = currentLineFeed;
-                            lineNumber++;
-
-                            //Keeps track of the lines in the file for error output
-                            fileLines.add(currentLine);
-
-                            if (!currLine.trim().isEmpty()) {
-                                String line = "\n\n" + lineNumber + ": " + currLine;
-                                printLineTrace(line);
-                            }
-
-                        } else
-                            return -1;
-                    }
-                    int c = currentLineFeed.charAt(0);
-                    currentLineFeed = currentLineFeed.substring(1, currentLineFeed.length());
-                    return c;
-                };
+                int c = currentLineFeed.charAt(0);
+                currentLineFeed = currentLineFeed.substring(1, currentLineFeed.length());
+                return c;
+            };
 
 //                new java.util.Scanner(reader).nextLine()
-            } catch (Exception e) {
-                outputHandler.printErrorMessage(e.getMessage());
+        } catch (Exception e) {
+            outputHandler.printErrorMessage(e.getMessage());
 //                System.out.println(e);
-            }
+        }
 //        } else throw new UnrecognizedSourceCodeException("The file located at" + path + "is not a .cs16 file");
     }
 

@@ -49,7 +49,16 @@ public class SemanticAnalyzer implements SemAnalInter {
 
     public SemanticAnalyzer(ASTNode astRoot, Consumer<String> output, Consumer<String> singleError, BiConsumer<Integer, String> lineError) {
         this.astRoot = astRoot;
-        this.output = output;
+        if (output == null) {
+            this.output = new Consumer<String>() {
+                @Override
+                public void accept(String s) {
+
+                }
+            };
+        } else {
+            this.output = output;
+        }
         this.singleError = singleError;
         this.lineError = lineError;
 
@@ -194,6 +203,12 @@ public class SemanticAnalyzer implements SemAnalInter {
             if (type != Type.INT) {
                 foundError = true;
                 lineError.accept(AST.getLine(), "Array size expression must be of type INT, Evaluated Type: " + type + '\n');
+            } else if (!AST.getArraySizeExpression().isStatic()) {
+                foundError = true;
+                lineError.accept(AST.getLine(), "Array size expression must be a static expression.");
+            } else if (AST.getArraySizeExpression().evaluateStaticInt() <= 0) {
+                foundError = true;
+                lineError.accept(AST.getLine(), "Array size expression must evaluate to a positive integer greater than zero, Value Found: " + AST.getArraySizeExpression().evaluateStaticInt() + ".");
             }
         }
 
@@ -202,11 +217,15 @@ public class SemanticAnalyzer implements SemAnalInter {
         localVariableCountStack.push(localVariableCountStack.pop() + 1);
 
         //System.out.println("Adding Decl");
-        addDeclaration(AST);
+        if (AST.getLevel() != 0)
+            addDeclaration(AST);
 
     }
 
     public void analyze(Statement AST) {
+        if (AST == null) {
+            System.out.print("HELP\n");
+        }
         output.accept(AST.getLine() + ": analyze Statement\n");
         if (AST instanceof IdStatement)
             analyze((IdStatement) AST);
@@ -278,15 +297,16 @@ public class SemanticAnalyzer implements SemAnalInter {
                         lineError.accept(AST.getLine(), d.getID() + " is declared as an array but is being used as " + temp + " "
                                 + (d.getType().toString()).toLowerCase() + '\n');
                     } else {
-                        if (((AssignStatementTail) AST.getId_stmt_tail()).getAddExpression().getType() != Type.INT) {
+                        if (!((AssignStatementTail) AST.getId_stmt_tail()).getAddExpression().isStatic()) {
+                            foundError = true;
+                            lineError.accept(AST.getLine(), "Non static expression in array index.\n");
+                        } else if (((AssignStatementTail) AST.getId_stmt_tail()).getAddExpression().getType() != Type.INT) {
                             foundError = true;
                             lineError.accept(AST.getLine(), "Array index expression must be of type INT, Evaluated Type: " +
-                                    ((AssignStatementTail) AST.getId_stmt_tail()).getAddExpression().getType()+ '\n');
+                                    ((AssignStatementTail) AST.getId_stmt_tail()).getAddExpression().getType() + '\n');
                         } else {
-                            int indexExpression = ((AssignStatementTail) AST.getId_stmt_tail()).getAddExpression().evaluateStaticInt();
-
                             if (((VarDeclaration) AST.getDecl()).getArraySizeExpression().getType() == Type.INT) {
-
+                                int indexExpression = ((AssignStatementTail) AST.getId_stmt_tail()).getAddExpression().evaluateStaticInt();
                                 if (indexExpression >= ((VarDeclaration) AST.getDecl()).getArraySize() || indexExpression < 0) {
                                     foundError = true;
                                     lineError.accept(AST.getLine(), "Array index out of bounds, " + indexExpression +
@@ -298,6 +318,7 @@ public class SemanticAnalyzer implements SemAnalInter {
                 }
             }
         }
+
     }
 
     private void callConstraints(IdStatement idStatement) {
@@ -367,7 +388,7 @@ public class SemanticAnalyzer implements SemAnalInter {
         if (type != expectedType) {
             foundError = true;
             lineError.accept(AST.getLine(), "Assignment type mismatch, Expected Type: " + expectedType + ", Type found: "
-                    + type+'\n');
+                    + type + '\n');
         }
     }
 
@@ -481,20 +502,23 @@ public class SemanticAnalyzer implements SemAnalInter {
 
     public void analyze(ReturnStatement AST) {
         output.accept(AST.getLine() + ": analyze ReturnStatement\n");
-        analyze(AST.getReturnValue());
-
-        returnStatementFound = true;
-        if (currentFuncDecl == null) {
-            foundError = true;
-            lineError.accept(AST.getLine(), "Error, return statement not within function.\n");
-        }
-
-        if (AST.getReturnValue().getType() != currentFuncDecl.getType()) {
-            foundError = true;
-            lineError.accept(AST.getLine(), "Return type mismatch, Expected Type: " + currentFuncDecl.getType() +
-                    ", Evaluated Type: " + AST.getReturnValue().getType() + '\n');
+        if (AST.getReturnValue() == null) {
+            return;
         } else {
-            AST.setFuncDecl(currentFuncDecl);
+            analyze(AST.getReturnValue());
+            returnStatementFound = true;
+            if (currentFuncDecl == null) {
+                foundError = true;
+                lineError.accept(AST.getLine(), "Error, return statement not within function.\n");
+            }
+
+            if (AST.getReturnValue().getType() != currentFuncDecl.getType()) {
+                foundError = true;
+                lineError.accept(AST.getLine(), "Return type mismatch, Expected Type: " + currentFuncDecl.getType() +
+                        ", Evaluated Type: " + AST.getReturnValue().getType() + '\n');
+            } else {
+                AST.setFuncDecl(currentFuncDecl);
+            }
         }
     }
 
@@ -530,9 +554,11 @@ public class SemanticAnalyzer implements SemAnalInter {
     }
 
     public void analyze(CaseStatement statement) {
-        if (statement == null) return;
-        analyze(statement.getStatement()); // statement for this case
-        analyze((CaseStatement) statement.getNextNode()); // next case in branch statement
+        if (statement.getStatement() != null) {
+            analyze(statement.getStatement()); // statement for this case
+            if ((CaseStatement) statement.getNextNode() != null)
+                analyze((CaseStatement) statement.getNextNode()); // next case in branch statement
+        } else return;
     }
 
     public Type analyze(Expression AST) {
@@ -546,24 +572,11 @@ public class SemanticAnalyzer implements SemAnalInter {
         if (AST.getAddExp2() != null) {
             Type t2 = analyze(AST.getAddExp2());
 
-            Type expType = typeCheck(t, t2, AST.getRelop().getOperandTypes());
-            if (expType != UNIV)
-                expType = BOOL;
+            Type expType = typeCheck(AST.getLine(), t, t2, AST.getRelop().getOperandTypes());
+            if (expType != UNIV) expType = BOOL; // relops always return type boolean
             AST.setType(expType);
 
             isStatic &= AST.getAddExp2().isStatic();
-//
-//            if (t == UNIV || t2 == UNIV) {
-//                AST.setType(UNIV);
-//            } else {
-//                final List<Type> operandTypes = AST.getRelop().getOperandTypes();
-//                if (t != t2 || (!operandTypes.contains(t) || !operandTypes.contains(t2))) {
-//                    foundError = true;
-//                    lineError.accept(AST.getLine(),"Expression type mismatch");
-//                    AST.setType(UNIV);
-//                } else
-//                    AST.setType(t);
-//            }
         }
 
         AST.setStatic(isStatic);
@@ -582,15 +595,14 @@ public class SemanticAnalyzer implements SemAnalInter {
         if (t == BOOL && AST.isUminus()) {
             t = UNIV;
             foundError = true;
-            lineError.accept(AST.getLine(), "Cannot urinary minus a boolean!\n");
+            lineError.accept(AST.getLine(), "Unary minus cannot be applied to type BOOL");
         }
 
         AddOpTerm next = AST.getNextNode();
         if (next != null) {
             Type t2 = analyze(next);
-
-            AST.setType(typeCheck(t, t2, next.getAddOp().getOperandTypes()));
-
+            Type myType = typeCheck(AST.getLine(), t, t2, next.getAddOp().getOperandTypes());
+            AST.setType(myType);
             isStatic &= next.isStatic();
         }
 
@@ -611,9 +623,8 @@ public class SemanticAnalyzer implements SemAnalInter {
         MultOpFactor next = AST.getNextNode();
         if (next != null) {
             Type t2 = analyze(next);
-
-            AST.setType(typeCheck(t, t2, next.getMultOp().getOperandTypes()));
-
+            Type myType = typeCheck(AST.getLine(), t, t2, next.getMultOp().getOperandTypes());
+            AST.setType(myType);
             isStatic &= next.isStatic();
         }
 
@@ -696,8 +707,7 @@ public class SemanticAnalyzer implements SemAnalInter {
             if (!((AddExpression) AST.getIdTail()).isStatic()) {
                 foundError = true;
                 lineError.accept(AST.getLine(), "Non static expression in array index.\n");
-            }
-            if (((AddExpression) AST.getIdTail()).getType() != Type.INT) {
+            } else if (((AddExpression) AST.getIdTail()).getType() != Type.INT) {
                 foundError = true;
                 lineError.accept(AST.getLine(), "Array index expression must be of type INT, Evaluated Type: " +
                         ((AddExpression) AST.getIdTail()).getType() + '\n');
@@ -753,19 +763,26 @@ public class SemanticAnalyzer implements SemAnalInter {
     }
 
 
-    public Type typeCheck(Type t, Type t2, List<Type> operandTypes) {
-        //If any of them are already UNIV then we don't report the lineError because it has already been reported.
-        if (t == UNIV || t2 == UNIV)
+    public Type typeCheck(int line, Type type1, Type type2, List<Type> operandTypes) {
+        //If any of them are already UNIV then we don'type1 report the lineError because it has already been reported.
+        if (type1 == UNIV || type2 == UNIV)
             return UNIV;
 
         //If the types do not match or the operand types available do not contain one of these operators then report lineError
-        if (t != t2 || (!operandTypes.contains(t) || !operandTypes.contains(t2))) {
+        if (type1 != type2 || (!operandTypes.contains(type1) || !operandTypes.contains(type2))) {
             foundError = true;
-            singleError.accept("Expression type mismatch.\n");
+            StringBuilder allowedTypes = new StringBuilder();
+            for (Type t : operandTypes) {
+                allowedTypes.append(t.toString() + ", ");
+            }
+            allowedTypes.deleteCharAt(allowedTypes.length() - 1);
+            allowedTypes.deleteCharAt(allowedTypes.length() - 1);
+            lineError.accept(line, "Operand type mismatch, Allowed Types: {" + allowedTypes.toString() + "}, Type 1: " + type1 + ", Type 2: " + type2);
             return UNIV;
         }
-        //Everything is fine, return the type
-        return t;
+        //lineError.accept(line, "Everything is fine, Type 1: " + type1 + ", Type 2: " + type2);
+        //Everything is fine, return the type1
+        return type1;
     }
 
 }

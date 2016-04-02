@@ -1,7 +1,11 @@
+11:     x := readbool();
+11: Assignment type mismatch, Expected Type: INT, Type found: BOOL
 13:     writebool();
 13: Function call writebool has not enough arguments provided.
 14:     writebool(x);
 14: writebool, Argument #1 : Expected argument of type BOOL, received argument of type INT
+15:     x := writebool(false);
+15: Assignment type mismatch, Expected Type: INT, Type found: VOID
 20:     writeint(true);
 20: writeint, Argument #1 : Expected argument of type INT, received argument of type BOOL
 21:     writeint(false);

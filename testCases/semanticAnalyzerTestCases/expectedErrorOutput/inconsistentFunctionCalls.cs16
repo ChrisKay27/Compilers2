@@ -1,4 +1,8 @@
 17:     foo(5);
 17: foo, Argument #1 : Expected argument of type VOID, received argument of type INT
+18:     x := foo();
+18: Assignment type mismatch, Expected Type: BOOL, Type found: INT
+19:     x := bar();
+19: Assignment type mismatch, Expected Type: BOOL, Type found: VOID
 20:     bar(2);
 20: bar, Argument #1 : Expected argument of type VOID, received argument of type INT

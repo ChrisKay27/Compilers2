@@ -4,11 +4,10 @@
 */
 
 int main(void){
-    int x, y, z[5],a[x];
+    int x, y, z[5], a[7 + 4];
 
     x := -x;
-    y := z[-3];
-    a := z;
+    y := z[3];
     z[3] := y;
     return x;
 }

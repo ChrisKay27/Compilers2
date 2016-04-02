@@ -1,10 +1,8 @@
-10:     }
-10:		Expecting statement!
 7:     x := 5;
-7: No declaration for this id: 4
-11:     return x;
-11: No declaration for this id: 4
-11:     return x;
-11: Error, return type does not match functions type.
-6: int main(void){
-6: No return statement found.
+7: No declaration for this id: (ID,4) => x
+7:     x := 5;
+7: Assignment type mismatch, Expected Type: UNIV, Type found: INT
+12:     return x;
+12: No declaration for this id: (ID,4) => x
+12:     return x;
+12: Return type mismatch, Expected Type: INT, Evaluated Type: UNIV

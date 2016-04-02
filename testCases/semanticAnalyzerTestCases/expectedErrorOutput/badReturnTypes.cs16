@@ -1,36 +1,36 @@
-11: int foo(void){
-11: Duplicate definition of foo
-8:     return 1;
-8: Error, return type does not match functions type.
-7: bool foo(void){
+23: void boo(int x){
+23: Duplicate definition of boo
+7: bool shoo(void){
 7: No return statement found.
-12:     return true;
-12: Error, return type does not match functions type.
-11: int foo(void){
+11: int too(void){
 11: No return statement found.
-16:     return x;
-16: Error, return type does not match functions type.
-21:         return true;
-21: Error, return type does not match functions type.
-23:         return false;
-23: Error, return type does not match functions type.
-29:         return 1;
-29: Error, return type does not match functions type.
-30:     if(x=2) return x;
-30: Error, return type does not match functions type.
-31:     if(x=2) return -x;
-31: Error, return type does not match functions type.
-32:     if(x=2) return 1;
-32: Error, return type does not match functions type.
-33:     if(x=2) return x+1;
-33: Error, return type does not match functions type.
-34:     if(x=2) return x+x;
-34: Error, return type does not match functions type.
-35:     if(x=2) return x*x;
-35: Error, return type does not match functions type.
-36:     if(x=2) return x-x;
-36: Error, return type does not match functions type.
-37:     if(x=2) return x;
-37: Error, return type does not match functions type.
-26: void main(void){
-26: Function main must have a return type of int.
+16:     return 1;
+16: Return type mismatch, Expected Type: BOOL, Evaluated Type: INT
+20:     return true;
+20: Return type mismatch, Expected Type: INT, Evaluated Type: BOOL
+24:     return x;
+24: Return type mismatch, Expected Type: VOID, Evaluated Type: INT
+29:         return true;
+29: Return type mismatch, Expected Type: VOID, Evaluated Type: BOOL
+31:         return false;
+31: Return type mismatch, Expected Type: VOID, Evaluated Type: BOOL
+37:         return 1;
+37: Return type mismatch, Expected Type: VOID, Evaluated Type: INT
+38:     if(x=2) return x;
+38: Return type mismatch, Expected Type: VOID, Evaluated Type: INT
+39:     if(x=2) return -x;
+39: Return type mismatch, Expected Type: VOID, Evaluated Type: INT
+40:     if(x=2) return 1;
+40: Return type mismatch, Expected Type: VOID, Evaluated Type: INT
+41:     if(x=2) return x+1;
+41: Return type mismatch, Expected Type: VOID, Evaluated Type: INT
+42:     if(x=2) return x+x;
+42: Return type mismatch, Expected Type: VOID, Evaluated Type: INT
+43:     if(x=2) return x*x;
+43: Return type mismatch, Expected Type: VOID, Evaluated Type: INT
+44:     if(x=2) return x-x;
+44: Return type mismatch, Expected Type: VOID, Evaluated Type: INT
+45:     if(x=2) return x;
+45: Return type mismatch, Expected Type: VOID, Evaluated Type: INT
+34: void main(void){
+34: Function main must have a return type of int.
