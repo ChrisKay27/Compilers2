@@ -21,6 +21,8 @@ import static java.lang.System.out;
 public class Administrator {
     // development
     private static final boolean debug = false;
+    private static final String DASHED_LINE = "\n-------------------------------------\n";
+    private static final String COMPILE_FAILED = "\t---- Compile Failed! ---- \n";
 
 
     public static boolean debug() {
@@ -81,15 +83,18 @@ public class Administrator {
             System.out.print(compilingMsg);
             System.out.print(readingFileMsg);
         }
-        if (!options.lexicalPhase) {
+        if( !options.lexicalPhase ) {
             printLineTrace(compilingMsg);
             printLineTrace(readingFileMsg);
         }
-        if (outputWriter != null) {
-            outputWriter.write("Compiling up to the " + options.getPhase() + '\n');
-            outputWriter.write("Reading " + options.inputFilePath + '\n');
+
+        //We don't want this extra information in the tuple output file since we want it to be executable
+        if( !options.tuplePhase ) {
+            printToOutputFile(compilingMsg);
+            printToOutputFile(readingFileMsg);
         }
-        if (errorWriter != null) {
+
+        if( errorWriter != null ) {
             errorWriter.write(compilingMsg);
             errorWriter.write(readingFileMsg);
         }
@@ -143,13 +148,14 @@ public class Administrator {
             tokens.add(t);
         } while (t.token != TokenType.ENDFILE);
 
+        out.println("\n---- Scanner Tokenizing Complete ----");
 
         if (this.outputWriter != null) {
             StringBuilder sb = new StringBuilder();
             outputHandler.printScannerOutput(sb::append);
             //for (Token token : tokens)
-            //   sb.append(token.toString()).append('\n');
-//            this.outputWriter.write(sb.toString());
+             //   sb.append(token.toString()).append('\n');
+            this.outputWriter.write(sb.toString());
         }
     }
 
@@ -170,9 +176,9 @@ public class Administrator {
                         }
                     });
 
-                } else {
-                    outputWriter.write("\n\n---- Compile Successful! ----\n");
-                    outputWriter.write("\n\n---- Abstract Syntax Tree ----\n");
+                }else {
+                    outputWriter.write("\n---- Parser AST Tree Construction Successful! ----\n");
+                    outputWriter.write("\n---- Abstract Syntax Tree ----\n");
                     outputWriter.write("Format:\n");
                     outputWriter.write("lineNumber: ClassName\n");
                     outputWriter.write("                attributes\n\n");
@@ -184,7 +190,7 @@ public class Administrator {
             }
         }
 
-        printCompilationResults(tree);
+        printCompilationResults(tree, false);
 
 //        if (this.outputWriter != null) {
 //            this.outputWriter.write(tree.toString());
@@ -196,26 +202,29 @@ public class Administrator {
         ASTNode tree = parser.startParsing();
 
         if (tree == null) {
-            out.println("\n-------------------------------------\n");
+            out.println(DASHED_LINE);
             out.println("\tCompile Failed at Parser phase\n");
             return;
         }
-        printASTTree(tree);
-        printLineTrace("\n  ----  Parsing Phase Complete  ----\n\n");
-
+        printASTTree(tree, false);
+        printLineTrace("\n  ----  Scanner and Parsing Phase Complete  ----\n\n");
 
         printLineTrace("  ----  Starting Semantics Phase  ----\n\n");
         SemanticAnalyzer semAnal = new SemanticAnalyzer(tree, this::printLineTrace, this::printErrorMessage, this::printErrorMessage);
 
         boolean passed = semAnal.startSemAnal((Declaration) tree);
         if (passed || options.unitTesting) {
-            printASTTree(tree);
-            printCompilationResults(tree);
+            printASTTree(tree, true);
+            out.println("\n ---- Compile Complete! ---- ");
+            printToOutputFile("\n ---- Annotated Abstract Syntax Tree ---- \n");
+            outputWriter.write(tree.toString());
+            printToOutputFile("\n\n ---- Compile Complete! ---- ");
+//            printCompilationResults(tree);
         } else {
 
             //If no tree was returned then the compiling failed
-            String error1 = "\n-------------------------------------\n";
-            String error2 = "\tCompile Failed\n";
+            String error1 = DASHED_LINE;
+            String error2 = "\t---- Compile Failed! ----\n";
 
             if (this.outputWriter != null) {
                 outputWriter.write(error1);
@@ -229,11 +238,8 @@ public class Administrator {
                 List<String> errorLog = outputHandler.getErrorLog();
                 for (String s : errorLog) {
                     outputWriter.write(s);
-//                    if( errorWriter != null )
-//                        errorWriter.write(s);
                 }
             }
-
 
             outputHandler.addErrorMessage(error1);
             outputHandler.addErrorMessage(error2);
@@ -246,9 +252,6 @@ public class Administrator {
                 outputHandler.printErrors(out::println);
         }
 
-        if (this.outputWriter != null) {
-            outputWriter.write(tree.toString());
-        }
     }
 
     private void tupleCompile() throws IOException {
@@ -257,65 +260,74 @@ public class Administrator {
 
         if (tree == null) {
             out.println("\n-------------------------------------\n");
-            out.println("\tCompile Failed at Parser phase\n");
-
+            out.println("\t---- Compile Failed at Parser Phase! ----\n");
             return;
         }
 
-        printASTTree(tree);
+        printASTTree(tree, false);
 
-        printLineTrace("\n  ----  Parsing Phase Complete  ----\n\n");
-        printLineTrace("  ----  Starting Semantics Phase  ----\n\n");
+        printLineTrace("\n  ----  Parsing Phase Complete!  ----\n\n");
+        printLineTrace("  ----  Starting Semantics Phase!  ----\n\n");
         SemanticAnalyzer semAnal = new SemanticAnalyzer(tree, this::printLineTrace, this::printErrorMessage, this::printErrorMessage);
 
         boolean passed = semAnal.startSemAnal((Declaration) tree);
         if (passed || options.unitTesting) {
-            printASTTree(tree);
-            printCompilationResults(tree);
+            printASTTree(tree, true);
+//            printCompilationResults(tree);
 
             String code = new QuadrupleGenerator(tree, this::printLineTrace, this::printErrorMessage, this::printErrorMessage, true).startCodeGeneration((Declaration) tree);
 
-            printLineTrace("\n  Code Generation Complete");
+            printLineTrace("\n---- Code Generation Complete! ----");
             printLineTrace("\n------------------------------\n");
+            printLineTrace("\n---- Tuples ----\n");
             printLineTrace(code);
 
             //Print the compiled code to the output file
-            if (this.outputWriter != null)
-                this.outputWriter.write(tree.getCode());
+            printToOutputFile(tree.getCode());
 
         } else {
             //If no tree was returned then the compiling failed
-            printLineTrace("\n-------------------------------------\n");
-            printLineTrace("\tCompile Failed\n");
+            out.print(DASHED_LINE);
+            out.println("---- Compile Failed at the Semantic Analyzer Phase! ----");
+
+            printToOutputFile(DASHED_LINE);
+            printToOutputFile("---- Compile Failed at the Semantic Analyzer Phase! ----\n\n");
 
             //And we print the error messages to the user
-            if (!options.unitTesting)
+            if (!options.unitTesting && !options.quiet) {
                 outputHandler.printErrors(out::println);
+                printToOutputFile(outputHandler.getErrorLog());
+            }
         }
 
     }
 
-    public void printASTTree(ASTNode tree) {
+
+    public void printASTTree(ASTNode tree, boolean annotated) {
         //if a tree was returned we decide to print it or not based on a program argument
         if (tree != null && options.printAST) {
 
-            printLineTrace("\n\n---- Abstract Syntax Tree ----\n\n");
-            printLineTrace(tree.toString());
+            printLineTrace("\n\n---- "+(annotated?"Annotated":"")+" Abstract Syntax Tree ----\n\n");
+            printLineTrace(tree.toString()+"\n\n");
         }
     }
 
-    public void printCompilationResults(ASTNode tree) {
+    public void printCompilationResults(ASTNode tree, boolean annotated) {
 
         if (tree != null) {
             //If it returned a tree we report success
             if (!options.unitTesting) {
-                out.println("\n\n---- Compile Successful! ----");
-                printASTTree(tree);
+//                out.println("\n---- Compile Successful! ----");
+                printASTTree(tree, annotated);
             }
         } else {
             //If no tree was returned then the compiling failed
-            out.println("\n-------------------------------------\n");
-            out.println("\t---- Compile Failed ---- \n");
+            out.println(DASHED_LINE);
+            out.println(COMPILE_FAILED);
+
+            printToOutputFile(DASHED_LINE);
+            printToOutputFile(COMPILE_FAILED);
+
 
             //And we print the error messages to the user
             if (!options.unitTesting)
@@ -339,20 +351,16 @@ public class Administrator {
     }
 
     /**
-     * Prints an message out to standard out or to the output file
+     * Prints a message out to standard out or to the output file.
      */
     public void printLineTrace(String line) {
         if (options.unitTesting) return;
 
         if (options.verbose) {
 
-            if (options.lexicalPhase)
-                if (outputWriter != null)
-                    try {
-                        outputWriter.write(line);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+            if( options.lexicalPhase )
+                printToOutputFile(line);
+
 
             out.print(line);
         }
@@ -387,6 +395,21 @@ public class Administrator {
 //        if (!options.unitTesting && !options.quiet)
 //            outputHandler.printErrorMessage(errorMsg);
         outputHandler.addErrorMessage(errorMsg);
+    }
+
+
+    private void printToOutputFile(List<String> errorLog) {
+        errorLog.forEach(this::printToOutputFile);
+    }
+
+    private void printToOutputFile(String line){
+        if( outputWriter != null ){
+            try {
+                outputWriter.write(line);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     /**

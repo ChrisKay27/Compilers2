@@ -29,7 +29,9 @@ public class CaseStatement extends Statement {
         String tabsStr = '\n'+getTabs(tabs);
         sb.append(tabsStr).append(getLine()).append(": ").append(getClass().getSimpleName());
         sb.append(tabsStr).append("\tvalue: ").append((numberToken == null) ? "default" : numberToken);
+
         statement.appendContents(sb, (tabs + 2));
+
         if (nextNode != null)
             nextNode.appendContents(sb, tabs);
     }

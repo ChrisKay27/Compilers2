@@ -1,5 +1,6 @@
 package parser.grammar.expressions;
 
+import parser.Type;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 public class LiteralBool extends NidFactor {
@@ -18,8 +19,9 @@ public class LiteralBool extends NidFactor {
     @Override
     public void appendContents(StringBuilder sb, int tabs) {
         String tabsStr = '\n'+getTabs(tabs);
-        sb.append(tabsStr).append(getLine()).append(": ").append(getClass().getSimpleName()).append(" VALUE(").append(this.toString()).append(')');
-        sb.append(tabsStr).append("\ttype: ").append(getType());
+        sb.append(tabsStr).append(getLine()).append(": ").append(getClass().getSimpleName());
+        sb.append(tabsStr).append("\tvalue: ").append(this.toString());
+        sb.append(tabsStr).append("\ttype : ").append(getType());
         if (nextNode != null)
             nextNode.appendContents(sb, tabs);
     }
@@ -32,6 +34,11 @@ public class LiteralBool extends NidFactor {
         if(bool == 1) return ""+true;
         if(bool == 0) return ""+false;
         return "BROKEN_BOOL";
+    }
+
+    @Override
+    public Type getType() {
+        return Type.BOOL;
     }
 
     @Override

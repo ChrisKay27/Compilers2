@@ -275,7 +275,7 @@ public class QuadrupleGenerator {
             Expression current = (Expression) AST.getCall_tail();
 
             ParamDeclaration pdec = AST.getFuncDecl().getParams();
-            Stack<String> arguments = new Stack<String>();
+            Stack<String> arguments = new Stack<>();
             while (current != null) {
 
                 String temp2 = generate(current);
@@ -294,7 +294,7 @@ public class QuadrupleGenerator {
                 }
             }
             while (!arguments.isEmpty()) {
-                AST.appendCode(arguments.pop() + " : arguments");
+                AST.appendCode(arguments.pop());
             }
         }
 
